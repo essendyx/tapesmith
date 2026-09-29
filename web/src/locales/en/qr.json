@@ -1,0 +1,59 @@
+{
+  "title": "QR code",
+  "tabs": {
+    "label": "Content type",
+    "url": "URL / link",
+    "text": "Text",
+    "wifi": "Wi-Fi",
+    "vcard": "Contact (vCard)"
+  },
+  "fields": {
+    "link": "Link",
+    "linkPlaceholder": "https://…",
+    "uppercase": "Uppercase (more compact QR)",
+    "text": "Text",
+    "ssid": "SSID",
+    "password": "Password",
+    "passwordShow": "Show password",
+    "passwordHide": "Hide password",
+    "security": "Security",
+    "hidden": "Hidden network",
+    "name": "Name",
+    "phone": "Phone",
+    "email": "Email",
+    "company": "Company",
+    "url": "URL",
+    "line1": "Line 1",
+    "line2": "Line 2",
+    "errorLevel": "Error correction",
+    "maxLength": "Max. length (0 = off)"
+  },
+  "security": {
+    "wpa": "WPA",
+    "wep": "WEP",
+    "open": "Open"
+  },
+  "errorLevels": {
+    "auto": "Automatic",
+    "l": "L, 7%",
+    "m": "M, 15%",
+    "q": "Q, 25%",
+    "h": "H, 30%"
+  },
+  "info": {
+    "version": "Version {{version}}",
+    "moduleSize": "Module size {{dots}} dots",
+    "errorCorrection": "Error correction {{level}}",
+    "selfTestOk": "Self-test ok",
+    "selfTestFailed": "Self-test failed",
+    "selfTestNotChecked": "Not read back",
+    "selfTestNotCheckedReason": "Decoder not available on this PC"
+  },
+  "message": {
+    "empty": "No content, nothing to print",
+    "rendering": "Preview is still being calculated, try again",
+    "notPrintable": "Not printable, see notes"
+  },
+  "fixButton": "Fix: {{label}}",
+  "exportFailed": "Export failed"
+}

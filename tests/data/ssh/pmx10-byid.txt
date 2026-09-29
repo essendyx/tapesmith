@@ -1,0 +1,7 @@
+ata-Samsung_SSD_870_EVO_1TB_S5Y1NX0R123456 ../../sda
+ata-Samsung_SSD_870_EVO_1TB_S5Y1NX0R123456-part1 ../../sda1
+wwn-0x5002538f ../../sda
+ata-WDC_WD40EFRX-68N32N0_WD-WCC7K1ABCDEF ../../sdb
+nvme-eui.002538b111b2c3d4 ../../nvme0n1
+nvme-Samsung_SSD_980_PRO_1TB_S5GXNX0T987654 ../../nvme0n1
+nvme-Samsung_SSD_980_PRO_1TB_S5GXNX0T987654_1 ../../nvme0n1

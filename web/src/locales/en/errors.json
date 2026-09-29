@@ -1,0 +1,94 @@
+{
+  "printer": {
+    "busy": { "title": "Printer busy", "hint": "Another P12 program is printing right now. Wait a moment or close the other program." },
+    "unreachable": { "title": "Printer unreachable", "hint": "Is the printer off or asleep? Turn it on. Is the phone app connected? Only one host can connect at a time, so disconnect it there." },
+    "not_paired": { "title": "Printer not paired", "hint": "Pair the printer in the Windows Bluetooth settings, then run 'p12 setup'." }
+  },
+  "file": {
+    "locked": { "title": "File locked", "hint": "Another P12 program is writing right now. Wait a moment and try again." }
+  },
+  "print": {
+    "incomplete": { "title": "Print incomplete", "hint": "The connection was lost while printing (battery empty? printer off?). Check the printer and print the label again (p12 reprint last)." }
+  },
+  "port": {
+    "busy": { "title": "COM port in use", "hint": "Another program is holding the port (phone app, old phomemo tool, terminal). Close it or turn the printer off and on again." },
+    "missing": { "title": "COM port missing", "hint": "Pair the printer in the Windows Bluetooth settings or run 'p12 setup'." }
+  },
+  "bluetooth": {
+    "lost": { "title": "Bluetooth connection lost", "hint": "The printer is off or out of range. Turn it on, move closer and try again." }
+  },
+  "transport": {
+    "error": { "title": "Connection error", "hint": "Run 'p12 doctor'." }
+  },
+  "ipc": {
+    "error": { "title": "Print service not responding", "hint": "Restart the print service (p12 daemon restart) and try again." }
+  },
+  "template": {
+    "invalid": { "title": "Invalid template or variable", "hint": "'p12 template show <name>' lists the fields." }
+  },
+  "document": {
+    "invalid": { "title": "Invalid label", "hint": "The label contains invalid data. Check its objects and try again." }
+  },
+  "protocol": {
+    "error": { "title": "Invalid print data", "hint": "The print data does not match the printer. Check the tape and settings." }
+  },
+  "font": {
+    "missing": { "title": "Font missing", "hint": "Check the installation (tools/fetch_fonts.py)." }
+  },
+  "secret": {
+    "missing": { "title": "Credentials missing", "hint": "The secret reference points to an empty or missing entry. Check the settings." }
+  },
+  "label": {
+    "not_printable": { "title": "Label cannot be printed", "hint": "Shorten the content, choose another tape or follow the preview warnings." }
+  },
+  "value": {
+    "invalid": { "title": "Invalid value", "hint": "Check your input and try again." }
+  },
+  "request": {
+    "invalid": { "title": "Invalid request", "hint": "Check your input and try again." }
+  },
+  "not_found": { "title": "Not found", "hint": "This entry no longer exists. Reload the list." },
+  "auth": {
+    "required": { "title": "Sign-in required", "hint": "Reopen the app from the tray icon or with 'p12 web'." },
+    "forbidden": { "title": "Access denied", "hint": "This feature is not available for this access level." }
+  },
+  "method": {
+    "not_allowed": { "title": "Action not allowed", "hint": "Reload the app. If that does not help, update the print service." }
+  },
+  "conflict": { "title": "Conflict", "hint": "This entry was changed in the meantime. Reload and try again." },
+  "too_large": { "title": "Too large", "hint": "Make the file or content smaller and try again." },
+  "rate_limited": { "title": "Too many requests", "hint": "Wait a moment and try again." },
+  "http": {
+    "error": { "title": "Error", "hint": "Try again. If the error persists, run 'p12 doctor'." }
+  },
+  "integration": {
+    "token_missing": { "title": "Token missing", "hint": "Add the token for this integration in the settings." },
+    "not_configured": { "title": "Integration not set up", "hint": "Enter the address and credentials in the settings." },
+    "unreachable": { "title": "Service unreachable", "hint": "Check the network and the service address." },
+    "auth_failed": { "title": "Sign-in to the service failed", "hint": "Check the token or credentials in the settings." },
+    "upstream": { "title": "Service error", "hint": "The connected service reported an error. Try again later." }
+  },
+  "update": {
+    "not_installed": { "title": "Not installed", "hint": "Updates are only available for the installed version. Install Tapesmith first." },
+    "no_trusted_key": { "title": "No update key", "hint": "This version contains no trusted key. Install the update manually." },
+    "source_invalid": { "title": "Invalid update source", "hint": "Check the update source in the settings (github:owner/repo, file:folder or https address)." },
+    "source_unreachable": { "title": "Update source unreachable", "hint": "Check the network and the update source, then try again later." },
+    "signature_invalid": { "title": "Invalid signature", "hint": "The update is not trusted and was discarded." },
+    "checksum_mismatch": { "title": "Checksum mismatch", "hint": "The download is damaged. Check for updates again." },
+    "download_failed": { "title": "Download failed", "hint": "Check the network and try again." },
+    "busy": { "title": "Update not possible right now", "hint": "A print job or another update is running. Try again later." },
+    "apply_failed": { "title": "Update failed", "hint": "The previous version was restored. Create a support report and send it in." }
+  },
+  "decoder": {
+    "unavailable": { "title": "Barcode decoder unavailable", "hint": "zxing-cpp could not be loaded (for example blocked by Windows Smart App Control). Enter the serial number by hand, printing still works." }
+  },
+  "module": {
+    "disabled": { "title": "Module turned off", "hint": "Turn it on under Settings > Modules or with “tapesmith module enable <module>”." }
+  },
+  "aborted": { "title": "Canceled", "hint": "Start the action again." },
+  "internal": { "title": "Error", "hint": "Unexpected error. Try again, otherwise create a support report." },
+  "client": {
+    "offline": { "title": "Print service unavailable", "hint": "Is the print service running? Start it with \"p12 daemon start\"." },
+    "bad_response": { "title": "Unexpected response from the print service", "hint": "Reload the app. If the error persists, restart the print service." }
+  }
+}

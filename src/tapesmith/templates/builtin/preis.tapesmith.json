@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "name": "preis",
+  "description": "Preisschild für Flohmarkt/Kleinanzeigen: Preis groß, optional ein Zusatztext.",
+  "category": "Haushalt",
+  "tags": ["haushalt", "preis", "flohmarkt"],
+  "fields": [
+    {"id": "preis", "label": "Preis", "type": "input", "required": true, "max_len": 10},
+    {"id": "text", "label": "Text", "type": "input", "max_len": 16}
+  ],
+  "layout": {"lines": ["{preis}", "{text}"], "font": "sans-bold"},
+  "sample": {"preis": "12,50 €"},
+  "translations": {
+    "en": {
+      "title": "price",
+      "description": "Price tag for flea markets and classifieds: large price, optional extra text.",
+      "category": "Household",
+      "tags": ["household", "price", "flea-market"],
+      "fields": {
+        "preis": {"label": "Price"},
+        "text": {"label": "Text"}
+      },
+      "sample": {"preis": "12.50 EUR"}
+    }
+  }
+}

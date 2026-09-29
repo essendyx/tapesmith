@@ -1,0 +1,22 @@
+[
+  {"id": "schwarz-weiss", "name": "Schwarz auf Weiß (Kunststoff)", "translations": {"en": {"name": "Black on white (plastic)"}},
+   "background": [255, 255, 255], "ink": [0, 0, 0], "material": "kunststoff", "transparent": false},
+  {"id": "schwarz-weiss-papier", "name": "Schwarz auf Weiß (Papier)", "translations": {"en": {"name": "Black on white (paper)"}},
+   "background": [250, 250, 245], "ink": [0, 0, 0], "material": "papier", "transparent": false},
+  {"id": "schwarz-transparent", "name": "Schwarz auf Transparent", "translations": {"en": {"name": "Black on transparent"}},
+   "background": [255, 255, 255], "ink": [0, 0, 0], "material": "kunststoff", "transparent": true},
+  {"id": "weiss-schwarz", "name": "Weiß auf Schwarz", "translations": {"en": {"name": "White on black"}},
+   "background": [25, 25, 25], "ink": [245, 245, 245], "material": "kunststoff", "transparent": false},
+  {"id": "gold-schwarz", "name": "Gold auf Schwarz", "translations": {"en": {"name": "Gold on black"}},
+   "background": [25, 25, 25], "ink": [212, 175, 55], "material": "kunststoff", "transparent": false},
+  {"id": "schwarz-gold", "name": "Schwarz auf Gold", "translations": {"en": {"name": "Black on gold"}},
+   "background": [212, 175, 55], "ink": [0, 0, 0], "material": "kunststoff", "transparent": false},
+  {"id": "schwarz-silber", "name": "Schwarz auf Silber", "translations": {"en": {"name": "Black on silver"}},
+   "background": [192, 192, 192], "ink": [0, 0, 0], "material": "kunststoff", "transparent": false},
+  {"id": "schwarz-gelb", "name": "Schwarz auf Gelb (Pastell)", "translations": {"en": {"name": "Black on yellow (pastel)"}},
+   "background": [250, 235, 140], "ink": [0, 0, 0], "material": "papier", "transparent": false},
+  {"id": "schwarz-blau", "name": "Schwarz auf Blau (Pastell)", "translations": {"en": {"name": "Black on blue (pastel)"}},
+   "background": [170, 205, 240], "ink": [0, 0, 0], "material": "papier", "transparent": false},
+  {"id": "schwarz-rosa", "name": "Schwarz auf Rosa (Pastell)", "translations": {"en": {"name": "Black on pink (pastel)"}},
+   "background": [245, 190, 205], "ink": [0, 0, 0], "material": "papier", "transparent": false}
+]

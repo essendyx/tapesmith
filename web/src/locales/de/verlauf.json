@@ -1,0 +1,93 @@
+{
+  "title": "Verlauf",
+  "search": {
+    "label": "Verlauf durchsuchen",
+    "placeholder": "Suchen, z. B. 274913"
+  },
+  "empty": {
+    "titleQuery": "Keine Treffer für „{{query}}“",
+    "titleNone": "Noch nichts gedruckt",
+    "bodyQuery": "Anderen Suchbegriff versuchen.",
+    "bodyNone": "Gedruckte Labels erscheinen hier."
+  },
+  "status": {
+    "ok": "ok",
+    "läuft": "läuft",
+    "abgebrochen": "abgebrochen",
+    "unvollständig": "unvollständig",
+    "wartet": "wartet",
+    "fehler": "Fehler"
+  },
+  "length": {
+    "copies": " ×{{count}}",
+    "chain": " · Kette"
+  },
+  "secret": {
+    "wifiPassword": "WLAN-Passwort (password)",
+    "generic": "Sensibles Feld „{{id}}“"
+  },
+  "columns": {
+    "thumb": "Vorschau",
+    "title": "Titel",
+    "time": "Zeitpunkt",
+    "source": "Quelle",
+    "length": "Länge/Kopien",
+    "status": "Status",
+    "actions": "Aktionen"
+  },
+  "grid": {
+    "label": "Verlaufseinträge"
+  },
+  "actions": {
+    "reprint": "Erneut drucken",
+    "reprintAmount": "Erneut drucken (×{{count}})",
+    "reprintDisabledHint": "Sensibler Eintrag ohne Bild und ohne Vorlage: kann nicht nachgedruckt werden",
+    "editInEditor": "Im Editor öffnen",
+    "saveAsTemplate": "Als Vorlage speichern",
+    "copyPng": "PNG kopieren",
+    "export": "Exportieren",
+    "archive": "Archivieren",
+    "for": "{{action}}: {{title}}"
+  },
+  "sensitiveNoImage": "sensibler Eintrag, kein Bild gespeichert",
+  "noImage": "kein Bild",
+  "thumbAlt": "Miniatur",
+  "drawer": {
+    "close": "Schließen",
+    "time": "Zeitpunkt",
+    "sourceLength": "Quelle · Länge",
+    "missingSecret": "(sensibel, wird beim Nachdruck abgefragt)",
+    "error": "Fehler",
+    "previewAlt": "Vorschau"
+  },
+  "reprintDialog": {
+    "title": "Erneut drucken",
+    "copies": "Kopien",
+    "chain": "Mit Kette drucken"
+  },
+  "templateDialog": {
+    "title": "Als Vorlage speichern",
+    "name": "Name",
+    "description": "Beschreibung",
+    "category": "Kategorie"
+  },
+  "notify": {
+    "pngCopied": "PNG in der Zwischenablage",
+    "copyFailed": "Kopieren nicht möglich",
+    "copyError": "PNG kopieren fehlgeschlagen",
+    "exportFailed": "Export fehlgeschlagen",
+    "archived": "Archiviert",
+    "archiveFailed": "Archivieren fehlgeschlagen",
+    "templateSaved": "Als Vorlage gespeichert: {{name}}",
+    "templateSaveFailed": "Vorlage nicht gespeichert"
+  },
+  "commands": {
+    "search": "Verlauf durchsuchen"
+  },
+  "time": {
+    "noAppointment": "kein Termin",
+    "now": "jetzt",
+    "inSeconds": "in {{count}} s",
+    "inMinutes": "in {{count}} min"
+  }
+}

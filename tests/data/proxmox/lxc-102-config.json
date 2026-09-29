@@ -1,0 +1,1 @@
+{"data": {"hostname": "frigate", "cores": 4, "memory": 4096, "net0": "name=eth0,bridge=vmbr0,hwaddr=BC:24:11:00:00:03,ip=dhcp,type=veth", "dev0": "/dev/nvidia0", "dev1": "/dev/dri/renderD128,gid=104", "digest": "jkl"}}

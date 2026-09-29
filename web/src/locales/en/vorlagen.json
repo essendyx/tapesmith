@@ -1,0 +1,88 @@
+{
+  "title": "Templates",
+  "openFile": "Open template from file",
+  "list": {
+    "label": "Templates",
+    "select": "Choose template",
+    "search": "Search templates",
+    "searchPlaceholder": "Name, tag, description",
+    "noHits": "No matching template",
+    "categoryFallback": "General",
+    "loading": "Loading templates …"
+  },
+  "sections": {
+    "form": "Form",
+    "preview": "Preview"
+  },
+  "noTemplateSelected": "No template selected.",
+  "fillSample": "Sample values",
+  "tapeReasonSuffix": ". You will be asked to confirm when printing.",
+  "shortened": "Shortened: {{label}}",
+  "editInEditor": "Open in editor",
+  "exportAssignment": "Export assignment",
+  "batchOpen": "Series/import…",
+  "confirmConflict": {
+    "title": "Conflict found by the check",
+    "message": "The plausibility check reports a conflict:",
+    "confirm": "Print anyway"
+  },
+  "deleteDialog": {
+    "title": "Delete template?",
+    "message": "“{{name}}” will be permanently deleted.",
+    "confirm": "Delete"
+  },
+  "notify": {
+    "exportFailed": "Export failed",
+    "deleted": "Deleted: {{name}}",
+    "deleteFailed": "Delete failed",
+    "fileReadFailed": "Could not read file",
+    "assignmentExportFailed": "Could not export assignment",
+    "fileNotLoaded": "Could not load template file"
+  },
+  "form": {
+    "computedHint": "calculated",
+    "secretShow": "Show",
+    "secretHide": "Hide",
+    "defaultHint": "Default: {{value}}"
+  },
+  "batch": {
+    "commandTitle": "Template: open series/import",
+    "titlePrefix": "Series/import: ",
+    "titleChoose": "Choose template",
+    "targetTemplate": "Target template",
+    "targetTemplatePlaceholder": "Choose template",
+    "targetTemplateRequired": "Please choose a template.",
+    "tabs": {
+      "file": "Table/file",
+      "list": "List",
+      "series": "Series"
+    },
+    "fromClipboard": "From clipboard",
+    "header": {
+      "label": "Header row",
+      "auto": "Automatic",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "uploadFile": "Upload file",
+    "chooseFile": "Choose CSV or Excel file",
+    "fileLabel": "File: {{name}}",
+    "tablePlaceholder": "SN;Host\nA1;pmx10",
+    "tableInsert": "Paste table",
+    "listPlaceholder": "A1\nA2\nA3",
+    "listInsert": "One line per label",
+    "seriesPlaceholder": "e.g. 1..24",
+    "seriesCount": "Count (optional)",
+    "tableLoading": "Reading table …",
+    "rowFilterPlaceholder": "Filter rows…",
+    "selectAll": "Select all",
+    "selectRow": "Select row {{n}}",
+    "mappingLabel": "Column mapping",
+    "mappingHeading": "Field to column mapping",
+    "mappingField": "Mapping {{label}}",
+    "fixedValuePlaceholder": "fixed value",
+    "planLoading": "Calculating plan …",
+    "summarySuffix": " ({{count}} labels)",
+    "contactSheet": "Save contact sheet"
+  }
+}

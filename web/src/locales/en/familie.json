@@ -1,0 +1,47 @@
+{
+  "header": {
+    "title": "Print labels"
+  },
+  "status": {
+    "checking": "Checking …",
+    "waitingSuffix": " · {{count}} waiting"
+  },
+  "templates": {
+    "loading": "Loading templates …"
+  },
+  "gate": {
+    "invite": { "title": "Welcome", "body": "Please open the link from the invitation." },
+    "invalid": { "title": "Access invalid", "body": "Access invalid or revoked. Please request a new link." },
+    "forbidden": { "title": "No access", "body": "This access is not allowed to do that." },
+    "ratelimited": { "title": "Please wait", "body": "Too many failed attempts, please try again later." },
+    "token": "Token",
+    "save": "Save"
+  },
+  "form": {
+    "back": "Back",
+    "fewerCopies": "Fewer copies",
+    "moreCopies": "More copies",
+    "print": "Print",
+    "done": "Done",
+    "printed": "Printed.",
+    "printFailed": "Printing failed",
+    "offline": "No connection to the printer PC",
+    "labelRequired": "{{label}} *",
+    "chooseOption": "Please choose",
+    "datePlaceholder": "today",
+    "confirmTitle": "Please confirm",
+    "confirmAction": "Print anyway",
+    "confirmCancel": "Cancel"
+  },
+  "preview": {
+    "loading": "Generating preview …",
+    "alt": "Preview of the label",
+    "notPossible": "Preview not possible.",
+    "empty": "No preview yet",
+    "length": "approx. {{mm}} mm",
+    "failed": "Preview failed"
+  },
+  "errors": {
+    "offline": "No connection to the printer PC"
+  }
+}

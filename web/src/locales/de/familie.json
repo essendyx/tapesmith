@@ -1,0 +1,47 @@
+{
+  "header": {
+    "title": "Etiketten drucken"
+  },
+  "status": {
+    "checking": "Wird geprüft …",
+    "waitingSuffix": " · {{count}} warten"
+  },
+  "templates": {
+    "loading": "Vorlagen werden geladen …"
+  },
+  "gate": {
+    "invite": { "title": "Willkommen", "body": "Bitte den Link aus der Einladung öffnen." },
+    "invalid": { "title": "Zugang ungültig", "body": "Zugang ungültig oder widerrufen. Bitte neuen Link anfordern." },
+    "forbidden": { "title": "Kein Zugriff", "body": "Dieser Zugang darf das nicht." },
+    "ratelimited": { "title": "Bitte warten", "body": "Zu viele Fehlversuche, bitte später erneut versuchen." },
+    "token": "Token",
+    "save": "Speichern"
+  },
+  "form": {
+    "back": "Zurück",
+    "fewerCopies": "Weniger Kopien",
+    "moreCopies": "Mehr Kopien",
+    "print": "Drucken",
+    "done": "Fertig",
+    "printed": "Gedruckt.",
+    "printFailed": "Drucken fehlgeschlagen",
+    "offline": "Keine Verbindung zum Drucker-PC",
+    "labelRequired": "{{label}} *",
+    "chooseOption": "Bitte wählen",
+    "datePlaceholder": "heute",
+    "confirmTitle": "Bitte bestätigen",
+    "confirmAction": "Trotzdem drucken",
+    "confirmCancel": "Abbrechen"
+  },
+  "preview": {
+    "loading": "Vorschau wird erstellt …",
+    "alt": "Vorschau des Etiketts",
+    "notPossible": "Vorschau nicht möglich.",
+    "empty": "Noch keine Vorschau",
+    "length": "ca. {{mm}} mm",
+    "failed": "Vorschau fehlgeschlagen"
+  },
+  "errors": {
+    "offline": "Keine Verbindung zum Drucker-PC"
+  }
+}

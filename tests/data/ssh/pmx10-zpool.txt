@@ -1,0 +1,21 @@
+  pool: rpool
+ state: ONLINE
+config:
+
+	NAME                                                                    STATE     READ WRITE CKSUM
+	rpool                                                                   ONLINE       0     0     0
+	  mirror-0                                                              ONLINE       0     0     0
+	    /dev/disk/by-id/ata-Samsung_SSD_870_EVO_1TB_S5Y1NX0R123456-part3    ONLINE       0     0     0
+	    /dev/sdb3                                                           ONLINE       0     0     0
+
+errors: No known data errors
+
+  pool: tank
+ state: ONLINE
+config:
+
+	NAME                                                                    STATE     READ WRITE CKSUM
+	tank                                                                    ONLINE       0     0     0
+	  /dev/disk/by-id/nvme-Samsung_SSD_980_PRO_1TB_S5GXNX0T987654-part1     ONLINE       0     0     0
+
+errors: No known data errors

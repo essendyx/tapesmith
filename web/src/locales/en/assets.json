@@ -1,0 +1,105 @@
+{
+  "page": {
+    "title": "Assets",
+    "subtitle": "Number range, register and short links for asset tags"
+  },
+  "actions": {
+    "new": "New assets",
+    "import": "Adopt existing number",
+    "export": "Export CSV",
+    "printSeries": "Print as series ({{count}})"
+  },
+  "nextNumber": "Next number: {{next}}",
+  "shortlinkWarning": {
+    "title": "Short link service not set up",
+    "body": "Labels point to the long target until then (if set)."
+  },
+  "loadErrorFallback": "Assets could not be loaded",
+  "toolbar": {
+    "searchAria": "Search assets",
+    "searchPlaceholder": "Search…",
+    "statusLabel": "Status",
+    "statusFilterAria": "Status filter"
+  },
+  "status": {
+    "all": "all",
+    "aktiv": "active",
+    "verworfen": "discarded",
+    "ausgemustert": "retired"
+  },
+  "table": {
+    "ariaLabel": "Assets",
+    "selectAllAria": "Select all",
+    "selectRowAria": "Select {{id}}",
+    "columns": {
+      "id": "Number",
+      "bezeichnung": "Description",
+      "kategorie": "Category",
+      "standort": "Location",
+      "sn": "SN",
+      "host": "Host",
+      "status": "Status",
+      "ziel": "Target",
+      "actions": "Actions"
+    }
+  },
+  "rowActions": {
+    "edit": "Edit",
+    "printLabel": "Print label",
+    "createVaultNote": "Create vault note",
+    "copyShortlink": "Copy short link",
+    "void": "Discard"
+  },
+  "empty": {
+    "title": "No asset yet",
+    "body": "Create a number, stick the label on the device and find it again later by its number or QR code."
+  },
+  "loading": "Loading assets …",
+  "notify": {
+    "vaultCreated": "Vault note created: {{path}}",
+    "vaultExists": "Note already exists",
+    "vaultFailed": "Vault note could not be created",
+    "labelFailed": "Label could not be loaded",
+    "shortlinkCopied": "Short link copied",
+    "shortlinkMissing": "No short link available",
+    "shortlinkFailed": "Short link could not be loaded",
+    "voidSuccess": "Discarded: {{id}}",
+    "voidFailed": "Discard failed",
+    "seriesFailed": "Series could not be prepared",
+    "exportFailed": "Export failed"
+  },
+  "void": {
+    "dialogTitle": "Discard asset",
+    "confirmTitle": "Discard \"{{id}}\"?",
+    "confirmMessage": "The number will never be reused.",
+    "confirmButton": "Discard",
+    "reasonLabel": "Reason",
+    "continue": "Continue"
+  },
+  "dialog": {
+    "titles": {
+      "create": "New assets",
+      "import": "Adopt existing number",
+      "edit": "Edit asset"
+    },
+    "fields": {
+      "id": "Number",
+      "count": "Count",
+      "bezeichnung": "Description",
+      "kategorie": "Category",
+      "standort": "Location",
+      "seriennummer": "Serial number",
+      "host": "Host",
+      "ziel": "Target URL",
+      "paperlessDoc": "Paperless document",
+      "notiz": "Note"
+    },
+    "paperlessInvalid": "Must be a number",
+    "notify": {
+      "created": "{{count}} asset(s) created",
+      "imported": "Adopted: {{id}}",
+      "updated": "Saved: {{id}}",
+      "failed": "Save failed"
+    }
+  }
+}

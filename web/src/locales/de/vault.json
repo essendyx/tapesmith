@@ -1,0 +1,90 @@
+{
+  "title": "Obsidian-Vault",
+  "subtitle": "Labels aus Host- und Dienst-Notizen drucken, Vermerk in die Notiz schreiben, Snippet für die Doku.",
+  "tabs": {
+    "notes": "Notizen",
+    "snippet": "Snippet"
+  },
+  "notes": {
+    "sectionTitle": "Notizen",
+    "folder": "Ordner",
+    "allFolders": "Alle freigegebenen Ordner",
+    "search": "Suche im Namen",
+    "searchPlaceholder": "z. B. pve",
+    "notReachableTitle": "Vault nicht erreichbar",
+    "empty": "Keine Notizen gefunden",
+    "ariaLabel": "Notizen",
+    "noSelection": { "title": "Keine Notiz gewählt", "body": "Links eine Notiz auswählen." }
+  },
+  "detail": {
+    "empty": {
+      "title": "Keine Werte in dieser Notiz",
+      "body": "Weder Frontmatter noch fette Aufzählungsschlüssel gefunden."
+    },
+    "valuesAriaLabel": "Werte der Notiz",
+    "key": "Schlüssel",
+    "value": "Wert",
+    "notLoadedTitle": "Notiz nicht geladen"
+  },
+  "print": {
+    "sectionTitle": "Label aus dieser Notiz drucken",
+    "description": "Vorlage wählen, Felder den Notizschlüsseln zuordnen, drucken.",
+    "templatesFailedTitle": "Vorlagen nicht geladen",
+    "template": "Vorlage",
+    "pleaseChoose": "Bitte wählen",
+    "appendNote": "Vermerk in die Notiz schreiben",
+    "mappingAriaLabel": "Zuordnung Feld zu Notizschlüssel",
+    "field": "Feld",
+    "mappingFrom": "← Notizschlüssel",
+    "value": "Wert",
+    "mappingSelectAriaLabel": "Notizschlüssel für {{field}}",
+    "empty": "(leer)",
+    "print": "Drucken",
+    "takeOver": "In Vorlage übernehmen",
+    "appendedTitle": "Vermerk angehängt",
+    "notAppended": "Kein Vermerk angehängt ({{reason}})",
+    "noReason": "ohne Grund",
+    "appendFailedTitle": "Vermerk fehlgeschlagen",
+    "seriesFailedTitle": "Tabelle konnte nicht übernommen werden"
+  },
+  "tables": {
+    "title": "Tabelle {{index}}",
+    "titleWithHeading": "Tabelle {{index}}: {{heading}}",
+    "ariaLabel": "Tabelle {{index}}",
+    "asSeries": "Als Serie",
+    "moreRows_one": "… und {{count}} weitere Zeile",
+    "moreRows_other": "… und {{count}} weitere Zeilen"
+  },
+  "snippet": {
+    "recentTitle": "Letzte Labels",
+    "recentDescription": "Die letzten 20 Einträge aus dem Verlauf mit Bild.",
+    "notLoadedTitle": "Verlauf nicht geladen",
+    "empty": "Noch keine gedruckten Labels",
+    "ariaLabel": "Verlauf",
+    "noSelection": { "title": "Kein Label gewählt", "body": "Links einen Verlaufseintrag auswählen." },
+    "generating": "Erzeuge Snippet …",
+    "sectionTitle": "Snippet für die Notiz",
+    "imageAlt": "Label als PNG",
+    "markdownAriaLabel": "Markdown-Zeile",
+    "copyMarkdown": "Markdown kopieren",
+    "copiedMarkdownTitle": "Markdown kopiert",
+    "copyFailedTitle": "Kopieren nicht möglich",
+    "copyFailedBody": "Die Zwischenablage ist im Browser gesperrt.",
+    "downloadPng": "PNG herunterladen",
+    "saveToVault": "Im Vault ablegen",
+    "savedTo": "Im Vault abgelegt: {{path}}",
+    "changelogEntry": "Changelog-Eintrag",
+    "changelogCreatedTitle": "Changelog-Eintrag angelegt",
+    "changelogFailedTitle": "Changelog fehlgeschlagen",
+    "note": "Notiz",
+    "notePlaceholder": "z. B. Hosts/pmx10",
+    "appendToNote": "An Notiz anhängen",
+    "appendedTo": "An {{path}} angehängt"
+  },
+  "changelogDialog": {
+    "title": "Changelog-Eintrag",
+    "titleField": "Titel",
+    "entryField": "Eintrag",
+    "submit": "Eintragen"
+  }
+}

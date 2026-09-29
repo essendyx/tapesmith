@@ -1,0 +1,35 @@
+{
+  "gate": {
+    "title": "Modul {{name}} ist ausgeschaltet",
+    "body": "Schalte es unter Einstellungen > Module ein. Danach erscheint es wieder in der Seitenleiste.",
+    "action": "Zu den Modulen"
+  },
+  "card": {
+    "title": "Module",
+    "description": "Zusätzliche Bereiche für besondere Aufgaben. Ausgeschaltete Module erscheinen nirgends, Einschalten wirkt sofort.",
+    "requires": "Voraussetzung: {{text}}",
+    "switchedOn": "{{name}} eingeschaltet",
+    "switchedOnBody": "Das Modul steht jetzt in der Seitenleiste.",
+    "switchedOnHomelab": "Das Modul steht jetzt in der Homelab-Übersicht.",
+    "switchedOff": "{{name}} ausgeschaltet",
+    "failed": "Modul nicht umgeschaltet",
+    "open": "Öffnen",
+    "groupTools": "Werkzeuge",
+    "groupIntegrations": "Homelab-Integrationen"
+  },
+  "settings": {
+    "check": "Prüfen",
+    "checking": "Prüft …",
+    "checkOk": "Eingerichtet",
+    "checkNotConfigured": "Noch nicht eingerichtet",
+    "checkTokenMissing": "Token fehlt",
+    "checkNoToken": "ohne Token",
+    "noSettings": "Dieses Modul braucht keine Einstellungen."
+  },
+  "settingsLink": "Zu den Einstellungen",
+  "setup": {
+    "title": "{{name}} ist noch nicht eingerichtet",
+    "body": "Trage in den Einstellungen Adresse und Zugang ein. Danach kannst du hier Etiketten drucken.",
+    "bodyRequires": "Dafür brauchst du: {{requires}} Trage Adresse und Token-Referenz in den Einstellungen ein, danach kannst du hier Etiketten drucken."
+  }
+}

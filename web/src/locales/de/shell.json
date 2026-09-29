@@ -1,0 +1,121 @@
+{
+  "appName": "Tapesmith",
+  "windowTitle": "{{title}} · Tapesmith",
+  "routes": {
+    "schnelldruck": "Schnelldruck",
+    "editor": "Editor",
+    "galerie": "Galerie",
+    "vorlagen": "Vorlagen",
+    "qr": "QR-Code",
+    "verlauf": "Verlauf",
+    "warteschlange": "Warteschlange",
+    "inventar": "Inventar",
+    "datentraeger": "Datenträger",
+    "homelab": "Homelab",
+    "statistik": "Statistik",
+    "zugriff": "Zugriff",
+    "einstellungen": "Einstellungen",
+    "kompakt": "Kompakt",
+    "aktion": "Aktion"
+  },
+  "homelab": {
+    "einstellungen": "Einstellungen",
+    "plattentausch": "Plattentausch",
+    "proxmox": "Proxmox",
+    "paperless": "Paperless",
+    "vault": "Vault",
+    "assets": "Assets",
+    "kleinanzeigen": "Kleinanzeigen",
+    "kabel": "Kabel",
+    "batterien": "Batterien",
+    "snScan": "Seriennummer scannen"
+  },
+  "nav": {
+    "label": "Seiten",
+    "collapse": "Seitenleiste einklappen",
+    "expand": "Seitenleiste ausklappen",
+    "withShortcut": "{{title}} ({{shortcut}})",
+    "menu": "Menü"
+  },
+  "topbar": {
+    "breadcrumb": "Pfad",
+    "separator": "›",
+    "shortcuts": "Tastenkürzel",
+    "shortcutsTooltip": "Tastenkürzel (?)",
+    "commands": "Befehle",
+    "commandsLabel": "Befehle ({{shortcut}})"
+  },
+  "skipLink": "Zum Inhalt springen",
+  "loadingPage": "Seite wird geladen …",
+  "status": {
+    "chipLabel": "Druckerstatus: {{text}}",
+    "unknown": "Status unbekannt",
+    "loading": "Status wird geladen",
+    "tooltip": "Druckerstatus im Detail",
+    "chip": "P12 · {{state}}",
+    "battery": "{{chip}} · Akku {{value}} %",
+    "lid": "{{chip}} · Deckel offen",
+    "states": {
+      "verbunden": "verbunden",
+      "getrennt": "getrennt",
+      "verbindet": "verbindet …",
+      "offline": "nicht erreichbar",
+      "belegt": "belegt",
+      "fehler": "Fehler",
+      "leased": "reserviert (Einrichtung)"
+    },
+    "dialogTitle": "Druckerstatus",
+    "detailLabel": "Statuswerte",
+    "loadingDetail": "Status wird geladen …",
+    "checked": "Zuletzt abgefragt: {{time}}",
+    "refresh": "Status abfragen"
+  },
+  "recovery": {
+    "title_one": "{{count}} nicht gespeicherter Entwurf gefunden",
+    "title_other": "{{count}} nicht gespeicherte Entwürfe gefunden",
+    "body": "Die Entwürfe stammen aus einer früheren Sitzung und lassen sich im Editor wiederherstellen.",
+    "restore": "Im Editor wiederherstellen",
+    "later": "Später"
+  },
+  "progress": {
+    "label": "Druckfortschritt",
+    "printing": "Label wird gedruckt …",
+    "printingPercent": "Label wird gedruckt … {{percent}} %",
+    "printingTitled": "{{title}}: Label wird gedruckt …",
+    "printingTitledPercent": "{{title}}: Label wird gedruckt … {{percent}} %",
+    "cancel": "Abbrechen"
+  },
+  "cutPause": {
+    "title": "Label {{done}}/{{total}} abschneiden, dann „Weiter“",
+    "countdown": "(weiter in {{seconds}} s)",
+    "hint": "Leertaste drückt „Weiter“.",
+    "next": "Weiter"
+  },
+  "errorBoundary": {
+    "title": "Da ist etwas schiefgegangen",
+    "body": "Diese Ansicht konnte nicht angezeigt werden. Neu laden hilft meistens.",
+    "reload": "Neu laden"
+  },
+  "noToken": {
+    "openViaApp": "Bitte über „p12 app“ öffnen",
+    "expired": "Sitzung abgelaufen",
+    "loginNeeded": "Anmeldung nötig",
+    "reconnect": "Neu verbinden",
+    "appExpired": "Der Druckdienst wurde neu gestartet, die Anmeldung dieser Seite gilt nicht mehr.",
+    "appNeedsSession": "Diese Oberfläche braucht die Anmeldung des Druckdienstes.",
+    "appStart": "Starte sie mit <code>p12 app</code> oder über das Tray-Symbol, dann öffnet sich das Fenster mit gültiger Sitzung.",
+    "tokenInvalid": "Das Token ist ungültig oder wurde widerrufen.",
+    "otherToken": "Anderes Token eingeben",
+    "needsToken": "Diese Oberfläche braucht ein Zugangstoken aus der Verwaltung.",
+    "tokenField": "Zugangstoken",
+    "remember": "Auf diesem Gerät merken",
+    "login": "Anmelden",
+    "tokenHint": "Tokens legt die Verwaltung unter Zugriff an (<code>p12 token add</code>)."
+  },
+  "offline": {
+    "title": "Druckdienst nicht erreichbar",
+    "retry": "Erneut versuchen",
+    "appHint": "„Erneut versuchen“ startet den Dienst und verbindet dieses Fenster neu.",
+    "browserHint": "Der Dienst läuft gerade nicht. Starte ihn mit <code>p12 daemon start</code>, die Seite verbindet sich alle 3 Sekunden neu."
+  }
+}

@@ -1,0 +1,425 @@
+{
+  "modules": [
+    {
+      "id": "inventar",
+      "kind": "werkzeug",
+      "icon": "box",
+      "pages": [
+        "/inventar"
+      ],
+      "nav": {
+        "area": "sidebar",
+        "key": "inventar"
+      },
+      "api": [
+        "/inventory"
+      ],
+      "cli": [
+        "inv"
+      ],
+      "templates": [
+        "aufbewahrungsbox"
+      ],
+      "categories": [],
+      "settings": [],
+      "integrations": [],
+      "setup": false,
+      "texts": {
+        "de": {
+          "name": "Inventar",
+          "description": "Behalte den Überblick über Boxen, ihren Inhalt und verliehene Dinge.",
+          "example": "Beispiel: Box 12 im Keller mit QR-Code beschriften und später über die Suche finden, wo der Akkuschrauber liegt."
+        },
+        "en": {
+          "name": "Inventory",
+          "description": "Keep track of boxes, what is inside them and what you have lent to others.",
+          "example": "Example: label box 12 in the basement with a QR code and later search for where the cordless drill is."
+        }
+      }
+    },
+    {
+      "id": "datentraeger",
+      "kind": "werkzeug",
+      "icon": "hard-drive",
+      "pages": [
+        "/datentraeger"
+      ],
+      "nav": {
+        "area": "sidebar",
+        "key": "datentraeger"
+      },
+      "api": [
+        "/drives",
+        "/ssh",
+        "/homelab/zfs"
+      ],
+      "cli": [
+        "drives",
+        "disks",
+        "platte"
+      ],
+      "templates": [
+        "datentraeger",
+        "datentraeger-qr",
+        "platte-defekt"
+      ],
+      "categories": [
+        "Datenträger"
+      ],
+      "settings": [
+        "config:ssh"
+      ],
+      "integrations": [],
+      "setup": false,
+      "texts": {
+        "de": {
+          "name": "Datenträger",
+          "description": "Beschrifte Laufwerke dieses PCs und Platten in Servern, die Tapesmith per SSH ausliest, und begleite den Plattentausch in ZFS-Pools.",
+          "example": "Beispiel: alle Platten eines Servers mit Slot und Seriennummer als Serie drucken.",
+          "requires": "Für den SSH-Scanner und den Plattentausch: SSH-Zugang mit Schlüssel zu den Linux-Hosts."
+        },
+        "en": {
+          "name": "Drives",
+          "description": "Label drives of this PC and disks in servers that Tapesmith reads over SSH, and walk through a disk replacement in ZFS pools.",
+          "example": "Example: print all disks of a server with slot and serial number as a series.",
+          "requires": "For the SSH scanner and disk replacement: SSH access with a key to the Linux hosts."
+        }
+      }
+    },
+    {
+      "id": "proxmox",
+      "kind": "integration",
+      "icon": "server",
+      "pages": [
+        "/homelab/proxmox"
+      ],
+      "nav": {
+        "area": "homelab",
+        "key": "proxmox"
+      },
+      "api": [
+        "/homelab/proxmox"
+      ],
+      "cli": [
+        "proxmox"
+      ],
+      "templates": [
+        "vm-lxc",
+        "vm-lxc-qr"
+      ],
+      "categories": [],
+      "settings": [
+        "homelab:proxmox"
+      ],
+      "integrations": [
+        "proxmox"
+      ],
+      "setup": true,
+      "texts": {
+        "de": {
+          "name": "Proxmox",
+          "description": "Liest VMs und Container aus Proxmox VE und druckt Etiketten dafür.",
+          "example": "Beispiel: für jede VM ein Etikett mit Name, ID und IP-Adresse.",
+          "requires": "Proxmox VE mit API-Token (nur Leserechte)."
+        },
+        "en": {
+          "name": "Proxmox",
+          "description": "Reads VMs and containers from Proxmox VE and prints labels for them.",
+          "example": "Example: one label per VM with name, ID and IP address.",
+          "requires": "Proxmox VE with an API token (read access only)."
+        }
+      }
+    },
+    {
+      "id": "paperless",
+      "kind": "integration",
+      "icon": "document",
+      "pages": [
+        "/homelab/paperless"
+      ],
+      "nav": {
+        "area": "homelab",
+        "key": "paperless"
+      },
+      "api": [
+        "/homelab/paperless"
+      ],
+      "cli": [
+        "asn",
+        "garantie"
+      ],
+      "templates": [
+        "asn",
+        "garantie",
+        "garantie-qr"
+      ],
+      "categories": [],
+      "settings": [
+        "homelab:paperless"
+      ],
+      "integrations": [
+        "paperless"
+      ],
+      "setup": true,
+      "texts": {
+        "de": {
+          "name": "Paperless",
+          "description": "Vergibt ASN-Nummern für Paperless-ngx und druckt Garantie-Etiketten aus deinen Rechnungen.",
+          "example": "Beispiel: 20 ASN-Etiketten reservieren und auf Belege kleben, bevor sie gescannt werden.",
+          "requires": "Paperless-ngx mit API-Token (für die Garantie-Etiketten)."
+        },
+        "en": {
+          "name": "Paperless",
+          "description": "Assigns ASN numbers for Paperless-ngx and prints warranty labels from your invoices.",
+          "example": "Example: reserve 20 ASN labels and stick them on receipts before scanning.",
+          "requires": "Paperless-ngx with an API token (for warranty labels)."
+        }
+      }
+    },
+    {
+      "id": "homeassistant",
+      "kind": "integration",
+      "icon": "battery",
+      "pages": [
+        "/homelab/batterien"
+      ],
+      "nav": {
+        "area": "homelab",
+        "key": "batterien"
+      },
+      "api": [
+        "/homelab/ha"
+      ],
+      "cli": [
+        "batterie"
+      ],
+      "templates": [
+        "batterie"
+      ],
+      "categories": [],
+      "settings": [
+        "homelab:homeassistant"
+      ],
+      "integrations": [
+        "homeassistant"
+      ],
+      "setup": true,
+      "texts": {
+        "de": {
+          "name": "Home Assistant",
+          "description": "Zeigt Geräte mit schwacher Batterie aus Home Assistant und druckt Batterie- und Wartungsetiketten.",
+          "example": "Beispiel: für jeden Rauchmelder ein Etikett mit Batterietyp und Wechseldatum.",
+          "requires": "Home Assistant mit langlebigem Zugriffstoken."
+        },
+        "en": {
+          "name": "Home Assistant",
+          "description": "Shows devices with a weak battery from Home Assistant and prints battery and maintenance labels.",
+          "example": "Example: one label per smoke detector with battery type and replacement date.",
+          "requires": "Home Assistant with a long-lived access token."
+        }
+      }
+    },
+    {
+      "id": "vault",
+      "kind": "integration",
+      "icon": "notebook",
+      "pages": [
+        "/homelab/vault"
+      ],
+      "nav": {
+        "area": "homelab",
+        "key": "vault"
+      },
+      "api": [
+        "/homelab/vault",
+        "/homelab/assets/{asset_id}/vault-note"
+      ],
+      "cli": [
+        "vault",
+        "asset-notiz"
+      ],
+      "templates": [],
+      "categories": [],
+      "settings": [
+        "homelab:obsidian"
+      ],
+      "integrations": [
+        "obsidian"
+      ],
+      "setup": true,
+      "texts": {
+        "de": {
+          "name": "Obsidian-Vault",
+          "description": "Druckt Etiketten aus Notizen deines Obsidian-Vaults und vermerkt den Druck in der Notiz.",
+          "example": "Beispiel: aus der Notiz eines Servers ein Etikett mit Hostname und IP-Adresse drucken.",
+          "requires": "Obsidian-MCP-Server oder ein erreichbarer Vault-Ordner."
+        },
+        "en": {
+          "name": "Obsidian vault",
+          "description": "Prints labels from notes in your Obsidian vault and records the print in the note.",
+          "example": "Example: print a label with hostname and IP address from a server's note.",
+          "requires": "Obsidian MCP server or a reachable vault folder."
+        }
+      }
+    },
+    {
+      "id": "assets",
+      "kind": "integration",
+      "icon": "tag",
+      "pages": [
+        "/homelab/assets"
+      ],
+      "nav": {
+        "area": "homelab",
+        "key": "assets"
+      },
+      "api": [
+        "/homelab/assets"
+      ],
+      "cli": [
+        "asset",
+        "kurz"
+      ],
+      "templates": [
+        "asset-tag",
+        "asset-kurz"
+      ],
+      "categories": [],
+      "settings": [
+        "homelab:assets",
+        "homelab:shortlink"
+      ],
+      "integrations": [
+        "shortlink"
+      ],
+      "setup": false,
+      "texts": {
+        "de": {
+          "name": "Assets",
+          "description": "Nummeriert Geräte fortlaufend und druckt Anlagen-Etiketten mit QR-Code, auf Wunsch mit Kurz-Link.",
+          "example": "Beispiel: HL-0042 auf das NAS kleben, der QR-Code führt direkt zur Gerätenotiz.",
+          "requires": "Optional: ein Kurz-Link-Dienst für kurze QR-Codes."
+        },
+        "en": {
+          "name": "Assets",
+          "description": "Numbers devices consecutively and prints asset labels with a QR code, optionally with a short link.",
+          "example": "Example: stick HL-0042 on the NAS, the QR code leads straight to the device note.",
+          "requires": "Optional: a short link service for short QR codes."
+        }
+      }
+    },
+    {
+      "id": "kabel",
+      "kind": "integration",
+      "icon": "plug",
+      "pages": [
+        "/homelab/kabel"
+      ],
+      "nav": {
+        "area": "homelab",
+        "key": "kabel"
+      },
+      "api": [
+        "/homelab/kabel"
+      ],
+      "cli": [
+        "kabel"
+      ],
+      "templates": [],
+      "categories": [],
+      "settings": [
+        "homelab:kabel"
+      ],
+      "integrations": [],
+      "setup": false,
+      "texts": {
+        "de": {
+          "name": "Kabel",
+          "description": "Vergibt Kabel-IDs nach TIA-606 und druckt Kabelfahnen aus einem NetBox-Export.",
+          "example": "Beispiel: alle Patchkabel eines Racks aus der NetBox-CSV als Serie beschriften.",
+          "requires": "Optional: CSV-Export aus NetBox."
+        },
+        "en": {
+          "name": "Cables",
+          "description": "Assigns cable IDs following TIA-606 and prints cable flags from a NetBox export.",
+          "example": "Example: label all patch cables of a rack from the NetBox CSV as a series.",
+          "requires": "Optional: CSV export from NetBox."
+        }
+      }
+    },
+    {
+      "id": "kleinanzeigen",
+      "kind": "integration",
+      "icon": "cart",
+      "pages": [
+        "/homelab/kleinanzeigen"
+      ],
+      "nav": {
+        "area": "homelab",
+        "key": "kleinanzeigen"
+      },
+      "api": [
+        "/homelab/ka"
+      ],
+      "cli": [
+        "ka"
+      ],
+      "templates": [
+        "ka-artikel"
+      ],
+      "categories": [],
+      "settings": [
+        "homelab:kleinanzeigen"
+      ],
+      "integrations": [],
+      "setup": false,
+      "texts": {
+        "de": {
+          "name": "Kleinanzeigen",
+          "description": "Verwaltet Dinge, die du verkaufen willst, und beschriftet sie mit Nummer, Preis und QR-Code zur Anzeige.",
+          "example": "Beispiel: KA-007 mit Preis auf die Kiste kleben, damit Interessierte die Anzeige finden."
+        },
+        "en": {
+          "name": "Classifieds",
+          "description": "Manages things you want to sell and labels them with number, price and a QR code to the listing.",
+          "example": "Example: stick KA-007 with the price on the box so buyers find the listing."
+        }
+      }
+    },
+    {
+      "id": "snscan",
+      "kind": "integration",
+      "icon": "scan",
+      "pages": [
+        "/homelab/sn-scan"
+      ],
+      "nav": {
+        "area": "homelab",
+        "key": "sn-scan"
+      },
+      "api": [
+        "/homelab/codescan"
+      ],
+      "cli": [
+        "sn-scan"
+      ],
+      "templates": [],
+      "categories": [],
+      "settings": [],
+      "integrations": [],
+      "setup": false,
+      "texts": {
+        "de": {
+          "name": "Seriennummer-Scan",
+          "description": "Liest Seriennummern aus einem Foto des Herstelleraufklebers (Barcode, DataMatrix oder QR-Code).",
+          "example": "Beispiel: den Aufkleber einer SSD fotografieren und die Seriennummer direkt ins Etikett übernehmen."
+        },
+        "en": {
+          "name": "Serial number scan",
+          "description": "Reads serial numbers from a photo of the manufacturer sticker (barcode, DataMatrix or QR code).",
+          "example": "Example: take a photo of an SSD sticker and copy the serial number straight into the label."
+        }
+      }
+    }
+  ]
+}

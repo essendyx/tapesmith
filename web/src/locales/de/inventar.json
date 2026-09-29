@@ -1,0 +1,98 @@
+{
+  "title": "Inventar",
+  "tabs": {
+    "boxes": "Boxen",
+    "search": "Suche",
+    "loans": "Verleih"
+  },
+  "boxes": {
+    "new": "Neue Box",
+    "empty": {
+      "title": "Noch keine Box angelegt",
+      "body": "Lege eine Box an, beschrifte sie mit QR-Code und finde später über die Suche, wo etwas liegt."
+    },
+    "items_one": "{{count}} Gegenstand",
+    "items_other": "{{count}} Gegenstände"
+  },
+  "detail": {
+    "title": "Box {{boxId}}",
+    "location": "Ort",
+    "note": "Notiz",
+    "save": "Speichern",
+    "items": "Gegenstände",
+    "moveTo": "In andere Box",
+    "move": "Verschieben",
+    "deleteItem": "{{name}} löschen",
+    "name": "Name",
+    "namePlaceholder": "Gegenstand",
+    "qty": "Menge",
+    "add": "Hinzufügen",
+    "boxLabel": "Box-Label",
+    "contentLabel": "Inhaltslabel",
+    "deleteBox": "Box löschen",
+    "close": "Schließen",
+    "moved": "Verschoben nach {{target}}",
+    "confirm": {
+      "deleteItemTitle": "Gegenstand löschen?",
+      "deleteItemMessage": "„{{name}}\" wirklich löschen?",
+      "deleteBoxTitle": "Box löschen?",
+      "deleteBoxMessage": "Box „{{boxId}}\" wirklich löschen?",
+      "delete": "Löschen"
+    }
+  },
+  "newBox": {
+    "title": "Neue Box",
+    "id": "Box-ID",
+    "idPlaceholder": "z. B. BOX-07",
+    "location": "Ort",
+    "locationPlaceholder": "z. B. Keller Regal 2",
+    "note": "Notiz",
+    "create": "Anlegen"
+  },
+  "label": {
+    "print": "Drucken",
+    "close": "Schließen"
+  },
+  "loans": {
+    "a11y": {
+      "view": "Anzeige",
+      "list": "Verleihliste"
+    },
+    "open": "Offen",
+    "all": "Alle",
+    "lend": "Verleihen",
+    "empty": {
+      "title": "Nichts verliehen",
+      "body": "Trag hier ein, wenn du etwas verleihst: dann siehst du, wer es hat und wann es zurückkommen soll."
+    },
+    "status": {
+      "overdue": "überfällig",
+      "lent": "verliehen",
+      "returned": "zurückgegeben"
+    },
+    "table": {
+      "item": "Gegenstand",
+      "person": "Person",
+      "since": "Seit",
+      "due": "Bis",
+      "status": "Status",
+      "actions": "Aktionen"
+    },
+    "returned": "Zurückgegeben",
+    "label": "Verleih-Label",
+    "since": "seit {{date}}",
+    "sinceDue": "seit {{date}}, bis {{due}}",
+    "item": "Gegenstand",
+    "person": "An wen?",
+    "due": "Rückgabe bis"
+  },
+  "search": {
+    "placeholder": "z. B. HDMI-Adapter",
+    "a11y": "Was suchst du?",
+    "failed": "Suche fehlgeschlagen",
+    "empty": {
+      "title": "Nichts gefunden",
+      "body": "Kein Treffer für „{{query}}\"."
+    }
+  }
+}

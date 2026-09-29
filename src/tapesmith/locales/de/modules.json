@@ -1,0 +1,60 @@
+{
+  "inventar": {
+    "name": "Inventar",
+    "description": "Behalte den Überblick über Boxen, ihren Inhalt und verliehene Dinge.",
+    "example": "Beispiel: Box 12 im Keller mit QR-Code beschriften und später über die Suche finden, wo der Akkuschrauber liegt."
+  },
+  "datentraeger": {
+    "name": "Datenträger",
+    "description": "Beschrifte Laufwerke dieses PCs und Platten in Servern, die Tapesmith per SSH ausliest, und begleite den Plattentausch in ZFS-Pools.",
+    "example": "Beispiel: alle Platten eines Servers mit Slot und Seriennummer als Serie drucken.",
+    "requires": "Für den SSH-Scanner und den Plattentausch: SSH-Zugang mit Schlüssel zu den Linux-Hosts."
+  },
+  "proxmox": {
+    "name": "Proxmox",
+    "description": "Liest VMs und Container aus Proxmox VE und druckt Etiketten dafür.",
+    "example": "Beispiel: für jede VM ein Etikett mit Name, ID und IP-Adresse.",
+    "requires": "Proxmox VE mit API-Token (nur Leserechte)."
+  },
+  "paperless": {
+    "name": "Paperless",
+    "description": "Vergibt ASN-Nummern für Paperless-ngx und druckt Garantie-Etiketten aus deinen Rechnungen.",
+    "example": "Beispiel: 20 ASN-Etiketten reservieren und auf Belege kleben, bevor sie gescannt werden.",
+    "requires": "Paperless-ngx mit API-Token (für die Garantie-Etiketten)."
+  },
+  "homeassistant": {
+    "name": "Home Assistant",
+    "description": "Zeigt Geräte mit schwacher Batterie aus Home Assistant und druckt Batterie- und Wartungsetiketten.",
+    "example": "Beispiel: für jeden Rauchmelder ein Etikett mit Batterietyp und Wechseldatum.",
+    "requires": "Home Assistant mit langlebigem Zugriffstoken."
+  },
+  "vault": {
+    "name": "Obsidian-Vault",
+    "description": "Druckt Etiketten aus Notizen deines Obsidian-Vaults und vermerkt den Druck in der Notiz.",
+    "example": "Beispiel: aus der Notiz eines Servers ein Etikett mit Hostname und IP-Adresse drucken.",
+    "requires": "Obsidian-MCP-Server oder ein erreichbarer Vault-Ordner."
+  },
+  "assets": {
+    "name": "Assets",
+    "description": "Nummeriert Geräte fortlaufend und druckt Anlagen-Etiketten mit QR-Code, auf Wunsch mit Kurz-Link.",
+    "example": "Beispiel: HL-0042 auf das NAS kleben, der QR-Code führt direkt zur Gerätenotiz.",
+    "requires": "Optional: ein Kurz-Link-Dienst für kurze QR-Codes."
+  },
+  "kabel": {
+    "name": "Kabel",
+    "description": "Vergibt Kabel-IDs nach TIA-606 und druckt Kabelfahnen aus einem NetBox-Export.",
+    "example": "Beispiel: alle Patchkabel eines Racks aus der NetBox-CSV als Serie beschriften.",
+    "requires": "Optional: CSV-Export aus NetBox."
+  },
+  "kleinanzeigen": {
+    "name": "Kleinanzeigen",
+    "description": "Verwaltet Dinge, die du verkaufen willst, und beschriftet sie mit Nummer, Preis und QR-Code zur Anzeige.",
+    "example": "Beispiel: KA-007 mit Preis auf die Kiste kleben, damit Interessierte die Anzeige finden."
+  },
+  "snscan": {
+    "name": "Seriennummer-Scan",
+    "description": "Liest Seriennummern aus einem Foto des Herstelleraufklebers (Barcode, DataMatrix oder QR-Code).",
+    "example": "Beispiel: den Aufkleber einer SSD fotografieren und die Seriennummer direkt ins Etikett übernehmen."
+  },
+  "disabled": "Modul {name} ist ausgeschaltet, einschalten unter Einstellungen > Module oder `tapesmith module enable {id}`"
+}

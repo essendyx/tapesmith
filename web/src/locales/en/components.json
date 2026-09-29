@@ -1,0 +1,80 @@
+{
+  "confirm": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "danger": "Caution"
+  },
+  "notify": {
+    "region": "Notifications",
+    "close": "Dismiss notification"
+  },
+  "warnings": {
+    "label": "Preview notes",
+    "error": "Error",
+    "warning": "Warning",
+    "note": "Note",
+    "prefixed": "{{prefix}}: "
+  },
+  "plausi": {
+    "conflict": "Conflict found by the check",
+    "warning": "Warning from the check",
+    "showNotes": "Show notes",
+    "hideNotes": "Hide notes"
+  },
+  "printOptions": {
+    "label": "Print options",
+    "copies": "Copies",
+    "chain": "As a chain",
+    "cutMarks": "Cut marks",
+    "cutPause": "Cut pause",
+    "cutPauseDefault": "Default",
+    "cutPauseNone": "None",
+    "cutPauseManual": "Until “Continue”",
+    "cutPauseSeconds": "{{seconds}} s"
+  },
+  "preview": {
+    "view": "Preview view",
+    "design": "Design",
+    "raster": "Print image",
+    "zoom": "Zoom",
+    "fit": "Fit",
+    "fitTooltip": "Fit to the available space",
+    "actual": "100 %",
+    "actualTooltip": "Actual size in millimeters",
+    "alt": "Preview",
+    "altTitled": "Preview: {{title}}",
+    "altRaster": "Preview (print image)",
+    "altTitledRaster": "Preview: {{title}} (print image)",
+    "altInfo": "{{alt}}. {{info}}",
+    "info": "Content {{content}} + lead-in and lead-out {{lead}} = {{tape}} of tape",
+    "info_estimated": "Content {{content}} + lead-in and lead-out approx. {{lead}} = approx. {{tape}} of tape",
+    "balance_one": "{{count}} label: {{tape}} of tape",
+    "balance_other": "{{count}} labels: {{tape}} of tape",
+    "tape": "Tape: {{name}}",
+    "rendering": "Creating preview …",
+    "empty": "No preview yet",
+    "uncalibrated": "Screen not calibrated, size is approximate"
+  },
+  "print": {
+    "fallbackTitle": "Label",
+    "printed": "Printed: {{title}}",
+    "queued": "Queued: {{title}}",
+    "queuedBody": "The printer is unreachable, so the job is waiting.",
+    "rejected": "Not printed",
+    "cancelled": "Print cancelled",
+    "incomplete": "Print incomplete",
+    "incompleteBody": "The printer did not receive all rows.",
+    "failed": "Print failed",
+    "confirmTitle": "Print anyway?",
+    "confirmMessage": "The misprint guard has concerns:",
+    "confirmAction": "Print anyway",
+    "confirmCancel": "Cancel"
+  },
+  "textSize": {
+    "label": "Text size",
+    "auto": "Automatic",
+    "autoUniform": "Automatic (uniform)",
+    "autoField": "Automatic per field",
+    "mm": "{{value}} mm"
+  }
+}

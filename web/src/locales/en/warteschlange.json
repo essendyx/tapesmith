@@ -1,0 +1,54 @@
+{
+  "title": "Queue",
+  "status": { "paused": "paused", "active": "active" },
+  "autoRetry": "Automatic retry",
+  "probe": {
+    "label": "Check: {{value}}",
+    "auto": "automatic",
+    "ble": "BLE advertisement",
+    "connect": "Connection attempt",
+    "off": "off",
+    "unknown": "unknown"
+  },
+  "nextTry": "Next attempt {{countdown}}",
+  "actions": {
+    "resume": "Resume",
+    "pause": "Pause",
+    "retryAll": "Retry all now",
+    "showDone": "Show finished",
+    "up": "Move up",
+    "down": "Move down",
+    "duplicate": "Duplicate",
+    "retry": "Retry now"
+  },
+  "empty": {
+    "title": "No pending jobs",
+    "body": "New jobs appear here once the printer is unreachable."
+  },
+  "job": {
+    "sensitive": " (sensitive, memory only: lost when the service stops)",
+    "attempts": "Attempts: {{count}}"
+  },
+  "state": {
+    "wartet": "waiting",
+    "läuft": "running",
+    "fertig": "done",
+    "fehler": "Error",
+    "abgebrochen": "cancelled"
+  },
+  "source": { "gui": "GUI", "cli": "CLI", "hotkey": "Hotkey", "api": "API" },
+  "confirm": {
+    "cancelTitle": "Cancel job?",
+    "cancelMessage": "Cancel the job \"{{title}}\"?",
+    "cancelConfirm": "Yes, cancel"
+  },
+  "notify": {
+    "moveFailed": "Reordering failed",
+    "duplicateFailed": "Duplicating failed",
+    "duplicated": "Job #{{id}} duplicated as #{{newId}}",
+    "retryFailed": "Retry could not be started",
+    "cancelFailed": "Cancelling failed",
+    "actionFailed": "Action failed",
+    "autoRetryFailed": "Setting not applied"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "title": "Classifieds",
+  "subtitle": "Sales items with short ID, status and label",
+  "actions": {
+    "newArticle": "New item",
+    "label": "Label",
+    "reserve": "Reserve",
+    "printReservedLabel": "Print reserved label",
+    "release": "Release",
+    "markSold": "Mark sold",
+    "edit": "Edit",
+    "create": "Create",
+    "creating": "Saving …"
+  },
+  "tabs": {
+    "all": "All",
+    "available": "Available",
+    "reserved": "Reserved",
+    "sold": "Sold"
+  },
+  "status": {
+    "available": "available",
+    "reserved": "reserved",
+    "sold": "sold"
+  },
+  "list": {
+    "ariaLabel": "Classifieds items",
+    "openAd": "Open listing",
+    "reservedUntil": "{{name}} until {{date}}",
+    "soldOn": "{{name}} on {{date}}"
+  },
+  "empty": {
+    "title": "No item yet",
+    "body": "Create an item with title and price and stick the label on the box so interested buyers find the listing."
+  },
+  "dialogs": {
+    "new": {
+      "title": "New item"
+    },
+    "edit": {
+      "title": "Edit item"
+    },
+    "reserve": {
+      "title": "Reserve",
+      "name": "Name",
+      "until": "Until",
+      "submit": "Reserve"
+    },
+    "sell": {
+      "title": "Mark as sold",
+      "buyer": "Buyer",
+      "date": "Sale date",
+      "submit": "Sold"
+    },
+    "label": {
+      "titleWithId": "Label {{id}}"
+    }
+  },
+  "fields": {
+    "title": "Title",
+    "price": "Price",
+    "pricePlaceholder": "$25 or best offer",
+    "adUrl": "Listing URL",
+    "adUrlPlaceholder": "https://…",
+    "location": "Location",
+    "locationPlaceholder": "Box, shelf",
+    "note": "Note"
+  },
+  "notify": {
+    "created": "{{id}} created",
+    "saved": "{{id}} saved",
+    "reserved": "{{id}} reserved",
+    "sold": "{{id}} sold",
+    "printed": "Printed: {{id}}",
+    "notPrinted": "Not printed: {{id}}"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "name": "datentraeger-qr",
+  "description": "Datenträger mit QR der vollen Seriennummer (für ZFS by-id-Abgleich).",
+  "category": "Datenträger",
+  "tags": ["ssd", "hdd", "storage", "qr"],
+  "fields": [
+    {"id": "host", "label": "Host", "type": "input", "default": "pmx10", "choices": ["pmx10", "pmx20"]},
+    {"id": "slot", "label": "Slot", "type": "input", "default": "SSD-1"},
+    {"id": "sn", "label": "Seriennummer oder by-id-Name", "type": "input", "clean": "serial", "required": true}
+  ],
+  "layout": {"lines": ["{host} · {slot}", "SN {sn|last:6}"], "qr": "{sn}", "font": "sans"},
+  "sample": {"host": "pmx10", "slot": "SSD-3", "sn": "112233274913"},
+  "translations": {
+    "en": {
+      "title": "disk-qr",
+      "description": "Disk with a QR code of the full serial number (for ZFS by-id matching).",
+      "category": "Disks",
+      "tags": ["ssd", "hdd", "storage", "qr"],
+      "fields": {
+        "host": {"label": "Host"},
+        "slot": {"label": "Slot"},
+        "sn": {"label": "Serial number or by-id name"}
+      }
+    }
+  }
+}

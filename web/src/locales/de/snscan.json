@@ -1,0 +1,36 @@
+{
+  "title": "Seriennummer scannen",
+  "subtitle": "Foto des Herstelleraufklebers auswerten und die Seriennummer übernehmen.",
+  "photo": {
+    "sectionTitle": "Foto",
+    "take": "Foto aufnehmen oder Bild wählen",
+    "chooseAriaLabel": "Foto des Aufklebers auswählen",
+    "previewAlt": "Vorschau des Aufklebers",
+    "analyzing": "Werte Foto aus …",
+    "newPhoto": "Neues Foto"
+  },
+  "noHits": {
+    "title": "Keine Codes gefunden",
+    "body": "Näher heran gehen, Blitz ausschalten und den Aufkleber gerade halten, dann erneut versuchen."
+  },
+  "candidates": {
+    "sectionTitle": "Kandidaten",
+    "description": "Beste Seriennummer ist vorausgewählt, bei Bedarf korrigieren.",
+    "points": "{{score}} Punkte"
+  },
+  "fields": {
+    "serial": "Seriennummer (korrigierbar)",
+    "host": "Host (optional)",
+    "slot": "Slot (optional)"
+  },
+  "labelPreview": "Auf dem Label: SN {{short}}",
+  "actions": {
+    "useForDatentraeger": "In Datenträger-Label übernehmen",
+    "copy": "Kopieren",
+    "copied": "Kopiert"
+  },
+  "errors": {
+    "fileUnreadable": "Datei nicht lesbar",
+    "imageUnreadable": "Bild nicht lesbar"
+  }
+}

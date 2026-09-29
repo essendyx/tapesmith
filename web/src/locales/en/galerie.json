@@ -1,0 +1,68 @@
+{
+  "title": "Gallery",
+  "subtitle": "Templates as tiles with a real tape preview",
+  "actions": {
+    "import": "Import package",
+    "lintAll": "Check all",
+    "openFolder": "Open templates folder"
+  },
+  "search": {
+    "placeholder": "Search…",
+    "label": "Search templates and field names"
+  },
+  "tabs": {
+    "all": "All"
+  },
+  "loading": "Loading templates …",
+  "empty": {
+    "title": "No template found",
+    "body": "Change the search term or category.",
+    "reset": "Reset search"
+  },
+  "sections": {
+    "favorites": "Favorites",
+    "recent": "Recently used"
+  },
+  "notify": {
+    "exported": "Exported: {{name}}",
+    "exportFailed": "Export failed",
+    "favoriteFailed": "Could not change favorite",
+    "deleted": "Deleted: {{name}}",
+    "deleteFailed": "Delete failed",
+    "imported": "Imported: {{names}}",
+    "importedNothing": "Nothing imported",
+    "importFailed": "Import failed"
+  },
+  "deleteDialog": {
+    "title": "Delete template?",
+    "message": "“{{name}}” will be permanently deleted.",
+    "confirm": "Delete"
+  },
+  "importDialog": {
+    "title": "Import package",
+    "message": "Overwrite existing templates with the same name?",
+    "confirm": "Overwrite",
+    "cancel": "Do not overwrite"
+  },
+  "tile": {
+    "label": "Template {{name}}",
+    "thumbAlt": "Tape preview {{name}}",
+    "favoriteAdd": "Add to favorites",
+    "favoriteRemove": "Remove from favorites",
+    "moreActions": "More actions",
+    "moreActionsFor": "More actions for {{name}}",
+    "use": "Use",
+    "editInEditor": "Edit in editor",
+    "batchImport": "Series/import…",
+    "delete": "Delete"
+  },
+  "lint": {
+    "title": "Check all templates",
+    "loading": "Checking templates …",
+    "emptyTitle": "No problems found",
+    "emptyBody": "All templates are fine.",
+    "error": "Error",
+    "warning": "Warning",
+    "close": "Close"
+  }
+}

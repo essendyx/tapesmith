@@ -1,0 +1,58 @@
+{
+  "title": "Updates",
+  "description": "Neue Versionen werden signiert geprüft und nur im Leerlauf eingespielt.",
+  "info": {
+    "version": "Installierte Version: {{version}}",
+    "versionPortable": "Laufende Version: {{version}}",
+    "source": "Quelle: {{source}}",
+    "channel": "Kanal: {{channel}}",
+    "lastCheck": "Letzte Prüfung: {{when}}",
+    "neverChecked": "Noch nicht nach Updates gesucht",
+    "autoOn": "Automatische Installation im Leerlauf ist an.",
+    "autoOff": "Automatische Installation ist aus."
+  },
+  "channel": {
+    "stable": "Stabil",
+    "beta": "Beta"
+  },
+  "available": {
+    "title": "Version {{version}} verfügbar",
+    "notesLabel": "Neu in {{version}}",
+    "none": "Die installierte Version ist aktuell."
+  },
+  "state": {
+    "idle": "Bereit",
+    "checking": "Suche nach Updates …",
+    "downloading": "Update wird geladen und geprüft …",
+    "ready": "Update bereit zur Installation",
+    "installing": "Update wird installiert …",
+    "failed": "Letzter Versuch fehlgeschlagen"
+  },
+  "actions": {
+    "check": "Jetzt prüfen",
+    "install": "Jetzt installieren",
+    "rollback": "Auf vorige Version zurück"
+  },
+  "confirm": {
+    "installTitle": "Version {{version}} installieren?",
+    "installMessage": "Tapesmith startet kurz neu und öffnet sich danach mit der neuen Version in einem neuen Browser-Tab.",
+    "installConfirm": "Installieren",
+    "rollbackTitle": "Auf Version {{version}} zurückstellen?",
+    "rollbackMessage": "Tapesmith startet kurz neu und öffnet sich danach mit der vorigen Version in einem neuen Browser-Tab.",
+    "rollbackConfirm": "Zurückstellen"
+  },
+  "notInstalled": "Portable Version oder Entwicklung: Updates nur in der installierten App. Installieren mit Installieren.cmd aus dem Zip.",
+  "errors": {
+    "check": "Prüfung fehlgeschlagen",
+    "install": "Installation nicht gestartet",
+    "rollback": "Rückstellung nicht gestartet"
+  },
+  "notify": {
+    "installStarted": "Update wird installiert",
+    "rollbackStarted": "Rückstellung läuft"
+  },
+  "rollback": {
+    "label": "Vorige Version {{version}}",
+    "help": "Stellt die zuvor installierte Version wieder her."
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "name": "vm-lxc-qr",
+  "description": "VM/LXC-Kennzeichnung mit QR auf den Kurz-Link bzw. die Proxmox-Oberfläche: Typ, ID und Name fett, darunter die Kurz-IP.",
+  "category": "Homelab",
+  "tags": ["homelab", "vm", "lxc", "proxmox", "qr"],
+  "fields": [
+    {"id": "typ", "label": "Typ", "type": "input", "default": "VM", "choices": ["VM", "LXC"]},
+    {"id": "vmid", "label": "VMID", "type": "input", "required": true, "max_len": 5},
+    {"id": "name", "label": "Name", "type": "input", "required": true, "max_len": 16},
+    {"id": "ip_kurz", "label": "Kurz-IP", "type": "input", "max_len": 15},
+    {"id": "link", "label": "Link", "type": "input", "required": true}
+  ],
+  "document": {
+    "objects": [
+      {"kind": "qr", "id": "qr1", "x": 8, "y": 0, "w": 88, "h": 88, "data": "{link}", "error": "m"},
+      {"kind": "text", "id": "text1", "x": 104, "y": 2, "w": 480, "h": 42, "text": "{typ} {vmid} {name}", "font": "sans-bold", "size": null},
+      {"kind": "text", "id": "text2", "x": 104, "y": 46, "w": 400, "h": 38, "text": "{ip_kurz}", "size": null}
+    ]
+  },
+  "sample": {"typ": "VM", "vmid": "111", "name": "webapp1", "ip_kurz": ".39", "link": "HTTPS://L.EXAMPLE.COM/PMX10-111"},
+  "translations": {
+    "en": {
+      "title": "vm-lxc-qr",
+      "description": "VM/LXC label with a QR code to the short link or the Proxmox interface: type, ID and name in bold, short IP below.",
+      "category": "Homelab",
+      "tags": ["homelab", "vm", "lxc", "proxmox", "qr"],
+      "fields": {
+        "typ": {"label": "Type"},
+        "vmid": {"label": "VMID"},
+        "name": {"label": "Name"},
+        "ip_kurz": {"label": "Short IP"},
+        "link": {"label": "Link"}
+      }
+    }
+  }
+}

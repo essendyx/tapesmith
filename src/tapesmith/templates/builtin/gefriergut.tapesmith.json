@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "name": "gefriergut",
+  "description": "Gefriergut mit Haltbarkeit: Inhalt, Einfrierdatum und errechnetes Verbrauchsdatum je Kategorie.",
+  "category": "Haushalt",
+  "tags": ["haushalt", "gefriergut", "kueche"],
+  "fields": [
+    {"id": "inhalt", "label": "Inhalt", "type": "input", "required": true, "max_len": 16},
+    {"id": "kategorie", "label": "Kategorie", "type": "input", "default": "Fleisch",
+     "choices": ["Fleisch", "Hackfleisch", "Fisch", "Gemüse", "Obst", "Brot", "Fertiggericht", "Suppe"]},
+    {"id": "tage", "label": "Haltbarkeit (Tage)", "type": "lookup", "source": "kategorie",
+     "map": {"Fleisch": "180", "Hackfleisch": "90", "Fisch": "120", "Gemüse": "365", "Obst": "300",
+             "Brot": "90", "Fertiggericht": "90", "Suppe": "120"}},
+    {"id": "eingefroren", "label": "Eingefroren am", "type": "date"},
+    {"id": "bis", "label": "Bis", "type": "date", "base_field": "eingefroren", "offset_field": "tage"}
+  ],
+  "document": {
+    "objects": [
+      {"kind": "icon", "id": "icon1", "x": 8, "y": 8, "w": 72, "h": 72, "icon": "tabler:snowflake"},
+      {"kind": "text", "id": "text1", "x": 92, "y": 0, "w": 460, "h": 88,
+       "text": "{inhalt}\nEingefroren {eingefroren} · bis {bis}", "size": null}
+    ]
+  },
+  "tapes": ["material:kunststoff"],
+  "sample": {"inhalt": "Gulasch", "kategorie": "Fleisch"},
+  "translations": {
+    "en": {
+      "title": "freezer",
+      "description": "Frozen food with shelf life: contents, freezing date and calculated use-by date per category.",
+      "category": "Household",
+      "tags": ["household", "freezer", "kitchen"],
+      "fields": {
+        "inhalt": {"label": "Contents"},
+        "kategorie": {"label": "Category", "choices": ["Meat", "Minced meat", "Fish", "Vegetables", "Fruit", "Bread", "Ready meal", "Soup"]},
+        "tage": {"label": "Shelf life (days)", "map": {"Meat": "180", "Minced meat": "90", "Fish": "120", "Vegetables": "365", "Fruit": "300", "Bread": "90", "Ready meal": "90", "Soup": "120"}},
+        "eingefroren": {"label": "Frozen on"},
+        "bis": {"label": "Until"}
+      },
+      "texts": {"text1": "{inhalt}\nFrozen {eingefroren} · until {bis}"},
+      "sample": {"inhalt": "Goulash", "kategorie": "Meat"}
+    }
+  }
+}

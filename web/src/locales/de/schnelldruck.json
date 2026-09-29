@@ -1,0 +1,65 @@
+{
+  "title": "Schnelldruck",
+  "field": {
+    "label": "Labeltext",
+    "placeholder": "Text eingeben, Enter druckt",
+    "hint": {
+      "plain": "{{enter}} druckt 1 Label · {{shift}} neue Zeile",
+      "plainAmount": "{{enter}} druckt 1 Label · {{ctrl}} druckt {{amount}} · {{shift}} neue Zeile",
+      "ctrlOnlyPlain": "{{ctrl}} druckt 1 Label · {{enter}} neue Zeile",
+      "ctrlOnlyAmount": "{{ctrl}} druckt {{amount}} · {{enter}} neue Zeile"
+    }
+  },
+  "example": "Beispiel: {{text}}",
+  "amount": {
+    "copies": "{{count}} Kopien",
+    "chainOne": "1 Label als Kette",
+    "chainMany": "{{count}} Labels als Kette"
+  },
+  "printAction": {
+    "one": "Drucken (1 Label)",
+    "amount": "Drucken ({{amount}})"
+  },
+  "fixButton": "Beheben: {{label}}",
+  "qr": {
+    "info": "QR: Version {{version}} · {{status}}",
+    "selfTestOk": "Selbsttest ok",
+    "selfTestFailed": "Selbsttest fehlgeschlagen",
+    "selfTestNotChecked": "nicht rückgelesen",
+    "selfTestNotCheckedReason": "Decoder auf diesem PC nicht verfügbar",
+    "contentLabel": "QR-Inhalt (optional)"
+  },
+  "recent": {
+    "label": "Letzte Texte",
+    "tooltip": "Klick: drucken · Alt+Klick: nur übernehmen",
+    "chipLabel": "Letzten Text übernehmen: {{text}}"
+  },
+  "options": {
+    "toggle": "Mehr Optionen",
+    "font": "Schrift",
+    "fontDefault": "Standard",
+    "align": "Ausrichtung",
+    "alignLeft": "Links",
+    "alignCenter": "Mitte",
+    "alignRight": "Rechts",
+    "maxLength": "Max. Länge (0 = aus)",
+    "fixedLength": "Feste Länge (0 = aus)"
+  },
+  "export": {
+    "failed": "Export fehlgeschlagen"
+  },
+  "prefillApplied": "Text übernommen, mit Enter drucken",
+  "commands": {
+    "clear": "Schnelldruck leeren"
+  },
+  "gate": {
+    "empty": "Kein Text, nichts zu drucken",
+    "busy": "Druck läuft noch",
+    "stale": "Vorschau wird noch berechnet, gleich noch einmal",
+    "invalid": "Label passt so nicht, siehe Hinweise",
+    "review": "Mehrzeiliger Text wurde eingefügt, bitte prüfen und erneut Enter drücken",
+    "debounce": "Gerade eben gedruckt, doppelt gedrückt?",
+    "repeat": "Taste gehalten, kein Druck",
+    "lines": "Höchstens {{max}} Zeilen"
+  }
+}

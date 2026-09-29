@@ -1,0 +1,45 @@
+{
+  "title": "Platte tauschen",
+  "subtitle": "ZFS-Pools auf defekte Geräte prüfen und den Ersatz vorbereiten",
+  "steps": {
+    "scan": "1. Host scannen",
+    "broken": "2. Defekte Geräte",
+    "newDisk": "3. Neue Platte",
+    "commandChangelog": "4. Befehl und Changelog",
+    "printLabels": "5. Labels drucken"
+  },
+  "noHosts": {
+    "title": "Noch kein SSH-Host eingerichtet",
+    "body": "Trage in den Einstellungen einen SSH-Host ein, dann prüft der Assistent seine ZFS-Pools auf defekte Platten."
+  },
+  "host": "Host",
+  "scan": "Scannen",
+  "scanning": "Scanne …",
+  "table": {
+    "ariaLabel": "Defekte Geräte",
+    "selectColumn": "Auswahl",
+    "select": "Defektes Gerät {{name}} wählen",
+    "pool": "Pool",
+    "vdev": "vdev",
+    "state": "Zustand",
+    "oldSerial": "alte SN",
+    "note": "Hinweis"
+  },
+  "noBroken": "Keine defekten Geräte, alle Pools ONLINE",
+  "noCandidates": {
+    "title": "Keine Kandidaten gefunden",
+    "body": "Neue Platte einbauen und erneut scannen."
+  },
+  "slot": "Slot",
+  "reason": "Grund (optional)",
+  "reasonPlaceholder": "faulted",
+  "createPlan": "Plan erstellen",
+  "planning": "Plane …",
+  "commandLabel": "Befehl (nur zum Kopieren, wird nie ausgeführt):",
+  "copy": "Kopieren",
+  "changelogDraft": "Changelog-Entwurf",
+  "printOldLabel": "Label alte Platte drucken",
+  "printNewLabel": "Label neue Platte drucken",
+  "previewOldAlt": "Vorschau altes Label",
+  "previewNewAlt": "Vorschau neues Label"
+}

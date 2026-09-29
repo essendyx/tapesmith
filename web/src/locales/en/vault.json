@@ -1,0 +1,90 @@
+{
+  "title": "Obsidian vault",
+  "subtitle": "Print labels from host and service notes, note the print in the note, snippet for the docs.",
+  "tabs": {
+    "notes": "Notes",
+    "snippet": "Snippet"
+  },
+  "notes": {
+    "sectionTitle": "Notes",
+    "folder": "Folder",
+    "allFolders": "All shared folders",
+    "search": "Search by name",
+    "searchPlaceholder": "e.g. pve",
+    "notReachableTitle": "Vault unavailable",
+    "empty": "No notes found",
+    "ariaLabel": "Notes",
+    "noSelection": { "title": "No note selected", "body": "Select a note on the left." }
+  },
+  "detail": {
+    "empty": {
+      "title": "No values in this note",
+      "body": "Neither frontmatter nor bold list keys found."
+    },
+    "valuesAriaLabel": "Note values",
+    "key": "Key",
+    "value": "Value",
+    "notLoadedTitle": "Note not loaded"
+  },
+  "print": {
+    "sectionTitle": "Print a label from this note",
+    "description": "Choose a template, map fields to note keys, print.",
+    "templatesFailedTitle": "Templates not loaded",
+    "template": "Template",
+    "pleaseChoose": "Please choose",
+    "appendNote": "Write a note to the note",
+    "mappingAriaLabel": "Field to note key mapping",
+    "field": "Field",
+    "mappingFrom": "← note key",
+    "value": "Value",
+    "mappingSelectAriaLabel": "Note key for {{field}}",
+    "empty": "(empty)",
+    "print": "Print",
+    "takeOver": "Use in template",
+    "appendedTitle": "Note appended",
+    "notAppended": "No note appended ({{reason}})",
+    "noReason": "no reason given",
+    "appendFailedTitle": "Appending failed",
+    "seriesFailedTitle": "Table could not be imported"
+  },
+  "tables": {
+    "title": "Table {{index}}",
+    "titleWithHeading": "Table {{index}}: {{heading}}",
+    "ariaLabel": "Table {{index}}",
+    "asSeries": "As series",
+    "moreRows_one": "… and {{count}} more row",
+    "moreRows_other": "… and {{count}} more rows"
+  },
+  "snippet": {
+    "recentTitle": "Recent labels",
+    "recentDescription": "The last 20 entries from the history with an image.",
+    "notLoadedTitle": "History not loaded",
+    "empty": "No printed labels yet",
+    "ariaLabel": "History",
+    "noSelection": { "title": "No label selected", "body": "Select a history entry on the left." },
+    "generating": "Generating snippet …",
+    "sectionTitle": "Snippet for the note",
+    "imageAlt": "Label as PNG",
+    "markdownAriaLabel": "Markdown line",
+    "copyMarkdown": "Copy markdown",
+    "copiedMarkdownTitle": "Markdown copied",
+    "copyFailedTitle": "Copy not possible",
+    "copyFailedBody": "The clipboard is locked in the browser.",
+    "downloadPng": "Download PNG",
+    "saveToVault": "Save to vault",
+    "savedTo": "Saved to vault: {{path}}",
+    "changelogEntry": "Changelog entry",
+    "changelogCreatedTitle": "Changelog entry created",
+    "changelogFailedTitle": "Changelog failed",
+    "note": "Note",
+    "notePlaceholder": "e.g. Hosts/pmx10",
+    "appendToNote": "Append to note",
+    "appendedTo": "Appended to {{path}}"
+  },
+  "changelogDialog": {
+    "title": "Changelog entry",
+    "titleField": "Title",
+    "entryField": "Entry",
+    "submit": "Add entry"
+  }
+}

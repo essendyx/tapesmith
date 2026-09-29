@@ -1,0 +1,58 @@
+{
+  "title": "Updates",
+  "description": "New versions are verified by signature and only installed while the app is idle.",
+  "info": {
+    "version": "Installed version: {{version}}",
+    "versionPortable": "Running version: {{version}}",
+    "source": "Source: {{source}}",
+    "channel": "Channel: {{channel}}",
+    "lastCheck": "Last checked: {{when}}",
+    "neverChecked": "Not checked for updates yet",
+    "autoOn": "Automatic installation while idle is on.",
+    "autoOff": "Automatic installation is off."
+  },
+  "channel": {
+    "stable": "Stable",
+    "beta": "Beta"
+  },
+  "available": {
+    "title": "Version {{version}} available",
+    "notesLabel": "New in {{version}}",
+    "none": "You are running the latest version."
+  },
+  "state": {
+    "idle": "Ready",
+    "checking": "Checking for updates …",
+    "downloading": "Downloading and verifying the update …",
+    "ready": "Update ready to install",
+    "installing": "Installing the update …",
+    "failed": "Last attempt failed"
+  },
+  "actions": {
+    "check": "Check now",
+    "install": "Install now",
+    "rollback": "Roll back to previous version"
+  },
+  "confirm": {
+    "installTitle": "Install version {{version}}?",
+    "installMessage": "Tapesmith restarts briefly and then opens with the new version in a new browser tab.",
+    "installConfirm": "Install",
+    "rollbackTitle": "Roll back to version {{version}}?",
+    "rollbackMessage": "Tapesmith restarts briefly and then opens with the previous version in a new browser tab.",
+    "rollbackConfirm": "Roll back"
+  },
+  "notInstalled": "Portable version or development build: updates are only available in the installed app. Install it with Installieren.cmd from the zip file.",
+  "errors": {
+    "check": "Check failed",
+    "install": "Installation not started",
+    "rollback": "Rollback not started"
+  },
+  "notify": {
+    "installStarted": "Installing the update",
+    "rollbackStarted": "Rolling back"
+  },
+  "rollback": {
+    "label": "Previous version {{version}}",
+    "help": "Restores the previously installed version."
+  }
+}

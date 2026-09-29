@@ -1,0 +1,79 @@
+{
+  "page": {
+    "title": "Cables",
+    "subtitle": "NetBox import and TIA-606 ID scheme for patch cable labels"
+  },
+  "tabs": {
+    "netbox": "NetBox import",
+    "schema": "ID scheme",
+    "register": "Register"
+  },
+  "common": {
+    "openSeries": "Open as series",
+    "opening": "Opening …",
+    "registerCheckbox": "Add to register",
+    "duplicatesTitle": "Duplicates"
+  },
+  "mappingFields": {
+    "kabel_id": "Cable ID",
+    "quelle": "Source",
+    "ziel": "Target",
+    "kabeltyp": "Cable type",
+    "farbe": "Color",
+    "laenge": "Length"
+  },
+  "netbox": {
+    "uploadLabel": "Upload NetBox CSV",
+    "chooseFile": "Choose NetBox CSV",
+    "fileLabel": "File: {{name}}",
+    "loading": "Loading …",
+    "mappingFieldLabel": "Column for {{field}}",
+    "mappingNone": "(none)",
+    "assignIds": "Assign missing IDs",
+    "saveMapping": "Remember mapping",
+    "tableAriaLabel": "Cables from NetBox",
+    "columns": {
+      "id": "Cable ID",
+      "source": "Source",
+      "target": "Target",
+      "type": "Cable type"
+    },
+    "rowNew": "(new)",
+    "templateLabel": "Template",
+    "empty": {
+      "title": "No file chosen yet",
+      "body": "Choose the CSV export of the cables from NetBox, then you see every row here as a label."
+    }
+  },
+  "schema": {
+    "freeSwitch": "Free running instead of a pattern",
+    "countLabel": "Count",
+    "patternLabel": "Pattern",
+    "rackLabel": "Rack",
+    "unitsLabel": "Rack units",
+    "unitsHint": "e.g. 1-4 or 12",
+    "portsLabel": "Ports",
+    "portsHint": "e.g. 1-24",
+    "idsListAriaLabel": "Generated cable IDs"
+  },
+  "register": {
+    "searchPlaceholder": "Search",
+    "search": "Search",
+    "empty": {
+      "title": "No cable ID assigned yet",
+      "body": "Create IDs following TIA-606 in the Schema tab or read a NetBox export, then the cables show up here."
+    },
+    "tableAriaLabel": "Cable register",
+    "columns": {
+      "id": "Cable ID",
+      "source": "Source",
+      "target": "Target",
+      "type": "Cable type",
+      "origin": "Origin",
+      "created": "Created",
+      "actions": "Actions"
+    },
+    "removeAria": "Remove cable ID {{id}}",
+    "removeConfirmTitle": "Remove cable ID \"{{id}}\"?"
+  }
+}

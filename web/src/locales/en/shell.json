@@ -1,0 +1,121 @@
+{
+  "appName": "Tapesmith",
+  "windowTitle": "{{title}} · Tapesmith",
+  "routes": {
+    "schnelldruck": "Quick print",
+    "editor": "Editor",
+    "galerie": "Gallery",
+    "vorlagen": "Templates",
+    "qr": "QR code",
+    "verlauf": "History",
+    "warteschlange": "Queue",
+    "inventar": "Inventory",
+    "datentraeger": "Drives",
+    "homelab": "Homelab",
+    "statistik": "Statistics",
+    "zugriff": "Access",
+    "einstellungen": "Settings",
+    "kompakt": "Compact",
+    "aktion": "Action"
+  },
+  "homelab": {
+    "einstellungen": "Settings",
+    "plattentausch": "Disk replacement",
+    "proxmox": "Proxmox",
+    "paperless": "Paperless",
+    "vault": "Vault",
+    "assets": "Assets",
+    "kleinanzeigen": "Classifieds",
+    "kabel": "Cables",
+    "batterien": "Batteries",
+    "snScan": "Scan serial number"
+  },
+  "nav": {
+    "label": "Pages",
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar",
+    "withShortcut": "{{title}} ({{shortcut}})",
+    "menu": "Menu"
+  },
+  "topbar": {
+    "breadcrumb": "Breadcrumb",
+    "separator": "›",
+    "shortcuts": "Keyboard shortcuts",
+    "shortcutsTooltip": "Keyboard shortcuts (?)",
+    "commands": "Commands",
+    "commandsLabel": "Commands ({{shortcut}})"
+  },
+  "skipLink": "Skip to content",
+  "loadingPage": "Loading page …",
+  "status": {
+    "chipLabel": "Printer status: {{text}}",
+    "unknown": "Status unknown",
+    "loading": "Loading status",
+    "tooltip": "Printer status details",
+    "chip": "P12 · {{state}}",
+    "battery": "{{chip}} · Battery {{value}} %",
+    "lid": "{{chip}} · Lid open",
+    "states": {
+      "verbunden": "connected",
+      "getrennt": "disconnected",
+      "verbindet": "connecting …",
+      "offline": "unreachable",
+      "belegt": "busy",
+      "fehler": "Error",
+      "leased": "reserved (setup)"
+    },
+    "dialogTitle": "Printer status",
+    "detailLabel": "Status values",
+    "loadingDetail": "Loading status …",
+    "checked": "Last checked: {{time}}",
+    "refresh": "Check status"
+  },
+  "recovery": {
+    "title_one": "Found {{count}} unsaved draft",
+    "title_other": "Found {{count}} unsaved drafts",
+    "body": "They are left over from an earlier session and can be restored in the editor.",
+    "restore": "Restore in editor",
+    "later": "Later"
+  },
+  "progress": {
+    "label": "Print progress",
+    "printing": "Printing label …",
+    "printingPercent": "Printing label … {{percent}} %",
+    "printingTitled": "{{title}}: printing label …",
+    "printingTitledPercent": "{{title}}: printing label … {{percent}} %",
+    "cancel": "Cancel"
+  },
+  "cutPause": {
+    "title": "Cut off label {{done}}/{{total}}, then press “Continue”",
+    "countdown": "(continuing in {{seconds}} s)",
+    "hint": "Space presses “Continue”.",
+    "next": "Continue"
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "body": "This view could not be displayed. Reloading usually helps.",
+    "reload": "Reload"
+  },
+  "noToken": {
+    "openViaApp": "Please open with “p12 app”",
+    "expired": "Session expired",
+    "loginNeeded": "Sign-in required",
+    "reconnect": "Reconnect",
+    "appExpired": "The print service was restarted, so this page is no longer signed in.",
+    "appNeedsSession": "This interface needs the print service's session.",
+    "appStart": "Start it with <code>p12 app</code> or from the tray icon to open the window with a valid session.",
+    "tokenInvalid": "The token is invalid or has been revoked.",
+    "otherToken": "Enter a different token",
+    "needsToken": "This interface needs an access token from the admin.",
+    "tokenField": "Access token",
+    "remember": "Remember on this device",
+    "login": "Sign in",
+    "tokenHint": "Tokens are created under Access (<code>p12 token add</code>)."
+  },
+  "offline": {
+    "title": "Print service unavailable",
+    "retry": "Try again",
+    "appHint": "“Try again” starts the service and reconnects this window.",
+    "browserHint": "The service is not running. Start it with <code>p12 daemon start</code>; the page reconnects every 3 seconds."
+  }
+}

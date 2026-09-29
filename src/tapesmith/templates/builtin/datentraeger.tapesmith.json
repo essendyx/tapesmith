@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "name": "datentraeger",
+  "description": "Datenträger: Host · Slot / SN (letzte 6 Stellen). SN oder /dev/disk/by-id-Name einfügen.",
+  "category": "Datenträger",
+  "tags": ["ssd", "hdd", "storage"],
+  "fields": [
+    {"id": "host", "label": "Host", "type": "input", "default": "pmx10", "choices": ["pmx10", "pmx20"]},
+    {"id": "slot", "label": "Slot", "type": "input", "default": "SSD-1"},
+    {"id": "sn", "label": "Seriennummer oder by-id-Name", "type": "input", "clean": "serial", "required": true}
+  ],
+  "layout": {"lines": ["{host} · {slot}", "SN {sn|last:6}"], "font": "sans"},
+  "sample": {"host": "pmx10", "slot": "SSD-1", "sn": "112233274913"},
+  "translations": {
+    "en": {
+      "title": "disk",
+      "description": "Disk: host · slot / SN (last 6 digits). Paste the SN or the /dev/disk/by-id name.",
+      "category": "Disks",
+      "tags": ["ssd", "hdd", "storage"],
+      "fields": {
+        "host": {"label": "Host"},
+        "slot": {"label": "Slot"},
+        "sn": {"label": "Serial number or by-id name"}
+      }
+    }
+  }
+}

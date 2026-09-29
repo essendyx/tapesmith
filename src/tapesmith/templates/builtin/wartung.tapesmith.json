@@ -1,0 +1,35 @@
+{
+  "schema_version": 2,
+  "name": "wartung",
+  "description": "Wartungsetikett (USV-Akku, Filter, Wärmeleitpaste, …): Datum und nächste Fälligkeit.",
+  "category": "Haushalt",
+  "tags": ["wartung", "batterie"],
+  "fields": [
+    {"id": "was", "label": "Was", "type": "input", "required": true, "max_len": 18},
+    {"id": "datum", "label": "Datum (TT.MM.JJJJ)", "type": "input", "required": true, "max_len": 10},
+    {"id": "intervall", "label": "Intervall (Monate)", "type": "input", "default": "12",
+     "choices": ["3", "6", "12", "24", "36"]},
+    {"id": "naechste", "label": "Nächste fällig", "type": "date", "base_field": "datum",
+     "offset_months_field": "intervall"},
+    {"id": "notiz", "label": "Notiz", "type": "input", "max_len": 16}
+  ],
+  "layout": {"lines": ["{was}", "Wartung {datum} · nächste {naechste}"]},
+  "sample": {"was": "USV-Akku", "datum": "28.09.2026", "intervall": "36", "notiz": ""},
+  "translations": {
+    "en": {
+      "title": "maintenance",
+      "description": "Maintenance label (UPS battery, filter, thermal paste, …): date and next due date.",
+      "category": "Household",
+      "tags": ["maintenance", "battery"],
+      "fields": {
+        "was": {"label": "What"},
+        "datum": {"label": "Date (DD.MM.YYYY)"},
+        "intervall": {"label": "Interval (months)"},
+        "naechste": {"label": "Next due"},
+        "notiz": {"label": "Note"}
+      },
+      "lines": ["{was}", "Service {datum} · next {naechste}"],
+      "sample": {"was": "UPS battery"}
+    }
+  }
+}

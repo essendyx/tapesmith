@@ -1,0 +1,4 @@
+ata-Samsung_SSD_870_EVO_1TB_S5Y1NX0R123456 ../../sda
+ata-Samsung_SSD_870_EVO_1TB_S5Y1NX0R123456-part3 ../../sda3
+ata-Samsung_SSD_870_EVO_1TB_S5Y1NX0R999999 ../../sdc
+nvme-Samsung_SSD_980_PRO_1TB_S5GXNX0T987654 ../../nvme0n1

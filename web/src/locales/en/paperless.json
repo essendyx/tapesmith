@@ -1,0 +1,54 @@
+{
+  "title": "Paperless",
+  "subtitle": "ASN series and warranty labels from Paperless-ngx",
+  "tabs": {
+    "asn": "ASN series",
+    "garantie": "Warranty"
+  },
+  "asn": {
+    "nextTitle": "Next ASN",
+    "notReachable": "Paperless unavailable",
+    "info": "Paperless: next ASN <strong>{{paperlessNext}}</strong> · local: {{localNext}} · next reserved number: <strong>{{next}}</strong>",
+    "noLocal": "no number range yet",
+    "exportTest": "Test label as PNG",
+    "exportFailedTitle": "Export failed",
+    "reserveTitle": "Reserve",
+    "count": "Count",
+    "reserveSubmit": "Reserve and open series",
+    "reserveFailedTitle": "Reserve failed",
+    "recentTitle": "Recently reserved",
+    "recentAriaLabel": "Recently reserved ASN numbers",
+    "discard": "Discard",
+    "discardFailedTitle": "Discard failed",
+    "discardedTitle": "ASN '{{asn}}' discarded",
+    "voidDialog": {
+      "title": "Discard ASN",
+      "reason": "Reason"
+    }
+  },
+  "garantie": {
+    "searchTitle": "Search invoice",
+    "fields": {
+      "text": "Text",
+      "dealer": "Dealer",
+      "from": "From",
+      "to": "To",
+      "fromToHint": "YYYY-MM-DD"
+    },
+    "search": "Search",
+    "searchFailedTitle": "Search failed",
+    "resultsAriaLabel": "Invoices",
+    "empty": {
+      "title": "No matches",
+      "body": "Adjust the search text or date range."
+    },
+    "labelTitle": "Warranty label",
+    "deviceField": "Device",
+    "monthsField": "Months",
+    "monthsHint": "empty = from Paperless",
+    "warrantyFailedTitle": "Warranty not readable",
+    "until": "Warranty until <strong>{{ende}}</strong>",
+    "previewAlt": "Warranty label preview",
+    "printing": "Printing …"
+  }
+}

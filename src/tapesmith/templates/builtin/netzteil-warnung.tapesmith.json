@@ -1,0 +1,36 @@
+{
+  "schema_version": 2,
+  "name": "netzteil-warnung",
+  "description": "Netzteil-Zuordnung mit Warnbalken (Schraffur, invertierter Text): z. B. „NICHT ZIEHEN“.",
+  "category": "Homelab",
+  "tags": ["homelab", "netzteil", "warnung"],
+  "fields": [
+    {"id": "psu", "label": "PSU", "type": "input", "required": true, "max_len": 8},
+    {"id": "ziel", "label": "Ziel", "type": "input", "required": true, "max_len": 10},
+    {"id": "warnung", "label": "Warnung", "type": "input", "default": "NICHT ZIEHEN",
+     "choices": ["NICHT ZIEHEN", "USV", "REDUNDANT"]}
+  ],
+  "document": {
+    "objects": [
+      {"kind": "icon", "id": "icon1", "x": 8, "y": 8, "w": 72, "h": 72, "icon": "tabler:plug"},
+      {"kind": "text", "id": "text1", "x": 92, "y": 0, "w": 340, "h": 88, "text": "{psu} → {ziel}", "size": null},
+      {"kind": "rect", "id": "rect1", "x": 440, "y": 0, "w": 24, "h": 88, "thickness": 0, "fill": "stripes", "stripe": 6},
+      {"kind": "text", "id": "text2", "x": 464, "y": 0, "w": 200, "h": 88, "text": "{warnung}", "font": "sans-bold", "size": null, "invert": true}
+    ]
+  },
+  "sample": {"psu": "PSU1", "ziel": "USV Port 3", "warnung": "NICHT ZIEHEN"},
+  "translations": {
+    "en": {
+      "title": "psu-warning",
+      "description": "Power supply mapping with a warning bar (hatching, inverted text): e.g. “DO NOT UNPLUG”.",
+      "category": "Homelab",
+      "tags": ["homelab", "power-supply", "warning"],
+      "fields": {
+        "psu": {"label": "PSU"},
+        "ziel": {"label": "Target"},
+        "warnung": {"label": "Warning", "choices": ["DO NOT UNPLUG", "UPS", "REDUNDANT"]}
+      },
+      "sample": {"ziel": "UPS port 3", "warnung": "DO NOT UNPLUG"}
+    }
+  }
+}

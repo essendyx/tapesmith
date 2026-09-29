@@ -1,0 +1,88 @@
+{
+  "title": "Vorlagen",
+  "openFile": "Vorlage aus Datei öffnen",
+  "list": {
+    "label": "Vorlagen",
+    "select": "Vorlage wählen",
+    "search": "Vorlagen durchsuchen",
+    "searchPlaceholder": "Name, Stichwort, Beschreibung",
+    "noHits": "Keine passende Vorlage",
+    "categoryFallback": "Allgemein",
+    "loading": "Vorlagen werden geladen …"
+  },
+  "sections": {
+    "form": "Formular",
+    "preview": "Vorschau"
+  },
+  "noTemplateSelected": "Keine Vorlage gewählt.",
+  "fillSample": "Beispielwerte",
+  "tapeReasonSuffix": ". Beim Drucken wird nachgefragt.",
+  "shortened": "Gekürzt: {{label}}",
+  "editInEditor": "Im Editor öffnen",
+  "exportAssignment": "Belegung exportieren",
+  "batchOpen": "Serie/Import…",
+  "confirmConflict": {
+    "title": "Konflikt bei der Prüfung",
+    "message": "Die Plausibilitätsprüfung meldet einen Konflikt:",
+    "confirm": "Trotzdem drucken"
+  },
+  "deleteDialog": {
+    "title": "Vorlage löschen?",
+    "message": "„{{name}}“ wird endgültig gelöscht.",
+    "confirm": "Löschen"
+  },
+  "notify": {
+    "exportFailed": "Export fehlgeschlagen",
+    "deleted": "Gelöscht: {{name}}",
+    "deleteFailed": "Löschen fehlgeschlagen",
+    "fileReadFailed": "Datei konnte nicht gelesen werden",
+    "assignmentExportFailed": "Belegung konnte nicht exportiert werden",
+    "fileNotLoaded": "Vorlagendatei konnte nicht geladen werden"
+  },
+  "form": {
+    "computedHint": "wird berechnet",
+    "secretShow": "Anzeigen",
+    "secretHide": "Verbergen",
+    "defaultHint": "Standard: {{value}}"
+  },
+  "batch": {
+    "commandTitle": "Vorlage: Serie/Import öffnen",
+    "titlePrefix": "Serie/Import: ",
+    "titleChoose": "Vorlage wählen",
+    "targetTemplate": "Zielvorlage",
+    "targetTemplatePlaceholder": "Vorlage wählen",
+    "targetTemplateRequired": "Bitte eine Vorlage wählen.",
+    "tabs": {
+      "file": "Tabelle/Datei",
+      "list": "Liste",
+      "series": "Serie"
+    },
+    "fromClipboard": "Aus Zwischenablage",
+    "header": {
+      "label": "Kopfzeile",
+      "auto": "Automatisch",
+      "yes": "Ja",
+      "no": "Nein"
+    },
+    "uploadFile": "Datei hochladen",
+    "chooseFile": "CSV- oder Excel-Datei wählen",
+    "fileLabel": "Datei: {{name}}",
+    "tablePlaceholder": "SN;Host\nA1;pmx10",
+    "tableInsert": "Tabelle einfügen",
+    "listPlaceholder": "A1\nA2\nA3",
+    "listInsert": "Eine Zeile pro Label",
+    "seriesPlaceholder": "z. B. 1..24",
+    "seriesCount": "Anzahl (optional)",
+    "tableLoading": "Tabelle wird gelesen …",
+    "rowFilterPlaceholder": "Zeilen filtern…",
+    "selectAll": "Alle auswählen",
+    "selectRow": "Zeile {{n}} auswählen",
+    "mappingLabel": "Spaltenzuordnung",
+    "mappingHeading": "Zuordnung Feld → Spalte",
+    "mappingField": "Zuordnung {{label}}",
+    "fixedValuePlaceholder": "fester Wert",
+    "planLoading": "Plan wird berechnet …",
+    "summarySuffix": " ({{count}} Etiketten)",
+    "contactSheet": "Kontaktabzug speichern"
+  }
+}

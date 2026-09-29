@@ -1,0 +1,5 @@
+{"data": [
+  {"iface": "enp3s0", "type": "eth", "active": 1},
+  {"iface": "vmbr1", "type": "bridge", "active": 1},
+  {"iface": "vmbr0", "type": "bridge", "active": 1, "address": "192.0.2.60", "netmask": "255.255.255.0", "cidr": "192.0.2.60/24", "gateway": "192.0.2.1", "bridge_ports": "enp3s0"}
+]}

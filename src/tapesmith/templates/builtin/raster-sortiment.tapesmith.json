@@ -1,0 +1,25 @@
+{
+  "schema_version": 2,
+  "name": "raster-sortiment",
+  "description": "Sortimentskasten-Streifen mit freier Fachbreite (Standard 40 mm je Fach: Name oder Name|Breite in mm).",
+  "category": "Raster",
+  "tags": ["raster", "sortiment", "schubladen"],
+  "generator": {"name": "raster", "params": {"einheit": "frei", "raster_mm": 40}},
+  "fields": [
+    {"id": "belegung", "label": "Belegung (Name oder Name|Breite in mm je Zeile)", "type": "input", "required": true, "multiline": true}
+  ],
+  "default_copies": 1,
+  "sample": {"belegung": "Schrauben\nDübel\nKabelbinder"},
+  "translations": {
+    "en": {
+      "title": "grid-assortment",
+      "description": "Assortment box strip with free compartment width (default 40 mm per compartment: Name or Name|width in mm).",
+      "category": "Grid",
+      "tags": ["grid", "assortment", "drawers"],
+      "fields": {
+        "belegung": {"label": "Assignment (Name or Name|width in mm per line)"}
+      },
+      "sample": {"belegung": "Screws\nWall plugs\nCable ties"}
+    }
+  }
+}

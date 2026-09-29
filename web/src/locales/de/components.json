@@ -1,0 +1,80 @@
+{
+  "confirm": {
+    "ok": "OK",
+    "cancel": "Abbrechen",
+    "danger": "Achtung"
+  },
+  "notify": {
+    "region": "Meldungen",
+    "close": "Meldung schließen"
+  },
+  "warnings": {
+    "label": "Hinweise zur Vorschau",
+    "error": "Fehler",
+    "warning": "Warnung",
+    "note": "Hinweis",
+    "prefixed": "{{prefix}}: "
+  },
+  "plausi": {
+    "conflict": "Konflikt bei der Prüfung",
+    "warning": "Warnung bei der Prüfung",
+    "showNotes": "Hinweise anzeigen",
+    "hideNotes": "Hinweise ausblenden"
+  },
+  "printOptions": {
+    "label": "Druckoptionen",
+    "copies": "Kopien",
+    "chain": "Als Kette",
+    "cutMarks": "Schnittmarken",
+    "cutPause": "Schneidpause",
+    "cutPauseDefault": "Standard",
+    "cutPauseNone": "keine",
+    "cutPauseManual": "bis „Weiter“",
+    "cutPauseSeconds": "{{seconds}} s"
+  },
+  "preview": {
+    "view": "Vorschau-Ansicht",
+    "design": "Design",
+    "raster": "Druckbild",
+    "zoom": "Zoom",
+    "fit": "Einpassen",
+    "fitTooltip": "In die Fläche einpassen",
+    "actual": "100 %",
+    "actualTooltip": "Echte Größe in Millimetern",
+    "alt": "Vorschau",
+    "altTitled": "Vorschau: {{title}}",
+    "altRaster": "Vorschau (Druckbild)",
+    "altTitledRaster": "Vorschau: {{title}} (Druckbild)",
+    "altInfo": "{{alt}}. {{info}}",
+    "info": "Inhalt {{content}} + Vor-/Nachlauf {{lead}} = {{tape}} Band",
+    "info_estimated": "Inhalt {{content}} + Vor-/Nachlauf ca. {{lead}} = ca. {{tape}} Band",
+    "balance_one": "{{count}} Label: {{tape}} Band",
+    "balance_other": "{{count}} Labels: {{tape}} Band",
+    "tape": "Band: {{name}}",
+    "rendering": "Vorschau wird erstellt …",
+    "empty": "Noch keine Vorschau",
+    "uncalibrated": "Bildschirm nicht kalibriert, Größe ungefähr"
+  },
+  "print": {
+    "fallbackTitle": "Label",
+    "printed": "Gedruckt: {{title}}",
+    "queued": "In der Warteschlange: {{title}}",
+    "queuedBody": "Der Drucker ist nicht erreichbar, der Auftrag wartet.",
+    "rejected": "Nicht gedruckt",
+    "cancelled": "Druck abgebrochen",
+    "incomplete": "Druck unvollständig",
+    "incompleteBody": "Der Drucker hat nicht alle Zeilen erhalten.",
+    "failed": "Druck fehlgeschlagen",
+    "confirmTitle": "Wirklich drucken?",
+    "confirmMessage": "Der Fehldruckschutz hat Bedenken:",
+    "confirmAction": "Trotzdem drucken",
+    "confirmCancel": "Abbrechen"
+  },
+  "textSize": {
+    "label": "Schriftgröße",
+    "auto": "Automatisch",
+    "autoUniform": "Automatisch (einheitlich)",
+    "autoField": "Automatisch je Feld",
+    "mm": "{{value}} mm"
+  }
+}

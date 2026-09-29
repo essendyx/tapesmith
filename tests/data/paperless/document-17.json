@@ -1,0 +1,11 @@
+{
+  "id": 17,
+  "title": "Rechnung Kaffeemaschine",
+  "created": "2026-01-31T10:00:00Z",
+  "correspondent": 5,
+  "archive_serial_number": null,
+  "custom_fields": [
+    {"field": 1, "value": "2026-01-31"},
+    {"field": 2, "value": 1}
+  ]
+}

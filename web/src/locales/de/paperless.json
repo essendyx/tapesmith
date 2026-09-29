@@ -1,0 +1,54 @@
+{
+  "title": "Paperless",
+  "subtitle": "ASN-Serien und Garantie-Etiketten aus Paperless-ngx",
+  "tabs": {
+    "asn": "ASN-Serien",
+    "garantie": "Garantie"
+  },
+  "asn": {
+    "nextTitle": "Nächste ASN",
+    "notReachable": "Paperless nicht erreichbar",
+    "info": "Paperless: nächste ASN <strong>{{paperlessNext}}</strong> · lokal: {{localNext}} · nächste reservierte Nummer: <strong>{{next}}</strong>",
+    "noLocal": "noch kein Nummernkreis",
+    "exportTest": "Test-Label als PNG",
+    "exportFailedTitle": "Export fehlgeschlagen",
+    "reserveTitle": "Reservieren",
+    "count": "Anzahl",
+    "reserveSubmit": "Reservieren und Serie öffnen",
+    "reserveFailedTitle": "Reservieren fehlgeschlagen",
+    "recentTitle": "Zuletzt reserviert",
+    "recentAriaLabel": "Zuletzt reservierte ASN-Nummern",
+    "discard": "Verwerfen",
+    "discardFailedTitle": "Verwerfen fehlgeschlagen",
+    "discardedTitle": "ASN '{{asn}}' verworfen",
+    "voidDialog": {
+      "title": "ASN verwerfen",
+      "reason": "Grund"
+    }
+  },
+  "garantie": {
+    "searchTitle": "Rechnung suchen",
+    "fields": {
+      "text": "Text",
+      "dealer": "Händler",
+      "from": "Von",
+      "to": "Bis",
+      "fromToHint": "JJJJ-MM-TT"
+    },
+    "search": "Suchen",
+    "searchFailedTitle": "Suche fehlgeschlagen",
+    "resultsAriaLabel": "Rechnungen",
+    "empty": {
+      "title": "Keine Treffer",
+      "body": "Suchtext oder Zeitraum anpassen."
+    },
+    "labelTitle": "Garantie-Etikett",
+    "deviceField": "Gerät",
+    "monthsField": "Monate",
+    "monthsHint": "leer = aus Paperless",
+    "warrantyFailedTitle": "Garantie nicht lesbar",
+    "until": "Garantie bis <strong>{{ende}}</strong>",
+    "previewAlt": "Vorschau Garantie-Etikett",
+    "printing": "Druckt …"
+  }
+}

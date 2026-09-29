@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "name": "netzteil-zuordnung",
+  "description": "Netzteil-Zuordnung fürs Büro: Kurz-ID und Gerät.",
+  "category": "Büro",
+  "tags": ["buero", "netzteil", "zuordnung"],
+  "fields": [
+    {"id": "kurz_id", "label": "Kurz-ID", "type": "input", "required": true, "max_len": 8},
+    {"id": "geraet", "label": "Gerät", "type": "input", "required": true, "max_len": 16}
+  ],
+  "document": {
+    "objects": [
+      {"kind": "icon", "id": "icon1", "x": 8, "y": 8, "w": 72, "h": 72, "icon": "tabler:plug"},
+      {"kind": "text", "id": "text1", "x": 92, "y": 0, "w": 460, "h": 88, "text": "{kurz_id} · {geraet}", "size": null}
+    ]
+  },
+  "sample": {"kurz_id": "NT-07", "geraet": "Fritzbox"},
+  "translations": {
+    "en": {
+      "title": "psu-assignment",
+      "description": "Power supply mapping for the office: short ID and device.",
+      "category": "Office",
+      "tags": ["office", "power-supply", "mapping"],
+      "fields": {
+        "kurz_id": {"label": "Short ID"},
+        "geraet": {"label": "Device"}
+      },
+      "sample": {"geraet": "Router"}
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "model": "P12",
+  "head_dots": 96,
+  "content_dots": 88,
+  "content_offset": 8,
+  "dots_per_mm": 8,
+  "speed_mm_s": 60,
+  "feed_seconds": 1.5,
+  "pacing_margin_seconds": 1.5,
+  "response_timeout_s": 2.0,
+  "length_factor": 1.0,
+  "leader_mm": 8.0,
+  "trailer_mm": 16.0,
+  "init_packets": ["1f1138", "1f11111f11121f11091f1113", "1f1109", "1f11191f1111", "1f1119", "1f1107"],
+  "feed_command": "1b640d1b640d",
+  "verified": ["battery", "lid", "media", "serial", "firmware"],
+  "status_codes": {
+    "lid": {"99": "offen", "98": "zu"},
+    "paper": {"88": "leer", "89": "ok"},
+    "media": {"0b": "endlos", "26": "Marken"}
+  }
+}

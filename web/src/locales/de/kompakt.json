@@ -1,0 +1,20 @@
+{
+  "title": "Schnelldruck",
+  "windowTitle": "P12 Schnelldruck",
+  "hint": "{{enter}} druckt · {{shift}} neue Zeile · {{esc}} schließt",
+  "field": {
+    "label": "Labeltext",
+    "placeholder": "Text eingeben, Enter druckt"
+  },
+  "printed": "Gedruckt",
+  "gate": {
+    "empty": "Kein Text, nichts zu drucken",
+    "busy": "Druck läuft noch",
+    "stale": "Vorschau wird noch berechnet, gleich noch einmal",
+    "invalid": "Label passt so nicht, siehe Hinweise",
+    "review": "Mehrzeiliger Text wurde eingefügt, bitte prüfen und erneut Enter drücken",
+    "debounce": "Gerade eben gedruckt, doppelt gedrückt?",
+    "repeat": "Taste gehalten, kein Druck",
+    "lines": "Höchstens {{max}} Zeilen"
+  }
+}

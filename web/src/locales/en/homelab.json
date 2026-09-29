@@ -1,0 +1,20 @@
+{
+  "title": "Homelab",
+  "subtitle": "The Homelab modules that are turned on at a glance. Turn on more modules under Settings > Modules.",
+  "navAriaLabel": "Homelab modules",
+  "checkErrorTitle": "Service check failed",
+  "breadcrumbAriaLabel": "Breadcrumb",
+  "manage": "Manage modules",
+  "empty": {
+    "title": "No Homelab module turned on yet",
+    "body": "Turn on for example Proxmox or Paperless under Settings > Modules, it then shows up here as a tile.",
+    "action": "Manage modules"
+  },
+  "state": {
+    "noService": "no service needed",
+    "notConfigured": "not set up",
+    "tokenMissing": "Token missing",
+    "configured": "set up"
+  },
+  "backToOverview": "Back to overview"
+}

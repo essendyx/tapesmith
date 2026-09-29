@@ -1,0 +1,6 @@
+{"data": [
+  {"id": "qemu/111", "type": "qemu", "vmid": 111, "name": "webapp1", "node": "pmx10", "status": "running", "tags": "ai;gpu"},
+  {"id": "qemu/120", "type": "qemu", "vmid": 120, "name": "win11-test", "node": "pmx10", "status": "stopped"},
+  {"id": "lxc/102", "type": "lxc", "vmid": 102, "name": "frigate", "node": "pmx10", "status": "running", "tags": "gpu"},
+  {"id": "lxc/103", "type": "lxc", "vmid": 103, "name": "ollama", "node": "pmx10", "status": "running", "tags": "ai"}
+]}

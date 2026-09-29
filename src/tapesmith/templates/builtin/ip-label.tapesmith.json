@@ -1,0 +1,25 @@
+{
+  "schema_version": 2,
+  "name": "ip-label",
+  "description": "Reines IP-Etikett in Monospace: IP-Adresse über Hostname, für Switch/Patchpanel.",
+  "category": "Homelab",
+  "tags": ["homelab", "ip", "switch"],
+  "fields": [
+    {"id": "ip", "label": "IP-Adresse", "type": "input", "required": true, "max_len": 15},
+    {"id": "host", "label": "Host", "type": "input", "max_len": 16}
+  ],
+  "layout": {"lines": ["{ip}", "{host}"], "font": "mono"},
+  "sample": {"ip": "192.0.2.60", "host": "pmx10"},
+  "translations": {
+    "en": {
+      "title": "ip-label",
+      "description": "Plain IP label in monospace: IP address above the host name, for switches and patch panels.",
+      "category": "Homelab",
+      "tags": ["homelab", "ip", "switch"],
+      "fields": {
+        "ip": {"label": "IP address"},
+        "host": {"label": "Host"}
+      }
+    }
+  }
+}

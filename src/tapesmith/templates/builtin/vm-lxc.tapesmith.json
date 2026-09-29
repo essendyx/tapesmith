@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "name": "vm-lxc",
+  "description": "VM/LXC-Kennzeichnung fürs Rack: Typ, ID und Name, darunter die Kurz-IP.",
+  "category": "Homelab",
+  "tags": ["homelab", "vm", "lxc"],
+  "fields": [
+    {"id": "typ", "label": "Typ", "type": "input", "default": "VM", "choices": ["VM", "LXC"]},
+    {"id": "vmid", "label": "VMID", "type": "input", "required": true, "max_len": 4},
+    {"id": "name", "label": "Name", "type": "input", "required": true, "max_len": 16},
+    {"id": "ip_kurz", "label": "Kurz-IP", "type": "input", "max_len": 8}
+  ],
+  "layout": {"lines": ["{typ} {vmid} {name}", "{ip_kurz}"]},
+  "sample": {"typ": "VM", "vmid": "111", "name": "webapp1", "ip_kurz": ".39"},
+  "translations": {
+    "en": {
+      "title": "vm-lxc",
+      "description": "VM/LXC label for the rack: type, ID and name, short IP below.",
+      "category": "Homelab",
+      "tags": ["homelab", "vm", "lxc"],
+      "fields": {
+        "typ": {"label": "Type"},
+        "vmid": {"label": "VMID"},
+        "name": {"label": "Name"},
+        "ip_kurz": {"label": "Short IP"}
+      }
+    }
+  }
+}

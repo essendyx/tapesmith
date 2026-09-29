@@ -1,0 +1,16 @@
+[
+  {"id": "m2-2280", "name": "M.2-SSD 2280", "translations": {"en": {"name": "M.2 SSD 2280"}}, "max_length_mm": 20},
+  {"id": "m2-2242", "name": "M.2-SSD 2242", "translations": {"en": {"name": "M.2 SSD 2242"}}, "max_length_mm": 15},
+  {"id": "ssd-25-stirn", "name": "2,5\"-SSD Stirnseite", "translations": {"en": {"name": "2.5\" SSD front side"}},
+   "max_length_mm": 60},
+  {"id": "usb-stick", "name": "USB-Stick", "translations": {"en": {"name": "USB stick"}}, "max_length_mm": 15},
+  {"id": "hotswap-schacht", "name": "Hot-Swap-Schacht (Standard)", "max_length_mm": 35,
+   "note": "pro Servermodell in targets.json anpassen",
+   "translations": {"en": {"name": "Hot-swap bay (standard)", "note": "adjust per server model in targets.json"}}},
+  {"id": "ordner-schmal", "name": "Ordnerrücken schmal", "translations": {"en": {"name": "Binder spine, narrow"}},
+   "fixed_length_mm": 190},
+  {"id": "ordner-breit", "name": "Ordnerrücken breit", "translations": {"en": {"name": "Binder spine, wide"}},
+   "fixed_length_mm": 280},
+  {"id": "geoeffnet", "name": "Vorratsglas „Geöffnet am“", "translations": {"en": {"name": "Storage jar “Opened”"}},
+   "fixed_length_mm": 25}
+]

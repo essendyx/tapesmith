@@ -1,0 +1,35 @@
+{
+  "gate": {
+    "title": "Module {{name}} is turned off",
+    "body": "Turn it on under Settings > Modules. It then shows up in the sidebar again.",
+    "action": "Go to modules"
+  },
+  "card": {
+    "title": "Modules",
+    "description": "Additional areas for special tasks. Modules that are off appear nowhere, turning one on takes effect right away.",
+    "requires": "Requires: {{text}}",
+    "switchedOn": "{{name}} turned on",
+    "switchedOnBody": "The module is now in the sidebar.",
+    "switchedOnHomelab": "The module is now in the Homelab overview.",
+    "switchedOff": "{{name}} turned off",
+    "failed": "Module not switched",
+    "open": "Open",
+    "groupTools": "Tools",
+    "groupIntegrations": "Homelab integrations"
+  },
+  "settings": {
+    "check": "Check",
+    "checking": "Checking …",
+    "checkOk": "Set up",
+    "checkNotConfigured": "Not set up yet",
+    "checkTokenMissing": "Token missing",
+    "checkNoToken": "no token",
+    "noSettings": "This module needs no settings."
+  },
+  "settingsLink": "Go to settings",
+  "setup": {
+    "title": "{{name}} is not set up yet",
+    "body": "Enter the address and access in the settings. You can then print labels here.",
+    "bodyRequires": "You need: {{requires}} Enter address and token reference in the settings, then you can print labels here."
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "name": "kabelfahne",
+  "description": "Kabelfahne mit Wickelzone (π·d + Zugabe) und Knicklinien für Cat6/Cat6a/Kaltgeräte/DAC/LWL.",
+  "category": "Kabel",
+  "tags": ["kabel", "fahne", "patchkabel", "cat6"],
+  "generator": {"name": "kabelfahne", "params": {}},
+  "fields": [
+    {"id": "kabel_id", "label": "Kabel-ID", "type": "input", "required": true, "max_len": 12},
+    {"id": "quelle", "label": "Quelle", "type": "input", "max_len": 16},
+    {"id": "ziel", "label": "Ziel", "type": "input", "max_len": 16},
+    {"id": "kabeltyp", "label": "Kabeltyp", "type": "input", "default": "Cat6",
+     "choices": ["Cat6", "Cat6a", "Kaltgeräte", "DAC", "LWL"]},
+    {"id": "durchmesser_mm", "label": "Durchmesser (mm, überschreibt Kabeltyp)", "type": "input"},
+    {"id": "verlauf", "label": "Verlauf", "type": "input", "default": "haengt",
+     "choices": ["haengt", "steht_ab"],
+     "choice_labels": {"haengt": "hängt am waagerechten Kabel", "steht_ab": "steht seitlich am senkrechten Kabel ab"}}
+  ],
+  "default_copies": 2,
+  "sample": {"kabel_id": "K-017", "quelle": "SW1/P12", "ziel": "pmx10/eno1"},
+  "translations": {
+    "en": {
+      "title": "cable-flag",
+      "description": "Cable flag with wrap zone (π·d + allowance) and fold lines for Cat6/Cat6a/power cords/DAC/fiber.",
+      "category": "Cables",
+      "tags": ["cable", "flag", "patch-cable", "cat6"],
+      "fields": {
+        "kabel_id": {"label": "Cable ID"},
+        "quelle": {"label": "Source"},
+        "ziel": {"label": "Destination"},
+        "kabeltyp": {"label": "Cable type", "choice_labels": {"Kaltgeräte": "Power cord", "LWL": "Fiber"}},
+        "durchmesser_mm": {"label": "Diameter (mm, overrides cable type)"},
+        "verlauf": {"label": "Routing", "choice_labels": {"haengt": "hangs on a horizontal cable", "steht_ab": "sticks out from a vertical cable"}}
+      }
+    }
+  }
+}

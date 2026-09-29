@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "name": "ordnerruecken-breit",
+  "description": "Ordnerrücken breit (280 mm): Titel über Jahr, zentriert.",
+  "category": "Büro",
+  "tags": ["buero", "ordner", "archiv"],
+  "fields": [
+    {"id": "titel", "label": "Titel", "type": "input", "required": true, "max_len": 20},
+    {"id": "jahr", "label": "Jahr", "type": "input", "required": true, "max_len": 9}
+  ],
+  "layout": {"lines": ["{titel}", "{jahr}"], "align": "center"},
+  "target": "ordner-breit",
+  "sample": {"titel": "Rechnungen", "jahr": "2026"},
+  "translations": {
+    "en": {
+      "title": "binder-spine-wide",
+      "description": "Wide binder spine (280 mm): title above year, centered.",
+      "category": "Office",
+      "tags": ["office", "binder", "archive"],
+      "fields": {
+        "titel": {"label": "Title"},
+        "jahr": {"label": "Year"}
+      },
+      "sample": {"titel": "Invoices"}
+    }
+  }
+}

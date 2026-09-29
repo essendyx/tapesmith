@@ -1,0 +1,68 @@
+{
+  "title": "Galerie",
+  "subtitle": "Vorlagen als Kacheln mit echter Bandvorschau",
+  "actions": {
+    "import": "Paket importieren",
+    "lintAll": "Alle prüfen",
+    "openFolder": "Vorlagenordner öffnen"
+  },
+  "search": {
+    "placeholder": "Suchen…",
+    "label": "Vorlagen und Feldnamen durchsuchen"
+  },
+  "tabs": {
+    "all": "Alle"
+  },
+  "loading": "Vorlagen werden geladen …",
+  "empty": {
+    "title": "Keine Vorlage gefunden",
+    "body": "Suchbegriff oder Kategorie ändern.",
+    "reset": "Suche zurücksetzen"
+  },
+  "sections": {
+    "favorites": "Favoriten",
+    "recent": "Zuletzt verwendet"
+  },
+  "notify": {
+    "exported": "Exportiert: {{name}}",
+    "exportFailed": "Export fehlgeschlagen",
+    "favoriteFailed": "Favorit konnte nicht geändert werden",
+    "deleted": "Gelöscht: {{name}}",
+    "deleteFailed": "Löschen fehlgeschlagen",
+    "imported": "Importiert: {{names}}",
+    "importedNothing": "Nichts importiert",
+    "importFailed": "Import fehlgeschlagen"
+  },
+  "deleteDialog": {
+    "title": "Vorlage löschen?",
+    "message": "„{{name}}“ wird endgültig gelöscht.",
+    "confirm": "Löschen"
+  },
+  "importDialog": {
+    "title": "Paket importieren",
+    "message": "Sollen bestehende Vorlagen mit gleichem Namen überschrieben werden?",
+    "confirm": "Überschreiben",
+    "cancel": "Nicht überschreiben"
+  },
+  "tile": {
+    "label": "Vorlage {{name}}",
+    "thumbAlt": "Bandvorschau {{name}}",
+    "favoriteAdd": "Als Favorit merken",
+    "favoriteRemove": "Favorit entfernen",
+    "moreActions": "Weitere Aktionen",
+    "moreActionsFor": "Weitere Aktionen für {{name}}",
+    "use": "Verwenden",
+    "editInEditor": "Im Editor bearbeiten",
+    "batchImport": "Serie/Import…",
+    "delete": "Löschen"
+  },
+  "lint": {
+    "title": "Alle Vorlagen prüfen",
+    "loading": "Vorlagen werden geprüft …",
+    "emptyTitle": "Keine Probleme gefunden",
+    "emptyBody": "Alle Vorlagen sind in Ordnung.",
+    "error": "Fehler",
+    "warning": "Warnung",
+    "close": "Schließen"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "title": "Kleinanzeigen",
+  "subtitle": "Verkaufsartikel mit Kurz-ID, Status und Etikett",
+  "actions": {
+    "newArticle": "Neuer Artikel",
+    "label": "Etikett",
+    "reserve": "Reservieren",
+    "printReservedLabel": "Reserviert-Etikett drucken",
+    "release": "Freigeben",
+    "markSold": "Verkauft",
+    "edit": "Bearbeiten",
+    "create": "Anlegen",
+    "creating": "Speichert …"
+  },
+  "tabs": {
+    "all": "Alle",
+    "available": "Verfügbar",
+    "reserved": "Reserviert",
+    "sold": "Verkauft"
+  },
+  "status": {
+    "available": "verfügbar",
+    "reserved": "reserviert",
+    "sold": "verkauft"
+  },
+  "list": {
+    "ariaLabel": "Kleinanzeigen-Artikel",
+    "openAd": "Anzeige öffnen",
+    "reservedUntil": "{{name}} bis {{date}}",
+    "soldOn": "{{name}} am {{date}}"
+  },
+  "empty": {
+    "title": "Noch kein Artikel angelegt",
+    "body": "Lege einen Artikel mit Titel und Preis an und klebe das Etikett auf die Kiste, damit Interessierte die Anzeige finden."
+  },
+  "dialogs": {
+    "new": {
+      "title": "Neuer Artikel"
+    },
+    "edit": {
+      "title": "Artikel bearbeiten"
+    },
+    "reserve": {
+      "title": "Reservieren",
+      "name": "Name",
+      "until": "Bis",
+      "submit": "Reservieren"
+    },
+    "sell": {
+      "title": "Als verkauft eintragen",
+      "buyer": "Käufer",
+      "date": "Verkaufsdatum",
+      "submit": "Verkauft"
+    },
+    "label": {
+      "titleWithId": "Etikett {{id}}"
+    }
+  },
+  "fields": {
+    "title": "Titel",
+    "price": "Preis",
+    "pricePlaceholder": "25 € oder VB 40",
+    "adUrl": "Anzeige-URL",
+    "adUrlPlaceholder": "https://…",
+    "location": "Ort",
+    "locationPlaceholder": "Kiste, Regal",
+    "note": "Notiz"
+  },
+  "notify": {
+    "created": "{{id}} angelegt",
+    "saved": "{{id}} gespeichert",
+    "reserved": "{{id}} reserviert",
+    "sold": "{{id}} verkauft",
+    "printed": "Gedruckt: {{id}}",
+    "notPrinted": "Nicht gedruckt: {{id}}"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "title": "Homelab",
+  "subtitle": "Die eingeschalteten Homelab-Module auf einen Blick. Weitere Module schaltest du unter Einstellungen > Module ein.",
+  "navAriaLabel": "Homelab-Module",
+  "checkErrorTitle": "Prüfung der Dienste fehlgeschlagen",
+  "breadcrumbAriaLabel": "Pfad",
+  "manage": "Module verwalten",
+  "empty": {
+    "title": "Noch kein Homelab-Modul eingeschaltet",
+    "body": "Schalte unter Einstellungen > Module zum Beispiel Proxmox oder Paperless ein, dann erscheint es hier als Kachel.",
+    "action": "Module verwalten"
+  },
+  "state": {
+    "noService": "kein Dienst nötig",
+    "notConfigured": "nicht eingerichtet",
+    "tokenMissing": "Token fehlt",
+    "configured": "eingerichtet"
+  },
+  "backToOverview": "Zurück zur Übersicht"
+}

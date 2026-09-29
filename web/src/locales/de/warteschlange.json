@@ -1,0 +1,54 @@
+{
+  "title": "Warteschlange",
+  "status": { "paused": "pausiert", "active": "aktiv" },
+  "autoRetry": "Automatischer Nachdruck",
+  "probe": {
+    "label": "Prüfung: {{value}}",
+    "auto": "automatisch",
+    "ble": "BLE-Advertisement",
+    "connect": "Verbindungsversuch",
+    "off": "aus",
+    "unknown": "unbekannt"
+  },
+  "nextTry": "Nächster Versuch {{countdown}}",
+  "actions": {
+    "resume": "Fortsetzen",
+    "pause": "Pausieren",
+    "retryAll": "Alle jetzt versuchen",
+    "showDone": "Erledigte anzeigen",
+    "up": "Nach oben",
+    "down": "Nach unten",
+    "duplicate": "Duplizieren",
+    "retry": "Jetzt versuchen"
+  },
+  "empty": {
+    "title": "Keine wartenden Aufträge",
+    "body": "Neue Aufträge erscheinen hier, sobald der Drucker nicht erreichbar ist."
+  },
+  "job": {
+    "sensitive": " (sensibel, nur im Speicher: geht beim Beenden des Dienstes verloren)",
+    "attempts": "Versuche: {{count}}"
+  },
+  "state": {
+    "wartet": "wartet",
+    "läuft": "läuft",
+    "fertig": "fertig",
+    "fehler": "Fehler",
+    "abgebrochen": "abgebrochen"
+  },
+  "source": { "gui": "GUI", "cli": "CLI", "hotkey": "Hotkey", "api": "API" },
+  "confirm": {
+    "cancelTitle": "Auftrag abbrechen?",
+    "cancelMessage": "Soll der Auftrag „{{title}}\" abgebrochen werden?",
+    "cancelConfirm": "Ja, abbrechen"
+  },
+  "notify": {
+    "moveFailed": "Umsortieren fehlgeschlagen",
+    "duplicateFailed": "Duplizieren fehlgeschlagen",
+    "duplicated": "Auftrag #{{id}} dupliziert als #{{newId}}",
+    "retryFailed": "Nachdruck nicht angestoßen",
+    "cancelFailed": "Abbrechen fehlgeschlagen",
+    "actionFailed": "Aktion fehlgeschlagen",
+    "autoRetryFailed": "Einstellung nicht übernommen"
+  }
+}

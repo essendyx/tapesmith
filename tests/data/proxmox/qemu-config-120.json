@@ -1,0 +1,1 @@
+{"data": {"name": "win11-test", "cores": 4, "memory": "8192", "net0": "virtio=BC:24:11:00:00:02,bridge=vmbr0", "digest": "def"}}

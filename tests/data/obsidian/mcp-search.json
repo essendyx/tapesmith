@@ -1,0 +1,16 @@
+{
+ "jsonrpc": "2.0",
+ "id": 2,
+ "result": {
+  "content": [
+   {
+    "type": "text",
+    "text": "Hosts/pmx30.md:3:- **IP:** 192.0.2.99 · WebUI\nHosts/pmx30.md-4-- **Version:** pve-manager 9.2.x\n--\nDienste/testdienst.md:12:Läuft auf 192.0.2.99\nDienste/testdienst.md-13-Kontextzeile\n\n3 Treffer"
+   }
+  ],
+  "structuredContent": {
+   "result": "Hosts/pmx30.md:3:- **IP:** 192.0.2.99 · WebUI\nHosts/pmx30.md-4-- **Version:** pve-manager 9.2.x\n--\nDienste/testdienst.md:12:Läuft auf 192.0.2.99\nDienste/testdienst.md-13-Kontextzeile\n\n3 Treffer"
+  },
+  "isError": false
+ }
+}

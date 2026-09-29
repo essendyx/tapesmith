@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "name": "raster-patchpanel",
+  "description": "Patchpanel-Streifen im 19\"-Portraster. Portabstand im Feld „Portabstand (mm)“ anpassen, falls das Panel abweicht.",
+  "category": "Raster",
+  "tags": ["raster", "patchpanel", "19zoll"],
+  "generator": {"name": "raster", "params": {"einheit": "port", "raster_mm": 15.875}},
+  "fields": [
+    {"id": "belegung", "label": "Belegung (eine Zeile je Port)", "type": "input", "required": true, "multiline": true},
+    {"id": "raster_mm", "label": "Portabstand (mm)", "type": "input"}
+  ],
+  "default_copies": 1,
+  "sample": {"belegung": "pmx10\npmx20\nNAS\n\nAP-OG"},
+  "translations": {
+    "en": {
+      "title": "grid-patch-panel",
+      "description": "Patch panel strip on the 19\" port grid. Adjust the port pitch in the field “Port pitch (mm)” if the panel differs.",
+      "category": "Grid",
+      "tags": ["grid", "patch-panel", "19-inch"],
+      "fields": {
+        "belegung": {"label": "Assignment (one line per port)"},
+        "raster_mm": {"label": "Port pitch (mm)"}
+      }
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete",
+    "print": "Print",
+    "retry": "Try again",
+    "back": "Back",
+    "open": "Open",
+    "copy": "Copy",
+    "export": "Export",
+    "import": "Import",
+    "edit": "Edit",
+    "add": "Add",
+    "remove": "Remove",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "later": "Later",
+    "details": "Details",
+    "search": "Search",
+    "more": "More"
+  },
+  "states": {
+    "loading": "Loading …",
+    "saving": "Saving …",
+    "empty": "No entries",
+    "error": "Error",
+    "offline": "Print service unavailable",
+    "unsaved": "Not saved",
+    "saved": "Saved"
+  },
+  "a11y": {
+    "skipToContent": "Skip to content",
+    "loading": "Loading …",
+    "close": "Close",
+    "breadcrumb": "Breadcrumb"
+  },
+  "units": {
+    "mm": "{{value}} mm",
+    "dots": "{{value}} dots"
+  },
+  "language": {
+    "auto": "Same as Windows",
+    "de": "Deutsch",
+    "en": "English"
+  },
+  "theme": {
+    "system": "Same as Windows",
+    "hell": "Light",
+    "dunkel": "Dark"
+  },
+  "errors": {
+    "fileUnreadable": "The file could not be read",
+    "badStatus": "Unexpected response from the print service (HTTP {{status}})",
+    "badJson": "Response from the print service is not valid JSON"
+  }
+}

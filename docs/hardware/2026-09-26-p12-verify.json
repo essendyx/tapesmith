@@ -1,0 +1,62 @@
+{
+  "firmware": "1.0.0",
+  "results": {
+    "handshake": {
+      "1f1138": "1a1703",
+      "1f11111f11121f11091f1113": "1a06891a05981a084131423243334434453546364737481a03a8",
+      "1f1109": "1a08413142324333443445354636473748",
+      "1f11191f1111": "1a0c0b1a0689",
+      "1f1119": "1a0c0b",
+      "1f1107": "1a07010000"
+    },
+    "responds": true,
+    "battery": {
+      "raw": "1a044b",
+      "decoded": [
+        "Akku 75 %"
+      ]
+    },
+    "lid_open": {
+      "raw": "1a05991a0599",
+      "decoded": [
+        "Deckel zu",
+        "Deckel zu"
+      ]
+    },
+    "paper_lid_open": {
+      "raw": "1a0689",
+      "decoded": [
+        "Band ok"
+      ]
+    },
+    "lid_closed": {
+      "raw": "1a05981a0598",
+      "decoded": [
+        "Deckel offen",
+        "Deckel offen"
+      ]
+    },
+    "paper_lid_closed": {
+      "raw": "1a0689",
+      "decoded": [
+        "Band ok"
+      ]
+    },
+    "spontaneous": "1a05991a0598",
+    "edge": {
+      "first_row": 4,
+      "last_row": 88,
+      "content_offset": 4,
+      "content_dots": 88
+    },
+    "edge_complete": true,
+    "ruler": {
+      "measured_mm": 98.5,
+      "leader_mm": 8.0,
+      "trailer_mm": 8.0,
+      "length_factor": 1.015228426395939
+    },
+    "ruler_complete": true
+  },
+  "complete": true
+}

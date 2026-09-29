@@ -1,0 +1,222 @@
+{
+  "printer": {
+    "busy": {
+      "title": "Printer busy",
+      "hint": "Another P12 program is printing right now. Wait a moment or close the other program."
+    },
+    "unreachable": {
+      "title": "Printer not reachable",
+      "hint": "Is the printer off or asleep? Turn it on. Is the phone app connected? Only one host can connect at a time, so disconnect it there."
+    },
+    "not_paired": {
+      "title": "Printer not paired",
+      "hint": "Pair the printer in the Windows Bluetooth settings, then run 'p12 setup'."
+    }
+  },
+  "file": {
+    "locked": {
+      "title": "File locked",
+      "hint": "Another P12 program is writing right now. Wait a moment and try again."
+    }
+  },
+  "print": {
+    "incomplete": {
+      "title": "Print incomplete",
+      "hint": "The connection was lost while printing (battery empty? printer off?). Check the printer and print the label again (p12 reprint last)."
+    }
+  },
+  "port": {
+    "busy": {
+      "title": "COM port in use",
+      "hint": "Another program is holding the port (phone app, old phomemo tool, terminal). Close that program or turn the printer off and on again."
+    },
+    "missing": {
+      "title": "COM port missing",
+      "hint": "Pair the printer in the Windows Bluetooth settings or run 'p12 setup'."
+    }
+  },
+  "bluetooth": {
+    "lost": {
+      "title": "Bluetooth connection lost",
+      "hint": "The printer is off or out of range. Turn it on, move closer and try again."
+    }
+  },
+  "transport": {
+    "error": {
+      "title": "Connection error",
+      "hint": "Run 'p12 doctor'."
+    }
+  },
+  "ipc": {
+    "error": {
+      "title": "Print service not reachable",
+      "hint": "The print service is not responding. Close the app, open it again and retry."
+    }
+  },
+  "template": {
+    "invalid": {
+      "title": "Invalid template or variable",
+      "hint": "'p12 template show <name>' lists the fields."
+    }
+  },
+  "document": {
+    "invalid": {
+      "title": "Invalid document",
+      "hint": "The label is damaged or was created by a newer version. Check the file or create it again."
+    }
+  },
+  "protocol": {
+    "error": {
+      "title": "Invalid message",
+      "hint": "The program and the print service do not match. Close all P12 programs and start them again."
+    }
+  },
+  "font": {
+    "missing": {
+      "title": "Font missing",
+      "hint": "Check the installation (tools/fetch_fonts.py)."
+    }
+  },
+  "secret": {
+    "missing": {
+      "title": "Credentials missing",
+      "hint": "Store the value for the secret reference (Windows Credential Manager, file or environment variable)."
+    }
+  },
+  "label": {
+    "not_printable": {
+      "title": "Label cannot be printed",
+      "hint": "Fill in the required fields and check the notes in the preview."
+    }
+  },
+  "value": {
+    "invalid": {
+      "title": "Invalid value",
+      "hint": "Check your input and correct it."
+    }
+  },
+  "request": {
+    "invalid": {
+      "title": "Invalid request",
+      "hint": "Check your input. If the error persists, reload the page."
+    }
+  },
+  "not_found": {
+    "title": "Not found",
+    "hint": "This item does not exist (anymore). Reload the list."
+  },
+  "auth": {
+    "required": {
+      "title": "Sign-in required",
+      "hint": "Reload the page or open the app from the tray menu."
+    },
+    "forbidden": {
+      "title": "Not allowed",
+      "hint": "This access is not permitted to perform the action. Use access with a suitable role."
+    }
+  },
+  "method": {
+    "not_allowed": {
+      "title": "Action not allowed",
+      "hint": "This request is not supported here. Update the app."
+    }
+  },
+  "conflict": {
+    "title": "Conflict",
+    "hint": "Something changed in the meantime. Reload and try again."
+  },
+  "too_large": {
+    "title": "Too large",
+    "hint": "The data is too large. Use a smaller file or less content."
+  },
+  "rate_limited": {
+    "title": "Too many attempts",
+    "hint": "Wait a moment and try again."
+  },
+  "http": {
+    "error": {
+      "title": "Request failed",
+      "hint": "Try again. If that does not help, use “Report a problem”."
+    }
+  },
+  "integration": {
+    "token_missing": {
+      "title": "Token missing",
+      "hint": "Store the token for the service in the homelab settings."
+    },
+    "not_configured": {
+      "title": "Service not set up",
+      "hint": "Add the service in the homelab settings."
+    },
+    "unreachable": {
+      "title": "Service not reachable",
+      "hint": "Check the network and the service address, then try again."
+    },
+    "auth_failed": {
+      "title": "Access denied",
+      "hint": "Check the token or credentials for the service."
+    },
+    "upstream": {
+      "title": "Service error",
+      "hint": "The service returned an unexpected response. Try again later."
+    }
+  },
+  "update": {
+    "not_installed": {
+      "title": "Not installed",
+      "hint": "Updates are only available for the installed app. Install it with “Installieren.cmd” from the zip."
+    },
+    "no_trusted_key": {
+      "title": "No update key",
+      "hint": "This version has no trusted key. Install the new version manually."
+    },
+    "source_invalid": {
+      "title": "Invalid update source",
+      "hint": "Enter a valid source in the settings (github:owner/repo, file:folder or an https address)."
+    },
+    "source_unreachable": {
+      "title": "Update source not reachable",
+      "hint": "Check the network and try again later."
+    },
+    "signature_invalid": {
+      "title": "Invalid signature",
+      "hint": "The update is not trusted and was discarded."
+    },
+    "checksum_mismatch": {
+      "title": "Checksum mismatch",
+      "hint": "The download is damaged. Try again later."
+    },
+    "download_failed": {
+      "title": "Download failed",
+      "hint": "Check the network and try again."
+    },
+    "busy": {
+      "title": "Busy right now",
+      "hint": "A print is running or the queue is not empty. Try again later."
+    },
+    "apply_failed": {
+      "title": "Update failed",
+      "hint": "The previous version keeps running. The log has details, and “Report a problem” helps narrow it down."
+    }
+  },
+  "decoder": {
+    "unavailable": {
+      "title": "Barcode decoder unavailable",
+      "hint": "zxing-cpp could not be loaded (for example blocked by Windows Smart App Control). Enter the serial number by hand, printing still works."
+    }
+  },
+  "module": {
+    "disabled": {
+      "title": "Module turned off",
+      "hint": "Turn it on under Settings > Modules or with “tapesmith module enable <module>”."
+    }
+  },
+  "aborted": {
+    "title": "Canceled",
+    "hint": "The operation was canceled."
+  },
+  "internal": {
+    "title": "Error",
+    "hint": "Unexpected error. Try again, or use “Report a problem”."
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "title": "Datenträger",
+  "tabs": {
+    "drives": "Laufwerke",
+    "ssh": "SSH",
+    "replace": "Plattentausch (ZFS)"
+  },
+  "drives": {
+    "refresh": "Aktualisieren",
+    "unknownFilesystem": "unbekannt",
+    "unlabeled": "Ohne Bezeichnung",
+    "empty": {
+      "title": "Kein USB-Stick oder keine SD-Karte gefunden",
+      "body": "Datenträger einstecken und „Aktualisieren” klicken."
+    },
+    "print": "Drucken",
+    "adjust": "Im Schnelldruck anpassen"
+  },
+  "ssh": {
+    "host": "Host",
+    "scan": "Scannen",
+    "scanning": "Scanne …",
+    "hostsEmpty": {
+      "title": "Keine SSH-Hosts eingerichtet",
+      "before": "Beispiel für",
+      "after": "in den Einstellungen:",
+      "link": "Zu den Einstellungen"
+    },
+    "foundDisks": "Gefundene Platten",
+    "select": "{{device}} auswählen",
+    "slotFor": "Slot für {{device}}",
+    "table": {
+      "device": "Gerät",
+      "model": "Modell",
+      "serial": "Seriennummer",
+      "size": "Größe",
+      "pool": "Pool/vdev",
+      "byId": "by-id",
+      "slot": "Slot"
+    },
+    "chain": "Als Kette",
+    "cutMarks": "Schnittmarken",
+    "preview": "Vorschau",
+    "planning": "Plane …",
+    "print": "Drucken"
+  }
+}

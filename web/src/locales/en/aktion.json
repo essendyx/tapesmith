@@ -1,0 +1,10 @@
+{
+  "title": "What should be printed?",
+  "loading": "Preparing action …",
+  "error": {
+    "noAction": "No action specified",
+    "noActionHint": "Call with ?uri=... or ?open=...&path=...",
+    "fallbackHint": "The action could not be carried out."
+  },
+  "backAction": "Go to quick print"
+}

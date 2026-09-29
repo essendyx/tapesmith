@@ -1,0 +1,52 @@
+{
+  "title": "Proxmox",
+  "subtitle": "VMs und LXCs mit IP und durchgereichter Hardware lesen und als Label-Serie drucken.",
+  "noHosts": {
+    "title": "Noch kein Proxmox-Host eingerichtet",
+    "body": "Trage in den Einstellungen einen Host mit Adresse und Token-Referenz ein, dann erscheinen hier seine VMs und Container."
+  },
+  "filters": {
+    "title": "Host und Filter",
+    "description": "Es werden nur lesende Anfragen an Proxmox gestellt.",
+    "host": "Host",
+    "kind": "Art",
+    "kindAll": "Alle",
+    "kindQemu": "Nur VMs",
+    "kindLxc": "Nur LXCs",
+    "ids": "VMIDs",
+    "idsHint": "z. B. 100-110,115",
+    "name": "Name enthält",
+    "onlyRunning": "nur laufende",
+    "load": "Laden"
+  },
+  "tokenMissing": {
+    "title": "Token fehlt",
+    "extra": "Token mit dem Skript deploy/infra/proxmox-tapesmith-role.sh anlegen und dort ablegen.",
+    "extraTokenScript": "Token mit dem Skript deploy/infra/proxmox-tapesmith-role.sh auf dem Proxmox-Host anlegen.",
+    "reference": "Referenz: {{describe}}."
+  },
+  "guests": {
+    "title": "Gäste auf {{host}}",
+    "none": "Keine Gäste für diesen Filter.",
+    "ariaLabel": "Gäste",
+    "selectAll": "Alle auswählen",
+    "select": "{{vmid}} {{name}} auswählen",
+    "vmid": "VMID",
+    "type": "Typ",
+    "typeVm": "VM",
+    "typeLxc": "LXC",
+    "name": "Name",
+    "status": "Status",
+    "statusRunning": "läuft",
+    "statusStopped": "gestoppt",
+    "ip": "IP",
+    "ipUnknown": "IP unbekannt",
+    "passthrough": "Passthrough"
+  },
+  "actions": {
+    "qrWithLink": "QR mit Link (Kurz-Link bzw. Proxmox-Adresse)",
+    "printSeries": "Als Serie drucken",
+    "selectedCount_one": "{{count}} ausgewählt",
+    "selectedCount_other": "{{count}} ausgewählt"
+  }
+}

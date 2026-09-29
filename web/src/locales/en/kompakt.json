@@ -1,0 +1,20 @@
+{
+  "title": "Quick print",
+  "windowTitle": "P12 Quick print",
+  "hint": "{{enter}} prints · {{shift}} new line · {{esc}} closes",
+  "field": {
+    "label": "Label text",
+    "placeholder": "Type text, Enter prints"
+  },
+  "printed": "Printed",
+  "gate": {
+    "empty": "No text, nothing to print",
+    "busy": "Print still running",
+    "stale": "Preview is still being calculated, try again",
+    "invalid": "Label does not fit like this, see notes",
+    "review": "Multi-line text was pasted, please review and press Enter again",
+    "debounce": "Just printed, pressed twice?",
+    "repeat": "Key held down, not printing",
+    "lines": "At most {{max}} lines"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "page": {
+    "title": "Kabel",
+    "subtitle": "NetBox-Import und TIA-606-ID-Schema für Patchkabel-Labels"
+  },
+  "tabs": {
+    "netbox": "NetBox-Import",
+    "schema": "ID-Schema",
+    "register": "Register"
+  },
+  "common": {
+    "openSeries": "Als Serie öffnen",
+    "opening": "Öffnet …",
+    "registerCheckbox": "Ins Register übernehmen",
+    "duplicatesTitle": "Duplikate"
+  },
+  "mappingFields": {
+    "kabel_id": "Kabel-ID",
+    "quelle": "Quelle",
+    "ziel": "Ziel",
+    "kabeltyp": "Kabeltyp",
+    "farbe": "Farbe",
+    "laenge": "Länge"
+  },
+  "netbox": {
+    "uploadLabel": "NetBox-CSV hochladen",
+    "chooseFile": "NetBox-CSV wählen",
+    "fileLabel": "Datei: {{name}}",
+    "loading": "Lädt …",
+    "mappingFieldLabel": "Spalte für {{field}}",
+    "mappingNone": "(keine)",
+    "assignIds": "Fehlende IDs vergeben",
+    "saveMapping": "Zuordnung merken",
+    "tableAriaLabel": "Kabel aus NetBox",
+    "columns": {
+      "id": "Kabel-ID",
+      "source": "Quelle",
+      "target": "Ziel",
+      "type": "Kabeltyp"
+    },
+    "rowNew": "(neu)",
+    "templateLabel": "Vorlage",
+    "empty": {
+      "title": "Noch keine Datei gewählt",
+      "body": "Wähle den CSV-Export der Kabel aus NetBox, dann siehst du hier jede Zeile als Etikett."
+    }
+  },
+  "schema": {
+    "freeSwitch": "Frei fortlaufend statt Muster",
+    "countLabel": "Anzahl",
+    "patternLabel": "Muster",
+    "rackLabel": "Rack",
+    "unitsLabel": "Höheneinheiten",
+    "unitsHint": "z. B. 1-4 oder 12",
+    "portsLabel": "Ports",
+    "portsHint": "z. B. 1-24",
+    "idsListAriaLabel": "Erzeugte Kabel-IDs"
+  },
+  "register": {
+    "searchPlaceholder": "Suche",
+    "search": "Suchen",
+    "empty": {
+      "title": "Noch keine Kabel-ID vergeben",
+      "body": "Erzeuge IDs nach TIA-606 im Reiter Schema oder lies einen NetBox-Export ein, dann stehen die Kabel hier."
+    },
+    "tableAriaLabel": "Kabel-Register",
+    "columns": {
+      "id": "Kabel-ID",
+      "source": "Quelle",
+      "target": "Ziel",
+      "type": "Kabeltyp",
+      "origin": "Herkunft",
+      "created": "Erstellt",
+      "actions": "Aktionen"
+    },
+    "removeAria": "Kabel-ID {{id}} entfernen",
+    "removeConfirmTitle": "Kabel-ID „{{id}}“ entfernen?"
+  }
+}

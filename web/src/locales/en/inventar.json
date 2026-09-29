@@ -1,0 +1,98 @@
+{
+  "title": "Inventory",
+  "tabs": {
+    "boxes": "Boxes",
+    "search": "Search",
+    "loans": "Lending"
+  },
+  "boxes": {
+    "new": "New box",
+    "empty": {
+      "title": "No box yet",
+      "body": "Create a box, label it with a QR code and later use the search to find where something is."
+    },
+    "items_one": "{{count}} item",
+    "items_other": "{{count}} items"
+  },
+  "detail": {
+    "title": "Box {{boxId}}",
+    "location": "Location",
+    "note": "Note",
+    "save": "Save",
+    "items": "Items",
+    "moveTo": "Move to another box",
+    "move": "Move",
+    "deleteItem": "Delete {{name}}",
+    "name": "Name",
+    "namePlaceholder": "Item",
+    "qty": "Quantity",
+    "add": "Add",
+    "boxLabel": "Box label",
+    "contentLabel": "Content label",
+    "deleteBox": "Delete box",
+    "close": "Close",
+    "moved": "Moved to {{target}}",
+    "confirm": {
+      "deleteItemTitle": "Delete item?",
+      "deleteItemMessage": "Really delete \"{{name}}\"?",
+      "deleteBoxTitle": "Delete box?",
+      "deleteBoxMessage": "Really delete box \"{{boxId}}\"?",
+      "delete": "Delete"
+    }
+  },
+  "newBox": {
+    "title": "New box",
+    "id": "Box ID",
+    "idPlaceholder": "e.g. BOX-07",
+    "location": "Location",
+    "locationPlaceholder": "e.g. Basement shelf 2",
+    "note": "Note",
+    "create": "Create"
+  },
+  "label": {
+    "print": "Print",
+    "close": "Close"
+  },
+  "loans": {
+    "a11y": {
+      "view": "View",
+      "list": "Loan list"
+    },
+    "open": "Open",
+    "all": "All",
+    "lend": "Lend",
+    "empty": {
+      "title": "Nothing lent",
+      "body": "Record here when you lend something: then you see who has it and when it should come back."
+    },
+    "status": {
+      "overdue": "overdue",
+      "lent": "lent out",
+      "returned": "returned"
+    },
+    "table": {
+      "item": "Item",
+      "person": "Person",
+      "since": "Since",
+      "due": "Due",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "returned": "Returned",
+    "label": "Loan label",
+    "since": "since {{date}}",
+    "sinceDue": "since {{date}}, due {{due}}",
+    "item": "Item",
+    "person": "To whom?",
+    "due": "Return by"
+  },
+  "search": {
+    "placeholder": "e.g. HDMI adapter",
+    "a11y": "What are you looking for?",
+    "failed": "Search failed",
+    "empty": {
+      "title": "Nothing found",
+      "body": "No match for \"{{query}}\"."
+    }
+  }
+}

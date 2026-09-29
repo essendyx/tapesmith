@@ -1,0 +1,60 @@
+{
+  "inventar": {
+    "name": "Inventory",
+    "description": "Keep track of boxes, what is inside them and what you have lent to others.",
+    "example": "Example: label box 12 in the basement with a QR code and later search for where the cordless drill is."
+  },
+  "datentraeger": {
+    "name": "Drives",
+    "description": "Label drives of this PC and disks in servers that Tapesmith reads over SSH, and walk through a disk replacement in ZFS pools.",
+    "example": "Example: print all disks of a server with slot and serial number as a series.",
+    "requires": "For the SSH scanner and disk replacement: SSH access with a key to the Linux hosts."
+  },
+  "proxmox": {
+    "name": "Proxmox",
+    "description": "Reads VMs and containers from Proxmox VE and prints labels for them.",
+    "example": "Example: one label per VM with name, ID and IP address.",
+    "requires": "Proxmox VE with an API token (read access only)."
+  },
+  "paperless": {
+    "name": "Paperless",
+    "description": "Assigns ASN numbers for Paperless-ngx and prints warranty labels from your invoices.",
+    "example": "Example: reserve 20 ASN labels and stick them on receipts before scanning.",
+    "requires": "Paperless-ngx with an API token (for warranty labels)."
+  },
+  "homeassistant": {
+    "name": "Home Assistant",
+    "description": "Shows devices with a weak battery from Home Assistant and prints battery and maintenance labels.",
+    "example": "Example: one label per smoke detector with battery type and replacement date.",
+    "requires": "Home Assistant with a long-lived access token."
+  },
+  "vault": {
+    "name": "Obsidian vault",
+    "description": "Prints labels from notes in your Obsidian vault and records the print in the note.",
+    "example": "Example: print a label with hostname and IP address from a server's note.",
+    "requires": "Obsidian MCP server or a reachable vault folder."
+  },
+  "assets": {
+    "name": "Assets",
+    "description": "Numbers devices consecutively and prints asset labels with a QR code, optionally with a short link.",
+    "example": "Example: stick HL-0042 on the NAS, the QR code leads straight to the device note.",
+    "requires": "Optional: a short link service for short QR codes."
+  },
+  "kabel": {
+    "name": "Cables",
+    "description": "Assigns cable IDs following TIA-606 and prints cable flags from a NetBox export.",
+    "example": "Example: label all patch cables of a rack from the NetBox CSV as a series.",
+    "requires": "Optional: CSV export from NetBox."
+  },
+  "kleinanzeigen": {
+    "name": "Classifieds",
+    "description": "Manages things you want to sell and labels them with number, price and a QR code to the listing.",
+    "example": "Example: stick KA-007 with the price on the box so buyers find the listing."
+  },
+  "snscan": {
+    "name": "Serial number scan",
+    "description": "Reads serial numbers from a photo of the manufacturer sticker (barcode, DataMatrix or QR code).",
+    "example": "Example: take a photo of an SSD sticker and copy the serial number straight into the label."
+  },
+  "disabled": "Module {name} is turned off, turn it on under Settings > Modules or `tapesmith module enable {id}`"
+}

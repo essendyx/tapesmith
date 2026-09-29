@@ -1,0 +1,469 @@
+{
+  "title": "Einstellungen",
+  "loading": "Einstellungen werden geladen …",
+  "search": "Einstellung suchen",
+  "nav": {
+    "connection": "Drucker",
+    "tape": "Band und Rolle",
+    "calibration": "Kalibrierung",
+    "screen": "Bildschirm",
+    "modules": "Module",
+    "access": "Zugriff und Automatisierung",
+    "integration": "Windows-Integration",
+    "backup": "Sicherung",
+    "configCode": "Konfiguration als Code",
+    "daemon": "Druckdienst",
+    "updates": "Updates",
+    "support": "Hilfe und Diagnose",
+    "advanced": "Erweitert",
+    "sections": "Abschnitte"
+  },
+  "generic": {
+    "save": "Speichern",
+    "discard": "Verwerfen"
+  },
+  "field": {
+    "experimental": "experimentell",
+    "restart": "wirkt nach Neustart des Druckdienstes",
+    "chooseFolder": "Ordner wählen",
+    "reset": "Zurücksetzen",
+    "hotkeyPlaceholder": "Kombination drücken …",
+    "invalidJson": "Ungültiges JSON",
+    "addRow": "Zeile hinzufügen",
+    "removeRow": "Zeile {{row}} entfernen",
+    "on": "Ein",
+    "off": "Aus",
+    "defaultValue": "Standard: {{value}}",
+    "notSet": "Nicht gesetzt"
+  },
+  "sshHosts": {
+    "tableAria": "SSH-Hosts",
+    "name": "Name",
+    "host": "Host",
+    "user": "Benutzer",
+    "port": "Port",
+    "key": "Schlüssel-Pfad",
+    "empty": "Noch keine SSH-Hosts.",
+    "hint": "Schlüssel nur als Pfad, nie als Text."
+  },
+  "trayFavorites": {
+    "title": "Titel",
+    "template": "Vorlage",
+    "values": "Feste Werte",
+    "valuesPlaceholder": "feld=wert, feld2=wert2",
+    "none": "(keine)",
+    "empty": "Noch keine Tray-Favoriten.",
+    "tableAria": "Tray-Favoriten"
+  },
+  "notify": {
+    "savedTitle": "{{title}}: gespeichert",
+    "restartNeeded": "Neustart nötig, damit alles wirkt."
+  },
+  "connection": {
+    "title": "Drucker",
+    "unknown": "Unbekannt",
+    "refresh": "Status abfragen",
+    "status": "Status",
+    "wizardTitle": "Verbindungsassistent",
+    "portPlaceholder": "Port automatisch",
+    "portLabel": "Port für die Suche",
+    "testLabelCheckbox": "Testlabel bei der Suche drucken",
+    "search": "Drucker suchen und testen",
+    "printTest": "Testlabel drucken",
+    "portHelp": "Leer lassen, um alle Anschlüsse automatisch zu prüfen",
+    "testLabelHelp": "Druckt ein kurzes Label, sobald der Drucker gefunden ist",
+    "wizardHelp": "Sucht den Drucker, verbindet sich und prüft ihn Schritt für Schritt",
+    "printTestLabel": "Testlabel",
+    "printTestHelp": "Druckt ein kurzes Label mit den aktuellen Einstellungen",
+    "detail": {
+      "label": "Statuswerte",
+      "notAvailable": "nicht verfügbar",
+      "terms": {
+        "state": "Zustand",
+        "connection": "Verbindung",
+        "battery": "Akku",
+        "lid": "Deckel",
+        "tape": "Band",
+        "firmware": "Firmware",
+        "serial": "Seriennummer",
+        "media": "Medium",
+        "mac": "MAC",
+        "transport": "Transport",
+        "lastResponse": "Letzte Antwort",
+        "checked": "Zuletzt abgefragt",
+        "lastError": "Letzter Fehler"
+      }
+    }
+  },
+  "tape": {
+    "title": "Band und Rolle",
+    "profiles": "Bandprofile",
+    "noRoll": "Keine laufende Rolle.",
+    "estimated": " (geschätzt)",
+    "usedAria": "Verbrauch der laufenden Rolle",
+    "newRoll": "Neue Rolle",
+    "rollEmpty": "Rolle war leer…",
+    "newRollTitle": "Neue Rolle",
+    "lengthLabel": "Länge in Metern",
+    "create": "Anlegen",
+    "rollEmptyTitle": "Rolle war leer",
+    "rollEmptyBody": "Bei wie viel Metern war die Rolle leer? Ohne Angabe wird kein Längenfaktor berechnet.",
+    "emptyAtLabel": "Leer bei Metern",
+    "emptyAtPlaceholder": "unbekannt",
+    "save": "Speichern",
+    "notify": {
+      "tapeChangeFailed": "Band konnte nicht gewechselt werden",
+      "rollCreated": "Neue Rolle angelegt",
+      "rollCreateFailed": "Rolle konnte nicht angelegt werden",
+      "rollEmptied": "Rolle als leer vermerkt",
+      "rollEmptyFailed": "Konnte nicht gespeichert werden"
+    },
+    "profilesHelp": "Das Band, das gerade im Drucker liegt",
+    "currentRoll": "Laufende Rolle"
+  },
+  "calibration": {
+    "title": "Kalibrierung",
+    "factor": "Längenfaktor: {{value}}",
+    "detail": "Vorlauf {{leader}} mm, Nachlauf {{trailer}} mm, Inhaltsversatz {{offset}} Punkte",
+    "printRuler": "Lineal drucken (100 mm)",
+    "printEdge": "Kantentest drucken",
+    "measuredLabel": "Gemessene Länge (mm)",
+    "keepLeader": "Vor-/Nachlauf mitspeichern",
+    "leaderLabel": "Vorlauf (mm)",
+    "trailerLabel": "Nachlauf (mm)",
+    "apply": "Übernehmen",
+    "hint": "Gerätebefunde und Grenzen der Kalibrierung: siehe docs/hardware im Repository.",
+    "notify": {
+      "invalidLength": "Gemessene Länge fehlt oder ist ungültig",
+      "applied": "Kalibrierung übernommen",
+      "failed": "Kalibrierung fehlgeschlagen",
+      "reset": "Längenfaktor zurückgesetzt"
+    },
+    "rulerHint": "Das Lineal wird mit dem aktuellen Längenfaktor gedruckt. Messen, Länge eintragen, erneut drucken: nach jedem Durchgang sollte es näher an 100 mm liegen. Schwankungen von etwa 1 mm sind beim Bandvorschub normal.",
+    "reset": "Längenfaktor zurücksetzen",
+    "resetConfirmTitle": "Längenfaktor zurücksetzen?",
+    "resetConfirmMessage": "Der gemessene Faktor wird gelöscht, danach gilt wieder der Standardwert 1,0. Vor- und Nachlauf bleiben erhalten.",
+    "factorLabel": "Längenfaktor",
+    "rulerLabel": "Lineal",
+    "measuredHelp": "Länge des gedruckten Lineals, mit einem Maßstab gemessen",
+    "keepLeaderHelp": "Vor- und Nachlauf ebenfalls aus der Messung übernehmen",
+    "applyLabel": "Längenfaktor berechnen",
+    "applyHelp": "Berechnet den Faktor aus der gemessenen Länge",
+    "edgeLabel": "Kantentest",
+    "edgeHelp": "Zeigt, wie nah der Druck an die Bandkanten reicht"
+  },
+  "screen": {
+    "title": "Bildschirm",
+    "current": "Aktuell: {{value}} Pixel pro Millimeter",
+    "uncalibrated": "Noch nicht kalibriert",
+    "calibrate": "Bildschirm kalibrieren…",
+    "hint": "Editor zeigt bei 100 % echte Millimeter.",
+    "dialogTitle": "Bildschirm kalibrieren",
+    "dialogBody": "Halten Sie eine Kreditkarte oder ähnliche Karte (85,6 × 53,98 mm) an den Bildschirm und passen Sie die Breite an, bis der Umriss genau passt.",
+    "outline": "85,6 × 53,98 mm",
+    "widthLabel": "Kartenbreite in Pixel",
+    "apply": "Übernehmen",
+    "reset": "Zurücksetzen",
+    "notify": {
+      "applied": "Bildschirm kalibriert",
+      "applyFailed": "Konnte nicht übernommen werden",
+      "resetDone": "Bildschirm-Kalibrierung zurückgesetzt",
+      "resetFailed": "Konnte nicht zurückgesetzt werden"
+    }
+  },
+  "access": {
+    "title": "Zugriff und Automatisierung",
+    "description": "Tokens, LAN-Freigabe, Familienseite, MCP, Hotfolder, Home Assistant und Telegram.",
+    "open": "Öffnen"
+  },
+  "integration": {
+    "title": "Windows-Integration",
+    "context": "Kontextmenü",
+    "uri": "URI-Schema tapesmith://",
+    "autostart": "Autostart der Tray-App",
+    "preview": "Vorschau der Änderungen",
+    "apply": "Übernehmen",
+    "hint": "Unter Windows 11 stehen die Kontextmenü-Einträge unter „Weitere Optionen anzeigen“.",
+    "confirm": {
+      "title": "Windows-Integration übernehmen?",
+      "message": "Schreibt nur unter HKCU, ohne Adminrechte.",
+      "confirm": "Übernehmen"
+    },
+    "notify": {
+      "applied": "Windows-Integration übernommen"
+    },
+    "status": {
+      "installiert": "installiert",
+      "teilweise": "teilweise",
+      "veraltet": "veraltet",
+      "nicht installiert": "nicht installiert"
+    },
+    "contextHelp": "Einträge im Kontextmenü des Explorers",
+    "uriHelp": "Links wie tapesmith://… öffnen die App",
+    "autostartHelp": "Startet die Tray-App bei der Anmeldung",
+    "outdated": "Eintrag stammt von einer älteren Version, mit Übernehmen aktualisieren.",
+    "advancedTitle": "Windows-Integration: Explorer und Links"
+  },
+  "backup": {
+    "title": "Sicherung",
+    "dir": "Ordner: {{dir}}",
+    "now": "Jetzt sichern",
+    "restore": "Wiederherstellen…",
+    "empty": "Noch keine Sicherung vorhanden.",
+    "previewTitle": "Probelauf für „{{name}}“. Die echte Wiederherstellung läuft in der Konsole, nachdem der Dienst gestoppt ist:",
+    "hint": "Eine Sicherung enthält Konfiguration, Vorlagen und Verlauf, keine Zugangsdaten.",
+    "notify": {
+      "created": "Sicherung angelegt",
+      "createFailed": "Sicherung fehlgeschlagen",
+      "previewFailed": "Probelauf fehlgeschlagen"
+    }
+  },
+  "configCode": {
+    "title": "Konfiguration als Code",
+    "folderLabel": "Ordner",
+    "folderPlaceholder": "Zielordner",
+    "chooseFolder": "Ordner wählen",
+    "chooseFolderDialog": "Ordner für Konfiguration als Code",
+    "includeTemplates": "Vorlagen mitnehmen",
+    "stripSecrets": "Secrets entfernen",
+    "export": "Exportieren",
+    "import": "Importieren",
+    "changes": "Änderungen:",
+    "importNow": "Jetzt importieren",
+    "confirm": {
+      "title": "Jetzt importieren?",
+      "message": "Die angezeigten Änderungen werden übernommen.",
+      "confirm": "Jetzt importieren"
+    },
+    "notify": {
+      "exported": "Exportiert",
+      "imported": "Konfiguration importiert"
+    },
+    "description": "Konfiguration und Vorlagen als Dateien exportieren oder aus einem Ordner übernehmen.",
+    "folderHelp": "Ziel beim Export, Quelle beim Import",
+    "stripSecretsHelp": "Tokens und Passwörter nicht mit exportieren"
+  },
+  "daemon": {
+    "title": "Druckdienst",
+    "pid": "PID",
+    "version": "Version",
+    "webPort": "Web-Port",
+    "appDir": "App-Ordner",
+    "logPath": "Log-Pfad",
+    "openLog": "Log öffnen",
+    "uptime": "Laufzeit",
+    "empty": "Keine Dienstinformationen verfügbar."
+  },
+  "support": {
+    "title": "Hilfe und Diagnose",
+    "description": "Erstellt ein Zip mit Version, Status und Logs zum Weitergeben. Tokens und Passwörter werden entfernt, es wird nichts verschickt.",
+    "action": "Problem melden",
+    "success": "Bericht heruntergeladen",
+    "failed": "Bericht fehlgeschlagen"
+  },
+  "leaveGuard": {
+    "title": "Ungespeicherte Änderungen verwerfen?",
+    "message": "Einige Einstellungen wurden geändert, aber noch nicht gespeichert.",
+    "confirm": "Verlassen",
+    "cancel": "Abbrechen"
+  },
+  "sections": {
+    "verbindung": "Drucker",
+    "drucken": "Drucken",
+    "warteschlange": "Warteschlange",
+    "editor": "Editor",
+    "tray": "Tray und Tastenkürzel",
+    "oberflaeche": "Oberfläche",
+    "updates": "Updates",
+    "updatesFields": "Update-Einstellungen",
+    "sicherung": "Sicherung",
+    "vorlagen": "Vorlagen",
+    "archiv": "Archiv",
+    "druckdienst": "Druckdienst",
+    "ble": "Bluetooth LE (experimentell)",
+    "ssh": "SSH-Hosts"
+  },
+  "fields": {
+    "transport": {
+      "label": "Transport",
+      "help": "Wie Tapesmith den Drucker anspricht: auto (empfohlen), COM-Port, ble oder usb"
+    },
+    "mac": {
+      "label": "MAC-Adresse",
+      "help": "Bluetooth-Adresse des Druckers; leer = der einzige gekoppelte Drucker"
+    },
+    "gui_ctrl_enter_only": {
+      "label": "Nur Strg+Enter druckt",
+      "help": "Enter setzt dann eine neue Zeile, gedruckt wird mit Strg+Enter"
+    },
+    "cut_pause_s": {
+      "label": "Schneidpause",
+      "help": "Pause zwischen mehreren Etiketten, damit du jedes abschneiden kannst",
+      "choices": {
+        "none": "keine",
+        "0": "bis „Weiter“",
+        "5": "5 s",
+        "10": "10 s",
+        "30": "30 s"
+      }
+    },
+    "guard_confirm_label_mm": {
+      "label": "Rückfrage ab Labellänge",
+      "help": "Längere Etiketten fragen vor dem Druck nach"
+    },
+    "guard_confirm_copies": {
+      "label": "Rückfrage ab Kopienzahl",
+      "help": "Ab so vielen Kopien fragt Tapesmith vor dem Druck nach"
+    },
+    "guard_max_label_mm": {
+      "label": "Obergrenze Labellänge",
+      "help": "Längere Etiketten druckt Tapesmith nicht"
+    },
+    "guard_max_request_mm": {
+      "label": "Obergrenze Auftragslänge",
+      "help": "Höchstlänge eines Auftrags, alle Kopien zusammen"
+    },
+    "guard_max_copies": {
+      "label": "Obergrenze Kopienzahl",
+      "help": "Mehr Kopien in einem Auftrag sind nicht möglich"
+    },
+    "queue_enabled": {
+      "label": "Warteschlange aktiv",
+      "help": "Ist der Drucker nicht erreichbar, wartet der Auftrag, statt abzubrechen"
+    },
+    "queue_auto_retry": {
+      "label": "Automatischer Nachdruck",
+      "help": "Wartende Aufträge drucken von selbst, sobald der Drucker wieder da ist"
+    },
+    "gui_editor_snap": {
+      "label": "Einrasten",
+      "help": "Objekte rasten beim Verschieben am Raster und an anderen Objekten ein"
+    },
+    "gui_editor_grid_mm": {
+      "label": "Rasterweite",
+      "help": "Abstand der Rasterpunkte im Editor"
+    },
+    "hotkey_enabled": {
+      "label": "Tastenkürzel aktiv",
+      "help": "Die Kürzel gelten in ganz Windows, solange die Tray-App läuft"
+    },
+    "hotkey_quick": {
+      "label": "Schnelldruck",
+      "help": "öffnet den Schnelldruck im Browser"
+    },
+    "hotkey_clipboard": {
+      "label": "Zwischenablage",
+      "help": "öffnet den Schnelldruck mit dem Text der Zwischenablage"
+    },
+    "tray_notify": {
+      "label": "Meldungen anzeigen",
+      "help": "Windows-Benachrichtigung nach jedem Druck aus dem Tray"
+    },
+    "tray_favorites": {
+      "label": "Favoriten",
+      "help": "Vorlagen, die im Tray-Menü unter Favoriten stehen"
+    },
+    "app_language": {
+      "label": "Sprache",
+      "choices": {
+        "auto": "wie Windows",
+        "de": "Deutsch",
+        "en": "English"
+      }
+    },
+    "app_theme": {
+      "label": "Farbschema",
+      "choices": {
+        "system": "wie Windows",
+        "hell": "Hell",
+        "dunkel": "Dunkel"
+      }
+    },
+    "update_enabled": {
+      "label": "Nach Updates suchen",
+      "help": "Tapesmith sucht regelmäßig nach einer neuen Version"
+    },
+    "update_auto_install": {
+      "label": "Automatisch installieren",
+      "help": "Updates werden installiert, wenn Tapesmith gerade nicht druckt"
+    },
+    "update_channel": {
+      "label": "Kanal",
+      "help": "Beta bringt neue Funktionen früher, kann aber Fehler enthalten",
+      "choices": {
+        "stable": "Stabil",
+        "beta": "Beta"
+      }
+    },
+    "backup_auto_daily": {
+      "label": "Tägliche Sicherung",
+      "help": "Einmal am Tag Verlauf, Vorlagen und Einstellungen sichern"
+    },
+    "backup_keep": {
+      "label": "Sicherungen aufheben",
+      "help": "Ältere Sicherungen löscht Tapesmith"
+    },
+    "backup_dir": {
+      "label": "Sicherungsordner",
+      "help": "Leer = Ordner backups im Datenordner"
+    },
+    "templates_dir": {
+      "label": "Vorlagenordner",
+      "help": "Ordner für eigene Vorlagen; leer = Ordner templates im Datenordner"
+    },
+    "archive_dir": {
+      "label": "Archivordner",
+      "help": "Legt jeden Druck als Bild und JSON ab; leer = kein Archiv"
+    },
+    "archive_git_commit": {
+      "label": "Archiv per Git versionieren",
+      "help": "Jeden neuen Eintrag im Archivordner als Git-Commit festhalten"
+    },
+    "web_port": {
+      "label": "Web-Port",
+      "help": "Port der Oberfläche im Browser"
+    },
+    "ble_address": {
+      "label": "BLE-Adresse",
+      "help": "Nur für die experimentelle Verbindung über Bluetooth LE"
+    },
+    "ble_scan_timeout_s": {
+      "label": "BLE-Suchzeit",
+      "help": "So lange sucht Tapesmith nach dem Drucker"
+    },
+    "ssh_hosts": {
+      "label": "SSH-Hosts"
+    },
+    "ssh_timeout_s": {
+      "label": "SSH-Zeitlimit",
+      "help": "So lange wartet der Scanner auf eine Antwort des Hosts"
+    },
+    "ssh_strict_host_key": {
+      "label": "Host-Schlüssel streng prüfen",
+      "help": "Nur Hosts mit bekanntem Schlüssel (known_hosts); empfohlen"
+    }
+  },
+  "sectionsAdvanced": {
+    "verbindung": "Druckerverbindung",
+    "drucken": "Obergrenzen beim Drucken",
+    "druckdienst": "Druckdienst",
+    "ble": "Bluetooth LE (experimentell)",
+    "ordner": "Ordner und Archiv"
+  },
+  "units": {
+    "s": "s",
+    "min": "min",
+    "h": "h",
+    "mm": "mm",
+    "kopien": "Kopien",
+    "sicherungen": "Sicherungen",
+    "prozent": "%",
+    "stellen": "Stellen"
+  },
+  "advanced": {
+    "title": "Erweitert",
+    "description": "Selten gebrauchte Einstellungen: Druckerverbindung, Obergrenzen, Ordner, Web-Port und Windows-Einträge.",
+    "show": "Anzeigen",
+    "hide": "Ausblenden"
+  }
+}

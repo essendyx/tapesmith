@@ -1,0 +1,59 @@
+{
+  "title": "QR-Code",
+  "tabs": {
+    "label": "Inhaltsart",
+    "url": "URL / Link",
+    "text": "Text",
+    "wifi": "WLAN",
+    "vcard": "Kontakt (vCard)"
+  },
+  "fields": {
+    "link": "Link",
+    "linkPlaceholder": "https://…",
+    "uppercase": "Großbuchstaben (kompakter QR)",
+    "text": "Text",
+    "ssid": "SSID",
+    "password": "Passwort",
+    "passwordShow": "Passwort anzeigen",
+    "passwordHide": "Passwort verbergen",
+    "security": "Sicherheit",
+    "hidden": "verstecktes Netz",
+    "name": "Name",
+    "phone": "Telefon",
+    "email": "E-Mail",
+    "company": "Firma",
+    "url": "URL",
+    "line1": "Zeile 1",
+    "line2": "Zeile 2",
+    "errorLevel": "Fehlerkorrektur",
+    "maxLength": "Max. Länge (0 = aus)"
+  },
+  "security": {
+    "wpa": "WPA",
+    "wep": "WEP",
+    "open": "offen"
+  },
+  "errorLevels": {
+    "auto": "Automatisch",
+    "l": "L, 7 %",
+    "m": "M, 15 %",
+    "q": "Q, 25 %",
+    "h": "H, 30 %"
+  },
+  "info": {
+    "version": "Version {{version}}",
+    "moduleSize": "Modulgröße {{dots}} Punkte",
+    "errorCorrection": "Fehlerkorrektur {{level}}",
+    "selfTestOk": "Selbsttest ok",
+    "selfTestFailed": "Selbsttest fehlgeschlagen",
+    "selfTestNotChecked": "Nicht rückgelesen",
+    "selfTestNotCheckedReason": "Decoder auf diesem PC nicht verfügbar"
+  },
+  "message": {
+    "empty": "Kein Inhalt, nichts zu drucken",
+    "rendering": "Vorschau wird noch berechnet, gleich noch einmal",
+    "notPrintable": "Nicht druckbar, siehe Hinweise"
+  },
+  "fixButton": "Beheben: {{label}}",
+  "exportFailed": "Export fehlgeschlagen"
+}

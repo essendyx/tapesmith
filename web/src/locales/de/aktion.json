@@ -1,0 +1,10 @@
+{
+  "title": "Was soll gedruckt werden?",
+  "loading": "Aktion wird vorbereitet …",
+  "error": {
+    "noAction": "Keine Aktion angegeben",
+    "noActionHint": "Aufruf mit ?uri=... oder ?open=...&path=...",
+    "fallbackHint": "Die Aktion konnte nicht ausgeführt werden."
+  },
+  "backAction": "Zum Schnelldruck"
+}

@@ -1,0 +1,85 @@
+{
+  "version": "13.21.0",
+  "icons": [
+    {
+      "name": "proxmox",
+      "title": "Proxmox"
+    },
+    {
+      "name": "docker",
+      "title": "Docker"
+    },
+    {
+      "name": "debian",
+      "title": "Debian"
+    },
+    {
+      "name": "ubuntu",
+      "title": "Ubuntu"
+    },
+    {
+      "name": "linux",
+      "title": "Linux"
+    },
+    {
+      "name": "raspberrypi",
+      "title": "Raspberry Pi"
+    },
+    {
+      "name": "homeassistant",
+      "title": "Home Assistant"
+    },
+    {
+      "name": "truenas",
+      "title": "TrueNAS"
+    },
+    {
+      "name": "opnsense",
+      "title": "OPNSense"
+    },
+    {
+      "name": "pfsense",
+      "title": "pfSense"
+    },
+    {
+      "name": "nextcloud",
+      "title": "Nextcloud"
+    },
+    {
+      "name": "grafana",
+      "title": "Grafana"
+    },
+    {
+      "name": "cloudflare",
+      "title": "Cloudflare"
+    },
+    {
+      "name": "tailscale",
+      "title": "Tailscale"
+    },
+    {
+      "name": "wireguard",
+      "title": "WireGuard"
+    },
+    {
+      "name": "synology",
+      "title": "Synology"
+    },
+    {
+      "name": "paperlessngx",
+      "title": "Paperless-ngx"
+    },
+    {
+      "name": "obsidian",
+      "title": "Obsidian"
+    },
+    {
+      "name": "jellyfin",
+      "title": "Jellyfin"
+    },
+    {
+      "name": "nginx",
+      "title": "NGINX"
+    }
+  ]
+}

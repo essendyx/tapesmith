@@ -1,0 +1,53 @@
+{
+  "title": "Statistics",
+  "groups": {
+    "monat": "Month",
+    "vorlage": "Template",
+    "quelle": "Source",
+    "art": "Type",
+    "rolle": "Roll"
+  },
+  "a11y": {
+    "groupBy": "Group by",
+    "since": "Period since"
+  },
+  "since": "Since",
+  "kpi": {
+    "jobs": "Jobs",
+    "labels": "Labels",
+    "tape": "Tape"
+  },
+  "empty": {
+    "title": "No data yet",
+    "body": "Nothing has been printed yet for this period and grouping."
+  },
+  "chart": {
+    "title": "Tape usage",
+    "description": "Bars show the tape used per group, the table next to it is a text alternative.",
+    "label": "Bar chart: tape used per group",
+    "tooltip": "{{key}}: {{value}}"
+  },
+  "table": {
+    "ariaGroups": "Jobs per group",
+    "ariaRolls": "Usage per roll",
+    "group": "Group",
+    "jobs": "Jobs",
+    "labels": "Labels",
+    "tape": "Tape",
+    "roll": "Tape",
+    "started": "Started",
+    "nominal": "Nominal length",
+    "used": "Used",
+    "finished": "Finished",
+    "factor": "Factor",
+    "yes": "yes",
+    "no": "no"
+  },
+  "rolls": {
+    "title": "Rolls",
+    "usedAria": "Usage of the {{tape}} roll",
+    "description": "Tape usage per roll (/stats/rolls)",
+    "empty": "No roll recorded yet"
+  },
+  "unit": { "meter": "{{value}} m" }
+}

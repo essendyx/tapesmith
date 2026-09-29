@@ -1,0 +1,17 @@
+alias: NFC Tag löst Wartungslabel aus
+description: >-
+  Scannt ein NFC Tag und druckt darauf ein Etikett mit der Vorlage "reserviert" über das Skript
+  tapesmith_drucken. DEIN_TAG_ID ist ein Platzhalter, hier durch die eigene Tag-ID ersetzen.
+trigger:
+  - platform: tag
+    tag_id: DEIN_TAG_ID
+condition: []
+action:
+  - service: script.tapesmith_drucken
+    data:
+      vorlage: reserviert
+      werte:
+        name: Werkstatt
+        bis: "{{ (now() + timedelta(days=7)).strftime('%d.%m.%Y') }}"
+      kopien: 1
+mode: single

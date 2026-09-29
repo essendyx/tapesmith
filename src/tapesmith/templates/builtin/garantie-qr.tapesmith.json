@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "name": "garantie-qr",
+  "description": "Garantie-Etikett mit QR auf das Paperless-Dokument (bzw. Kurz-Link): Gerät und Garantie bis. Das Ende kommt aus Paperless bzw. der Rückfall-Berechnung, nicht aus einer Vorlagen-Formel, damit Oberfläche und Etikett nie voneinander abweichen.",
+  "category": "Büro",
+  "tags": ["paperless", "garantie", "qr"],
+  "fields": [
+    {"id": "geraet", "label": "Gerät", "type": "input", "required": true, "max_len": 20},
+    {"id": "kaufdatum", "label": "Kaufdatum (TT.MM.JJJJ)", "type": "input", "required": true, "max_len": 10},
+    {"id": "ende", "label": "Garantie bis (TT.MM.JJJJ)", "type": "input", "required": true, "max_len": 10},
+    {"id": "link", "label": "Link", "type": "input", "required": true}
+  ],
+  "document": {
+    "objects": [
+      {"kind": "qr", "id": "qr1", "x": 8, "y": 0, "w": 88, "h": 88, "data": "{link}", "error": "m"},
+      {"kind": "text", "id": "text1", "x": 104, "y": 2, "w": 400, "h": 42, "text": "{geraet}", "font": "sans-bold", "size": null},
+      {"kind": "text", "id": "text2", "x": 104, "y": 46, "w": 400, "h": 38, "text": "Garantie bis {ende}", "size": null}
+    ]
+  },
+  "sample": {"geraet": "Kaffeemaschine", "kaufdatum": "31.01.2026", "ende": "31.01.2028", "link": "HTTPS://L.EXAMPLE.COM/DOC-17"},
+  "translations": {
+    "en": {
+      "title": "warranty-qr",
+      "description": "Warranty label with a QR code to the Paperless document (or short link): device and warranty end. The end date comes from Paperless or the fallback calculation, not from a template formula, so the interface and the label never differ.",
+      "category": "Office",
+      "tags": ["paperless", "warranty", "qr"],
+      "fields": {
+        "geraet": {"label": "Device"},
+        "kaufdatum": {"label": "Purchase date (DD.MM.YYYY)"},
+        "ende": {"label": "Warranty until (DD.MM.YYYY)"},
+        "link": {"label": "Link"}
+      },
+      "texts": {"text2": "Warranty until {ende}"},
+      "sample": {"geraet": "Coffee machine"}
+    }
+  }
+}

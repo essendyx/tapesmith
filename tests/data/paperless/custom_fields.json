@@ -1,0 +1,9 @@
+{
+  "count": 3,
+  "next": null,
+  "results": [
+    {"id": 1, "name": "Kaufdatum", "data_type": "date"},
+    {"id": 2, "name": "Garantie Monate", "data_type": "integer"},
+    {"id": 3, "name": "Garantie bis", "data_type": "date"}
+  ]
+}

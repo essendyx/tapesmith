@@ -1,0 +1,56 @@
+{
+  "page": {
+    "title": "Batteries",
+    "subtitle": "Battery levels from Home Assistant and maintenance labels"
+  },
+  "tabs": {
+    "batterien": "Batteries",
+    "wartung": "Maintenance"
+  },
+  "list": {
+    "sectionTitle": "Devices with a battery",
+    "sectionDescription": "From Home Assistant, including Homematic IP.",
+    "filterPlaceholder": "only below … %",
+    "filterAria": "Only devices below X percent",
+    "printSeries": "Labels as series",
+    "loading": "Loading devices …",
+    "empty": {
+      "title": "No battery devices found",
+      "body": "Home Assistant reports no battery sensors. Check address and token in the settings."
+    },
+    "tableAriaLabel": "Devices with a battery",
+    "columns": {
+      "select": "Selection",
+      "device": "Device",
+      "area": "Room",
+      "level": "Level",
+      "type": "Type",
+      "actions": "Actions"
+    },
+    "selectRowAria": "Select {{device}}",
+    "low": "low",
+    "levelText": "{{level}} %",
+    "levelUnknown": "-",
+    "levelProgressAria": "Battery level {{device}}",
+    "typeAria": "Battery type {{device}}",
+    "printRow": "Print label"
+  },
+  "wartung": {
+    "suggestions": {
+      "usvAkku": "UPS battery",
+      "luftfilter": "Air filter",
+      "waermeleitpaste": "Thermal paste",
+      "rauchmelderTesten": "Test smoke detector"
+    },
+    "wasLabel": "Task",
+    "datumLabel": "Date (DD.MM.YYYY)",
+    "intervallLabel": "Interval (months)",
+    "notizLabel": "Note",
+    "reminderLabel": "Create a reminder in Home Assistant",
+    "dueHint": "Due on {{date}}",
+    "previewLoading": "Preview …",
+    "previewAlt": "Preview of the maintenance label",
+    "print": "Print",
+    "reminderCreated": "Reminder created in Home Assistant"
+  }
+}

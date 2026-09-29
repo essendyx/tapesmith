@@ -1,0 +1,78 @@
+{
+  "Homelab": [
+    "tabler:server",
+    "tabler:server-2",
+    "tabler:cpu",
+    "tabler:database",
+    "tabler:network",
+    "tabler:router",
+    "tabler:wifi",
+    "tabler:cloud",
+    "tabler:device-desktop",
+    "tabler:brand-docker",
+    "simple:proxmox",
+    "simple:docker"
+  ],
+  "Stecker": [
+    "tabler:usb",
+    "tabler:plug",
+    "tabler:plug-connected",
+    "tabler:bolt",
+    "tabler:battery",
+    "tabler:power"
+  ],
+  "Warnung": [
+    "tabler:alert-triangle",
+    "tabler:bolt",
+    "tabler:flame",
+    "tabler:skull",
+    "tabler:hand-stop",
+    "tabler:ban"
+  ],
+  "Küche/Vorrat": [
+    "tabler:snowflake",
+    "tabler:salt",
+    "tabler:coffee",
+    "tabler:bread",
+    "tabler:meat",
+    "tabler:fish",
+    "tabler:apple",
+    "tabler:milk",
+    "tabler:cookie",
+    "tabler:soup"
+  ],
+  "Schule": [
+    "tabler:school",
+    "tabler:pencil",
+    "tabler:book",
+    "tabler:backpack",
+    "tabler:ruler",
+    "tabler:palette"
+  ],
+  "Werkstatt": [
+    "tabler:tool",
+    "tabler:hammer",
+    "tabler:nut",
+    "tabler:wood",
+    "tabler:ruler-measure",
+    "tabler:bucket"
+  ],
+  "Marken": [],
+  "synonyme": {
+    "strom": ["tabler:bolt", "tabler:plug"],
+    "kühlschrank": ["tabler:snowflake"],
+    "kuehlschrank": ["tabler:snowflake"],
+    "gefrierfach": ["tabler:snowflake"],
+    "feuer": ["tabler:flame"],
+    "gefahr": ["tabler:alert-triangle", "tabler:skull"],
+    "netzwerk": ["tabler:network", "tabler:router", "tabler:wifi"],
+    "netzwerkkabel": ["tabler:plug-connected"],
+    "werkzeug": ["tabler:tool", "tabler:hammer"],
+    "schraube": ["tabler:nut"],
+    "holz": ["tabler:wood"],
+    "salz": ["tabler:salt"],
+    "milch": ["tabler:milk"],
+    "akku": ["tabler:battery"],
+    "sicherung": ["tabler:bolt", "tabler:alert-triangle"]
+  }
+}

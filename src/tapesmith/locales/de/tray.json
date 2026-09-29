@@ -1,0 +1,114 @@
+{
+  "menu": {
+    "updateCheck": "Nach Updates suchen",
+    "updateAvailable": "Update auf {version} verfügbar",
+    "main": "Web-Oberfläche öffnen",
+    "quick": "Schnelldruck",
+    "clipboard": "Zwischenablage in Schnelldruck",
+    "hotkeySuffix": " ({hotkey})",
+    "favorites": "Favoriten",
+    "favoritesEmpty": "Keine Favoriten (Einstellungen, Tray und Tastenkürzel)",
+    "recent": "Letzte Labels",
+    "recentEmpty": "Noch nichts gedruckt",
+    "test": "Testlabel drucken",
+    "history": "Verlauf",
+    "queuePause": "Warteschlange pausiert",
+    "status": "Druckerstatus",
+    "log": "Log und Diagnose",
+    "settings": "Einstellungen",
+    "autostart": "Mit Windows starten",
+    "quit": "Beenden"
+  },
+  "favorite": {
+    "default": "Favorit {index}"
+  },
+  "notify": {
+    "connecting": "Druckdienst wird noch verbunden",
+    "connectingTooltip": "Tapesmith · verbinde mit Druckdienst …",
+    "printingTooltip": "Druckt … {percent} % · {status}",
+    "hint": {
+      "title": "Hinweis"
+    },
+    "backendUnavailable": {
+      "title": "Druck-Backend nicht verfügbar"
+    },
+    "clipboardUnreadable": {
+      "title": "Zwischenablage nicht lesbar"
+    },
+    "clipboardEmpty": {
+      "title": "Zwischenablage ohne Text",
+      "text": "Nichts für den Schnelldruck"
+    },
+    "favoriteNotPrintable": {
+      "title": "Favorit nicht druckbar"
+    },
+    "inputsMissing": {
+      "title": "Eingaben fehlen",
+      "text": "{error}. Web-Oberfläche im Browser geöffnet"
+    },
+    "notPrinted": {
+      "title": "Nicht gedruckt",
+      "tapeReason": "{reason}. Bitte in der Web-Oberfläche drucken",
+      "noBackend": "Kein Druck-Backend verfügbar, bitte die Web-Oberfläche benutzen",
+      "busy": "Druck läuft noch"
+    },
+    "reprintOnlyMain": {
+      "title": "Nachdruck nur in der Web-Oberfläche"
+    },
+    "reprintNotPossible": {
+      "title": "Nachdruck nicht möglich"
+    },
+    "testNotPrintable": {
+      "title": "Testlabel nicht druckbar"
+    },
+    "queue": {
+      "title": "Warteschlange"
+    },
+    "statusUnavailable": {
+      "title": "Status nicht abfragbar"
+    },
+    "autostartFailed": {
+      "title": "Autostart nicht geändert"
+    },
+    "openFailed": {
+      "title": "Web-Oberfläche nicht geöffnet"
+    },
+    "countersFailed": {
+      "title": "Zähler nicht gespeichert"
+    },
+    "printed": {
+      "title": "Gedruckt",
+      "withHints": "{title} · Hinweis: {hints}"
+    },
+    "waiting": {
+      "title": "Wartet in der Warteschlange (#{queueId})",
+      "text": "Drucker nicht erreichbar, wird automatisch gedruckt"
+    },
+    "confirmNeeded": {
+      "title": "Nicht gedruckt: Rückfrage nötig",
+      "text": "{reasons}. Bitte in der Web-Oberfläche drucken"
+    },
+    "cancelled": {
+      "title": "Druck abgebrochen",
+      "text": "Drucker hat mit Vorschub abgeschlossen"
+    },
+    "incomplete": {
+      "title": "Druck unvollständig",
+      "fallbackText": "Verbindung verloren"
+    },
+    "hotkeyInactive": {
+      "title": "Tastenkürzel nicht aktiv"
+    },
+    "clipboardTruncated": {
+      "title": "Zwischenablage gekürzt",
+      "text": "Nur die ersten {max} Zeichen im Schnelldruck übernommen"
+    },
+    "configInvalid": {
+      "title": "Einstellungen nicht übernommen"
+    }
+  },
+  "cli": {
+    "description": "Tapesmith im Infobereich",
+    "noHotkeys": "keine globalen Tastenkürzel registrieren"
+  }
+}

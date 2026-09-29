@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "name": "passthrough",
+  "description": "USB-Passthrough-Kennzeichnung: welche VM bekommt welches Gerät.",
+  "category": "Homelab",
+  "tags": ["homelab", "usb", "passthrough"],
+  "fields": [
+    {"id": "vm", "label": "VM", "type": "input", "required": true, "max_len": 12},
+    {"id": "geraet", "label": "Gerät", "type": "input", "required": true, "max_len": 16}
+  ],
+  "document": {
+    "objects": [
+      {"kind": "icon", "id": "icon1", "x": 8, "y": 8, "w": 72, "h": 72, "icon": "tabler:usb"},
+      {"kind": "text", "id": "text1", "x": 92, "y": 0, "w": 520, "h": 88, "text": "{vm} · {geraet}", "size": null}
+    ]
+  },
+  "sample": {"vm": "VM111", "geraet": "USB-Dongle"},
+  "translations": {
+    "en": {
+      "title": "passthrough",
+      "description": "USB passthrough label: which VM gets which device.",
+      "category": "Homelab",
+      "tags": ["homelab", "usb", "passthrough"],
+      "fields": {
+        "vm": {"label": "VM"},
+        "geraet": {"label": "Device"}
+      },
+      "sample": {"geraet": "USB dongle"}
+    }
+  }
+}

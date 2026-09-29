@@ -1,0 +1,36 @@
+tapesmith_drucken:
+  alias: Tapesmith drucken
+  description: >-
+    Druckt eine Vorlage auf dem Labeldrucker P12 über MQTT (Topic tapesmith/print/set).
+  fields:
+    vorlage:
+      name: Vorlage
+      description: Name der Vorlage (z. B. gefriergut, eigentum, reserviert)
+      required: true
+      selector:
+        text: {}
+    werte:
+      name: Werte
+      description: Feldwerte der Vorlage als Objekt (z. B. {"inhalt": "Suppe"})
+      required: false
+      default: {}
+      selector:
+        object: {}
+    kopien:
+      name: Kopien
+      description: Anzahl Kopien (höchstens 5, Kontingent für nicht interaktive Quellen)
+      required: false
+      default: 1
+      selector:
+        number:
+          min: 1
+          max: 5
+          mode: box
+  sequence:
+    - service: mqtt.publish
+      data:
+        topic: tapesmith/print/set
+        # kopien kommt vom Nummern-Selektor als Gleitkommazahl (1.0 statt 1); ohne den int-Filter
+        # wuerde der Druckdienst das JSON-Feld "copies" als 1.0 sehen und ablehnen.
+        payload: >-
+          {{ {"template": vorlage, "values": werte, "copies": kopien | int} | to_json }}

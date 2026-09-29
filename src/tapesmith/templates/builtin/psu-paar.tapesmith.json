@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "name": "psu-paar",
+  "description": "Redundantes Netzteilpaar: PSU1/PSU2-Ziele nebeneinander, senkrechte Trennlinie dazwischen.",
+  "category": "Homelab",
+  "tags": ["homelab", "netzteil", "redundanz"],
+  "fields": [
+    {"id": "psu1_ziel", "label": "PSU1-Ziel", "type": "input", "required": true, "max_len": 10},
+    {"id": "psu2_ziel", "label": "PSU2-Ziel", "type": "input", "required": true, "max_len": 10}
+  ],
+  "document": {
+    "objects": [
+      {"kind": "text", "id": "text1", "x": 8, "y": 0, "w": 280, "h": 88, "text": "PSU1 → {psu1_ziel}", "size": null},
+      {"kind": "line", "id": "line1", "x": 296, "y": 0, "w": 4, "h": 88, "direction": "v", "thickness": 2},
+      {"kind": "text", "id": "text2", "x": 308, "y": 0, "w": 280, "h": 88, "text": "PSU2 → {psu2_ziel}", "size": null}
+    ]
+  },
+  "sample": {"psu1_ziel": "USV Port 3", "psu2_ziel": "USV Port 4"},
+  "translations": {
+    "en": {
+      "title": "psu-pair",
+      "description": "Redundant power supply pair: PSU1/PSU2 targets side by side with a vertical divider.",
+      "category": "Homelab",
+      "tags": ["homelab", "power-supply", "redundancy"],
+      "fields": {
+        "psu1_ziel": {"label": "PSU1 target"},
+        "psu2_ziel": {"label": "PSU2 target"}
+      },
+      "sample": {"psu1_ziel": "UPS port 3", "psu2_ziel": "UPS port 4"}
+    }
+  }
+}

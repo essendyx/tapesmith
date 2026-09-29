@@ -1,0 +1,1 @@
+{"data": {"hostname": "ollama", "cores": 4, "memory": 8192, "net0": "name=eth0,bridge=vmbr0,hwaddr=BC:24:11:00:00:04,ip=192.0.2.55/24,gw=192.0.2.1,type=veth", "digest": "ghi"}}

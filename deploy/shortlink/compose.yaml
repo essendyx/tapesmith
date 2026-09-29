@@ -1,0 +1,14 @@
+services:
+  shortlink:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      # Named Volume statt Bind-Mount: übernimmt beim ersten Start Besitzer und Rechte von /data aus
+      # dem Image (uid 1000). Ein Bind-Mount ./data würde Docker als root anlegen, SQLite scheitert dann.
+      - shortlink-data:/data
+    ports:
+      - "${SHORTLINK_HOST_PORT:?Port aus dem Port-Register setzen}:8000"
+
+volumes:
+  shortlink-data:

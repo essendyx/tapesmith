@@ -1,0 +1,68 @@
+[
+  {
+    "entity_id": "binary_sensor.fenster_bad_battery",
+    "kind": "binary_sensor",
+    "state": "on",
+    "friendly_name": "Fensterkontakt Bad Batterie",
+    "device": "Fensterkontakt Bad",
+    "area": "Bad",
+    "manufacturer": "Homematic IP",
+    "model": "HmIP-SWDO",
+    "battery_type": ""
+  },
+  {
+    "entity_id": "sensor.flur_bewegung_battery",
+    "kind": "sensor",
+    "state": "15",
+    "friendly_name": "Bewegungsmelder Flur Batterie",
+    "device": "Bewegungsmelder Flur",
+    "area": "Flur",
+    "manufacturer": "Aqara",
+    "model": "RTCGQ11LM",
+    "battery_type": "CR2450"
+  },
+  {
+    "entity_id": "sensor.wohnzimmer_thermostat_battery",
+    "kind": "sensor",
+    "state": "80",
+    "friendly_name": "Thermostat Wohnzimmer Batterie",
+    "device": "Thermostat Wohnzimmer",
+    "area": "Wohnzimmer",
+    "manufacturer": "Homematic IP",
+    "model": "HmIP-eTRV-2",
+    "battery_type": ""
+  },
+  {
+    "entity_id": "binary_sensor.wohnzimmer_thermostat_battery",
+    "kind": "binary_sensor",
+    "state": "off",
+    "friendly_name": "Thermostat Wohnzimmer Batterie niedrig",
+    "device": "Thermostat Wohnzimmer",
+    "area": "Wohnzimmer",
+    "manufacturer": "Homematic IP",
+    "model": "HmIP-eTRV-2",
+    "battery_type": ""
+  },
+  {
+    "entity_id": "sensor.flur_rauchmelder_battery",
+    "kind": "sensor",
+    "state": "100",
+    "friendly_name": "Rauchmelder Flur Batterie",
+    "device": "Rauchmelder Flur",
+    "area": "Flur",
+    "manufacturer": "Bosch",
+    "model": "Rauchmelder II",
+    "battery_type": "9V"
+  },
+  {
+    "entity_id": "sensor.keller_feuchte_battery",
+    "kind": "sensor",
+    "state": "unavailable",
+    "friendly_name": "Feuchtesensor Keller Batterie",
+    "device": "Feuchtesensor Keller",
+    "area": "Keller",
+    "manufacturer": "Aqara",
+    "model": "WSDCGQ11LM",
+    "battery_type": ""
+  }
+]

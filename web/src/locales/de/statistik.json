@@ -1,0 +1,53 @@
+{
+  "title": "Statistik",
+  "groups": {
+    "monat": "Monat",
+    "vorlage": "Vorlage",
+    "quelle": "Quelle",
+    "art": "Art",
+    "rolle": "Rolle"
+  },
+  "a11y": {
+    "groupBy": "Gruppieren nach",
+    "since": "Zeitraum seit"
+  },
+  "since": "Seit",
+  "kpi": {
+    "jobs": "Aufträge",
+    "labels": "Labels",
+    "tape": "Band"
+  },
+  "empty": {
+    "title": "Noch keine Daten",
+    "body": "Für diesen Zeitraum und diese Gruppierung wurde noch nichts gedruckt."
+  },
+  "chart": {
+    "title": "Bandverbrauch",
+    "description": "Balken zeigen das verbrauchte Band je Gruppe, daneben die Tabelle als Textalternative.",
+    "label": "Balkendiagramm: verbrauchtes Band je Gruppe",
+    "tooltip": "{{key}}: {{value}}"
+  },
+  "table": {
+    "ariaGroups": "Aufträge je Gruppe",
+    "ariaRolls": "Verbrauch je Rolle",
+    "group": "Gruppe",
+    "jobs": "Aufträge",
+    "labels": "Labels",
+    "tape": "Band",
+    "roll": "Band",
+    "started": "Begonnen",
+    "nominal": "Nennlänge",
+    "used": "Verbraucht",
+    "finished": "Beendet",
+    "factor": "Faktor",
+    "yes": "ja",
+    "no": "nein"
+  },
+  "rolls": {
+    "title": "Rollen",
+    "usedAria": "Verbrauch der Rolle {{tape}}",
+    "description": "Bandverbrauch je Rolle (/stats/rolls)",
+    "empty": "Noch keine Rolle erfasst"
+  },
+  "unit": { "meter": "{{value}} m" }
+}

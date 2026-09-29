@@ -1,0 +1,36 @@
+{
+  "title": "Scan serial number",
+  "subtitle": "Analyze a photo of the manufacturer label and adopt the serial number.",
+  "photo": {
+    "sectionTitle": "Photo",
+    "take": "Take photo or choose image",
+    "chooseAriaLabel": "Choose photo of the label",
+    "previewAlt": "Preview of the label",
+    "analyzing": "Analyzing photo …",
+    "newPhoto": "New photo"
+  },
+  "noHits": {
+    "title": "No codes found",
+    "body": "Move closer, turn off the flash and hold the label straight, then try again."
+  },
+  "candidates": {
+    "sectionTitle": "Candidates",
+    "description": "The best serial number is preselected, correct it if needed.",
+    "points": "{{score}} points"
+  },
+  "fields": {
+    "serial": "Serial number (editable)",
+    "host": "Host (optional)",
+    "slot": "Slot (optional)"
+  },
+  "labelPreview": "On the label: S/N {{short}}",
+  "actions": {
+    "useForDatentraeger": "Use for drive label",
+    "copy": "Copy",
+    "copied": "Copied"
+  },
+  "errors": {
+    "fileUnreadable": "File not readable",
+    "imageUnreadable": "Image not readable"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": 2,
+  "name": "ka-artikel",
+  "description": "Kleinanzeigen-Artikel mit QR auf die Anzeige bzw. einen Kurz-Link, ID fett und Titel.",
+  "category": "Haushalt",
+  "tags": ["kleinanzeigen"],
+  "fields": [
+    {"id": "id", "label": "ID", "type": "input", "required": true, "max_len": 8},
+    {"id": "titel", "label": "Titel", "type": "input", "required": true, "max_len": 20},
+    {"id": "preis", "label": "Preis", "type": "input", "max_len": 10},
+    {"id": "link", "label": "Link", "type": "input", "required": true}
+  ],
+  "document": {
+    "objects": [
+      {"kind": "qr", "id": "qr1", "x": 8, "y": 0, "w": 88, "h": 88, "data": "{link}", "error": "m"},
+      {"kind": "text", "id": "text1", "x": 104, "y": 2, "w": 300, "h": 42, "text": "{id}", "font": "sans-bold", "size": null},
+      {"kind": "text", "id": "text2", "x": 104, "y": 46, "w": 900, "h": 38, "text": "{titel} {preis}", "size": null}
+    ]
+  },
+  "sample": {"id": "KA-017", "titel": "Monitorarm", "preis": "25 €", "link": "HTTPS://L.EXAMPLE.COM/KA-017"},
+  "translations": {
+    "en": {
+      "title": "classifieds-item",
+      "description": "Classified ad item with a QR code to the listing or a short link, ID in bold and title.",
+      "category": "Household",
+      "tags": ["classifieds"],
+      "fields": {
+        "id": {"label": "ID"},
+        "titel": {"label": "Title"},
+        "preis": {"label": "Price"},
+        "link": {"label": "Link"}
+      },
+      "sample": {"titel": "Monitor arm", "preis": "25 EUR"}
+    }
+  }
+}

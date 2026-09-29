@@ -1,0 +1,26 @@
+{
+  "blockdevices": [
+    {
+      "name": "sda", "model": "Samsung SSD 870 EVO 1TB", "serial": "S5Y1NX0R123456",
+      "size": "931.5G", "type": "disk", "tran": "sata", "wwn": "0x5002538f",
+      "children": [
+        {"name": "sda1", "model": null, "serial": null, "size": "1M", "type": "part", "tran": null, "wwn": "0x5002538f"},
+        {"name": "sda9", "model": null, "serial": null, "size": "8M", "type": "part", "tran": null, "wwn": "0x5002538f"}
+      ]
+    },
+    {
+      "name": "sdb", "model": "WDC WD40EFRX-68N32N0", "serial": "WD-WCC7K1ABCDEF",
+      "size": "3.7T", "type": "disk", "tran": "sata", "wwn": null
+    },
+    {
+      "name": "nvme0n1", "model": "Samsung SSD 980 PRO 1TB", "serial": "",
+      "size": "931.5G", "type": "disk", "tran": "nvme", "wwn": null
+    },
+    {
+      "name": "zd0", "model": null, "serial": null, "size": "1.8T", "type": "disk", "tran": null, "wwn": null
+    },
+    {
+      "name": "sr0", "model": "Virtual DVD", "serial": null, "size": "1024M", "type": "rom", "tran": "ata", "wwn": null
+    }
+  ]
+}

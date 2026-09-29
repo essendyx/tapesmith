@@ -1,0 +1,38 @@
+# Alternative zu MQTT (tapesmith-skript.yaml): direkter REST-Aufruf der Kurzendpunkte
+# (POST /api/v1/print). Braucht lan.enabled = true und ein API-Token mit Rolle
+# "drucken" oder "admin" (p12 token add HA-Rest --rolle drucken). Adresse und Token liegen in
+# secrets.yaml, nie im Klartext in dieser Datei.
+#
+# secrets.yaml (eigene Adresse und das Klartext-Token aus "p12 token add ... --rolle drucken"
+# eintragen, secrets.yaml gehoert nie ins Repo):
+#   p12_rest_url = http://192.0.2.50:8712/api/v1/print
+#   p12_token    = das beim Anlegen einmalig angezeigte Klartext-Token
+#
+# Unter configuration.yaml einfuegen (oder per !include):
+rest_command:
+  tapesmith_drucken:
+    url: !secret p12_rest_url
+    method: POST
+    headers:
+      X-P12-Token: !secret p12_token
+      Content-Type: application/json
+    content_type: "application/json; charset=utf-8"
+    # Kopien kommen wie im MQTT-Skript ggf. als Gleitkommazahl vom Nummern-Selektor, deshalb
+    # der int-Filter (der Druckdienst nimmt eine ganzzahlige Gleitkommazahl zwar ohnehin an,
+    # eine echte Vorlage bleibt so trotzdem konsistent mit tapesmith-skript.yaml).
+    payload: >-
+      {{ {"template": vorlage, "values": werte, "copies": kopien | int} | to_json }}
+
+# Aufruf z. B. aus einem Skript oder einer Automation mit denselben Feldern wie
+# tapesmith-skript.yaml:
+#
+# action:
+#   - service: rest_command.tapesmith_drucken
+#     data:
+#       vorlage: reserviert
+#       werte:
+#         name: Werkstatt
+#       kopien: 1
+#
+# Die Antwort (200 mit {"status": "ok", ...} oder ein Fehler) liefert rest_command als
+# response_variable weiter, siehe Home-Assistant-Doku zu rest_command.

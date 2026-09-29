@@ -1,0 +1,65 @@
+{
+  "title": "Quick print",
+  "field": {
+    "label": "Label text",
+    "placeholder": "Type text, Enter prints",
+    "hint": {
+      "plain": "{{enter}} prints 1 label · {{shift}} new line",
+      "plainAmount": "{{enter}} prints 1 label · {{ctrl}} prints {{amount}} · {{shift}} new line",
+      "ctrlOnlyPlain": "{{ctrl}} prints 1 label · {{enter}} new line",
+      "ctrlOnlyAmount": "{{ctrl}} prints {{amount}} · {{enter}} new line"
+    }
+  },
+  "example": "Example: {{text}}",
+  "amount": {
+    "copies": "{{count}} copies",
+    "chainOne": "1 label as chain",
+    "chainMany": "{{count}} labels as chain"
+  },
+  "printAction": {
+    "one": "Print (1 label)",
+    "amount": "Print ({{amount}})"
+  },
+  "fixButton": "Fix: {{label}}",
+  "qr": {
+    "info": "QR: version {{version}} · {{status}}",
+    "selfTestOk": "Self-test ok",
+    "selfTestFailed": "Self-test failed",
+    "selfTestNotChecked": "not read back",
+    "selfTestNotCheckedReason": "Decoder not available on this PC",
+    "contentLabel": "QR content (optional)"
+  },
+  "recent": {
+    "label": "Recent texts",
+    "tooltip": "Click: print · Alt+click: fill only",
+    "chipLabel": "Use recent text: {{text}}"
+  },
+  "options": {
+    "toggle": "More options",
+    "font": "Font",
+    "fontDefault": "Default",
+    "align": "Alignment",
+    "alignLeft": "Left",
+    "alignCenter": "Center",
+    "alignRight": "Right",
+    "maxLength": "Max. length (0 = off)",
+    "fixedLength": "Fixed length (0 = off)"
+  },
+  "export": {
+    "failed": "Export failed"
+  },
+  "prefillApplied": "Text applied, press Enter to print",
+  "commands": {
+    "clear": "Clear quick print"
+  },
+  "gate": {
+    "empty": "No text, nothing to print",
+    "busy": "Print still running",
+    "stale": "Preview is still being calculated, try again",
+    "invalid": "Label does not fit like this, see notes",
+    "review": "Multi-line text was pasted, please review and press Enter again",
+    "debounce": "Just printed, pressed twice?",
+    "repeat": "Key held down, not printing",
+    "lines": "At most {{max}} lines"
+  }
+}

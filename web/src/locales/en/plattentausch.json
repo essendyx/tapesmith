@@ -1,0 +1,45 @@
+{
+  "title": "Swap drive",
+  "subtitle": "Check ZFS pools for failed drives and prepare the replacement",
+  "steps": {
+    "scan": "1. Scan host",
+    "broken": "2. Failed drives",
+    "newDisk": "3. New drive",
+    "commandChangelog": "4. Command and changelog",
+    "printLabels": "5. Print labels"
+  },
+  "noHosts": {
+    "title": "No SSH host set up yet",
+    "body": "Enter an SSH host in the settings, then the assistant checks its ZFS pools for broken disks."
+  },
+  "host": "Host",
+  "scan": "Scan",
+  "scanning": "Scanning …",
+  "table": {
+    "ariaLabel": "Failed drives",
+    "selectColumn": "Selection",
+    "select": "Select failed drive {{name}}",
+    "pool": "Pool",
+    "vdev": "vdev",
+    "state": "State",
+    "oldSerial": "old S/N",
+    "note": "Note"
+  },
+  "noBroken": "No failed drives, all pools ONLINE",
+  "noCandidates": {
+    "title": "No candidates found",
+    "body": "Install a new drive and scan again."
+  },
+  "slot": "Slot",
+  "reason": "Reason (optional)",
+  "reasonPlaceholder": "faulted",
+  "createPlan": "Create plan",
+  "planning": "Planning …",
+  "commandLabel": "Command (copy only, never executed):",
+  "copy": "Copy",
+  "changelogDraft": "Changelog draft",
+  "printOldLabel": "Print old drive label",
+  "printNewLabel": "Print new drive label",
+  "previewOldAlt": "Preview of the old label",
+  "previewNewAlt": "Preview of the new label"
+}

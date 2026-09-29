@@ -1,0 +1,59 @@
+{
+  "actions": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "delete": "Löschen",
+    "print": "Drucken",
+    "retry": "Erneut versuchen",
+    "back": "Zurück",
+    "open": "Öffnen",
+    "copy": "Kopieren",
+    "export": "Exportieren",
+    "import": "Importieren",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "remove": "Entfernen",
+    "confirm": "Bestätigen",
+    "yes": "Ja",
+    "no": "Nein",
+    "later": "Später",
+    "details": "Details",
+    "search": "Suchen",
+    "more": "Mehr"
+  },
+  "states": {
+    "loading": "Wird geladen …",
+    "saving": "Wird gespeichert …",
+    "empty": "Keine Einträge",
+    "error": "Fehler",
+    "offline": "Druckdienst nicht erreichbar",
+    "unsaved": "Nicht gespeichert",
+    "saved": "Gespeichert"
+  },
+  "a11y": {
+    "skipToContent": "Zum Inhalt springen",
+    "loading": "Wird geladen …",
+    "close": "Schließen",
+    "breadcrumb": "Pfad"
+  },
+  "units": {
+    "mm": "{{value}} mm",
+    "dots": "{{value}} Punkte"
+  },
+  "language": {
+    "auto": "wie Windows",
+    "de": "Deutsch",
+    "en": "English"
+  },
+  "theme": {
+    "system": "wie Windows",
+    "hell": "Hell",
+    "dunkel": "Dunkel"
+  },
+  "errors": {
+    "fileUnreadable": "Datei konnte nicht gelesen werden",
+    "badStatus": "Unerwartete Antwort vom Druckdienst (HTTP {{status}})",
+    "badJson": "Antwort des Druckdienstes ist kein gültiges JSON"
+  }
+}

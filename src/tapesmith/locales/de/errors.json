@@ -1,0 +1,222 @@
+{
+  "printer": {
+    "busy": {
+      "title": "Drucker belegt",
+      "hint": "Ein anderes P12-Programm druckt gerade. Kurz warten oder das andere Programm beenden."
+    },
+    "unreachable": {
+      "title": "Drucker nicht erreichbar",
+      "hint": "Drucker aus oder eingeschlafen? Einschalten. Handy-App verbunden? Nur ein Host gleichzeitig: dort trennen."
+    },
+    "not_paired": {
+      "title": "Drucker nicht gekoppelt",
+      "hint": "Drucker in Windows unter Bluetooth koppeln, dann 'p12 setup'."
+    }
+  },
+  "file": {
+    "locked": {
+      "title": "Datei gesperrt",
+      "hint": "Ein anderes P12-Programm schreibt gerade. Kurz warten und erneut versuchen."
+    }
+  },
+  "print": {
+    "incomplete": {
+      "title": "Druck unvollständig",
+      "hint": "Verbindung während des Drucks verloren (Akku leer? Drucker aus?). Drucker prüfen und das Label erneut drucken (p12 reprint last)."
+    }
+  },
+  "port": {
+    "busy": {
+      "title": "COM-Port belegt",
+      "hint": "Ein anderes Programm hält den Port (Handy-App, altes phomemo-Tool, Terminal). Programm schließen oder Drucker aus- und einschalten."
+    },
+    "missing": {
+      "title": "COM-Port fehlt",
+      "hint": "Drucker in Windows unter Bluetooth koppeln oder 'p12 setup' ausführen."
+    }
+  },
+  "bluetooth": {
+    "lost": {
+      "title": "Bluetooth-Verbindung abgebrochen",
+      "hint": "Drucker aus oder außer Reichweite. Einschalten, näher heran und erneut versuchen."
+    }
+  },
+  "transport": {
+    "error": {
+      "title": "Verbindungsfehler",
+      "hint": "'p12 doctor' ausführen."
+    }
+  },
+  "ipc": {
+    "error": {
+      "title": "Druckdienst nicht erreichbar",
+      "hint": "Der Druckdienst antwortet nicht. App schließen, neu öffnen und erneut versuchen."
+    }
+  },
+  "template": {
+    "invalid": {
+      "title": "Vorlage oder Variable ungültig",
+      "hint": "'p12 template show <name>' zeigt die Felder."
+    }
+  },
+  "document": {
+    "invalid": {
+      "title": "Dokument ungültig",
+      "hint": "Das Etikett ist beschädigt oder stammt aus einer neueren Version. Datei prüfen oder neu anlegen."
+    }
+  },
+  "protocol": {
+    "error": {
+      "title": "Ungültige Nachricht",
+      "hint": "Programm und Druckdienst passen nicht zusammen. Alle P12-Programme beenden und neu starten."
+    }
+  },
+  "font": {
+    "missing": {
+      "title": "Schrift fehlt",
+      "hint": "Installation prüfen (tools/fetch_fonts.py)."
+    }
+  },
+  "secret": {
+    "missing": {
+      "title": "Zugangsdaten fehlen",
+      "hint": "Den Wert zur Secret-Referenz hinterlegen (Windows-Anmeldeinformationen, Datei oder Umgebungsvariable)."
+    }
+  },
+  "label": {
+    "not_printable": {
+      "title": "Etikett nicht druckbar",
+      "hint": "Pflichtfelder ausfüllen und die Hinweise der Vorschau beachten."
+    }
+  },
+  "value": {
+    "invalid": {
+      "title": "Ungültiger Wert",
+      "hint": "Eingabe prüfen und korrigieren."
+    }
+  },
+  "request": {
+    "invalid": {
+      "title": "Ungültige Anfrage",
+      "hint": "Eingaben prüfen. Tritt der Fehler weiter auf, die Seite neu laden."
+    }
+  },
+  "not_found": {
+    "title": "Nicht gefunden",
+    "hint": "Das Objekt gibt es nicht (mehr). Liste neu laden."
+  },
+  "auth": {
+    "required": {
+      "title": "Anmeldung nötig",
+      "hint": "Seite neu laden oder die App über das Tray-Menü öffnen."
+    },
+    "forbidden": {
+      "title": "Keine Berechtigung",
+      "hint": "Dieser Zugang darf die Aktion nicht ausführen. Einen Zugang mit passender Rolle verwenden."
+    }
+  },
+  "method": {
+    "not_allowed": {
+      "title": "Aktion nicht erlaubt",
+      "hint": "Diese Anfrage wird hier nicht unterstützt. App aktualisieren."
+    }
+  },
+  "conflict": {
+    "title": "Konflikt",
+    "hint": "Der Zustand hat sich geändert. Neu laden und erneut versuchen."
+  },
+  "too_large": {
+    "title": "Zu groß",
+    "hint": "Die Daten sind zu groß. Eine kleinere Datei oder weniger Inhalt verwenden."
+  },
+  "rate_limited": {
+    "title": "Zu viele Versuche",
+    "hint": "Kurz warten und erneut versuchen."
+  },
+  "http": {
+    "error": {
+      "title": "Anfrage fehlgeschlagen",
+      "hint": "Erneut versuchen. Hilft das nicht, „Problem melden“ nutzen."
+    }
+  },
+  "integration": {
+    "token_missing": {
+      "title": "Token fehlt",
+      "hint": "Token für den Dienst in den Homelab-Einstellungen hinterlegen."
+    },
+    "not_configured": {
+      "title": "Dienst nicht eingerichtet",
+      "hint": "Den Dienst in den Homelab-Einstellungen eintragen."
+    },
+    "unreachable": {
+      "title": "Dienst nicht erreichbar",
+      "hint": "Netzwerk und Adresse des Dienstes prüfen und erneut versuchen."
+    },
+    "auth_failed": {
+      "title": "Zugriff abgelehnt",
+      "hint": "Token oder Zugangsdaten des Dienstes prüfen."
+    },
+    "upstream": {
+      "title": "Fehler beim Dienst",
+      "hint": "Der Dienst hat unerwartet geantwortet. Später erneut versuchen."
+    }
+  },
+  "update": {
+    "not_installed": {
+      "title": "Nicht installiert",
+      "hint": "Updates gibt es nur für die installierte App. Mit „Installieren.cmd“ aus dem Zip installieren."
+    },
+    "no_trusted_key": {
+      "title": "Kein Update-Schlüssel",
+      "hint": "Diese Version kennt keinen vertrauenswürdigen Schlüssel. Neue Version von Hand installieren."
+    },
+    "source_invalid": {
+      "title": "Update-Quelle ungültig",
+      "hint": "In den Einstellungen eine gültige Quelle eintragen (github:owner/repo, file:Ordner oder https-Adresse)."
+    },
+    "source_unreachable": {
+      "title": "Update-Quelle nicht erreichbar",
+      "hint": "Netzwerk prüfen und später erneut versuchen."
+    },
+    "signature_invalid": {
+      "title": "Signatur ungültig",
+      "hint": "Das Update ist nicht vertrauenswürdig und wurde verworfen."
+    },
+    "checksum_mismatch": {
+      "title": "Prüfsumme falsch",
+      "hint": "Der Download ist beschädigt. Später erneut versuchen."
+    },
+    "download_failed": {
+      "title": "Download fehlgeschlagen",
+      "hint": "Netzwerk prüfen und erneut versuchen."
+    },
+    "busy": {
+      "title": "Gerade beschäftigt",
+      "hint": "Es läuft ein Druck oder die Warteschlange ist nicht leer. Später erneut versuchen."
+    },
+    "apply_failed": {
+      "title": "Update fehlgeschlagen",
+      "hint": "Die vorige Version läuft weiter. Details stehen im Protokoll, „Problem melden“ hilft beim Eingrenzen."
+    }
+  },
+  "decoder": {
+    "unavailable": {
+      "title": "Barcode-Decoder nicht verfügbar",
+      "hint": "zxing-cpp ließ sich nicht laden (z. B. von Windows Smart App Control blockiert). Seriennummer von Hand eingeben, Drucken funktioniert weiter."
+    }
+  },
+  "module": {
+    "disabled": {
+      "title": "Modul ausgeschaltet",
+      "hint": "Einschalten unter Einstellungen > Module oder mit „tapesmith module enable <modul>“."
+    }
+  },
+  "aborted": {
+    "title": "Abgebrochen",
+    "hint": "Der Vorgang wurde abgebrochen."
+  },
+  "internal": {
+    "title": "Fehler",
+    "hint": "Unerwarteter Fehler. Erneut versuchen, sonst „Problem melden“ nutzen."
+  }
+}

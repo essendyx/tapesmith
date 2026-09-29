@@ -1,0 +1,94 @@
+{
+  "printer": {
+    "busy": { "title": "Drucker belegt", "hint": "Ein anderes P12-Programm druckt gerade. Kurz warten oder das andere Programm beenden." },
+    "unreachable": { "title": "Drucker nicht erreichbar", "hint": "Drucker aus oder eingeschlafen? Einschalten. Handy-App verbunden? Nur ein Host gleichzeitig, dort trennen." },
+    "not_paired": { "title": "Drucker nicht gekoppelt", "hint": "Drucker in Windows unter Bluetooth koppeln, dann 'p12 setup'." }
+  },
+  "file": {
+    "locked": { "title": "Datei gesperrt", "hint": "Ein anderes P12-Programm schreibt gerade. Kurz warten und erneut versuchen." }
+  },
+  "print": {
+    "incomplete": { "title": "Druck unvollständig", "hint": "Verbindung während des Drucks verloren (Akku leer? Drucker aus?). Drucker prüfen und das Label erneut drucken (p12 reprint last)." }
+  },
+  "port": {
+    "busy": { "title": "COM-Port belegt", "hint": "Ein anderes Programm hält den Port (Handy-App, altes phomemo-Tool, Terminal). Programm schließen oder Drucker aus- und einschalten." },
+    "missing": { "title": "COM-Port fehlt", "hint": "Drucker in Windows unter Bluetooth koppeln oder 'p12 setup' ausführen." }
+  },
+  "bluetooth": {
+    "lost": { "title": "Bluetooth-Verbindung abgebrochen", "hint": "Drucker aus oder außer Reichweite. Einschalten, näher heran und erneut versuchen." }
+  },
+  "transport": {
+    "error": { "title": "Verbindungsfehler", "hint": "'p12 doctor' ausführen." }
+  },
+  "ipc": {
+    "error": { "title": "Druckdienst antwortet nicht", "hint": "Druckdienst neu starten (p12 daemon restart) und erneut versuchen." }
+  },
+  "template": {
+    "invalid": { "title": "Vorlage oder Variable ungültig", "hint": "'p12 template show <name>' zeigt die Felder." }
+  },
+  "document": {
+    "invalid": { "title": "Etikett ungültig", "hint": "Das Etikett enthält ungültige Angaben. Objekte prüfen und erneut versuchen." }
+  },
+  "protocol": {
+    "error": { "title": "Druckdaten ungültig", "hint": "Die Druckdaten passen nicht zum Drucker. Band und Einstellungen prüfen." }
+  },
+  "font": {
+    "missing": { "title": "Schrift fehlt", "hint": "Installation prüfen (tools/fetch_fonts.py)." }
+  },
+  "secret": {
+    "missing": { "title": "Zugangsdaten fehlen", "hint": "Die Secret-Referenz verweist auf einen leeren oder fehlenden Eintrag. Einstellungen prüfen." }
+  },
+  "label": {
+    "not_printable": { "title": "Label nicht druckbar", "hint": "Inhalt kürzen, anderes Band wählen oder die Warnungen der Vorschau beachten." }
+  },
+  "value": {
+    "invalid": { "title": "Ungültiger Wert", "hint": "Eingaben prüfen und erneut versuchen." }
+  },
+  "request": {
+    "invalid": { "title": "Ungültige Anfrage", "hint": "Eingaben prüfen und erneut versuchen." }
+  },
+  "not_found": { "title": "Nicht gefunden", "hint": "Der Eintrag existiert nicht mehr. Liste neu laden." },
+  "auth": {
+    "required": { "title": "Anmeldung nötig", "hint": "Oberfläche über das Tray-Symbol oder 'p12 web' neu öffnen." },
+    "forbidden": { "title": "Keine Berechtigung", "hint": "Diese Funktion ist für diesen Zugang gesperrt." }
+  },
+  "method": {
+    "not_allowed": { "title": "Aktion nicht erlaubt", "hint": "Oberfläche neu laden. Hilft das nicht, Druckdienst aktualisieren." }
+  },
+  "conflict": { "title": "Konflikt", "hint": "Der Eintrag wurde inzwischen geändert. Neu laden und erneut versuchen." },
+  "too_large": { "title": "Zu groß", "hint": "Datei oder Inhalt verkleinern und erneut versuchen." },
+  "rate_limited": { "title": "Zu viele Anfragen", "hint": "Kurz warten und erneut versuchen." },
+  "http": {
+    "error": { "title": "Fehler", "hint": "Erneut versuchen. Bleibt der Fehler, 'p12 doctor' ausführen." }
+  },
+  "integration": {
+    "token_missing": { "title": "Token fehlt", "hint": "Token für die Integration in den Einstellungen hinterlegen." },
+    "not_configured": { "title": "Integration nicht eingerichtet", "hint": "Adresse und Zugang in den Einstellungen eintragen." },
+    "unreachable": { "title": "Dienst nicht erreichbar", "hint": "Netzwerk und Adresse des Dienstes prüfen." },
+    "auth_failed": { "title": "Anmeldung beim Dienst fehlgeschlagen", "hint": "Token bzw. Zugangsdaten in den Einstellungen prüfen." },
+    "upstream": { "title": "Fehler beim Dienst", "hint": "Der angebundene Dienst meldet einen Fehler. Später erneut versuchen." }
+  },
+  "update": {
+    "not_installed": { "title": "Nicht installiert", "hint": "Updates gibt es nur für die installierte Version. Tapesmith zuerst installieren." },
+    "no_trusted_key": { "title": "Kein Update-Schlüssel", "hint": "Diese Version enthält keinen vertrauenswürdigen Schlüssel. Update manuell installieren." },
+    "source_invalid": { "title": "Update-Quelle ungültig", "hint": "Update-Quelle in den Einstellungen prüfen (github:owner/repo, file:Ordner oder https-Adresse)." },
+    "source_unreachable": { "title": "Update-Quelle nicht erreichbar", "hint": "Netzwerk und Update-Quelle prüfen, später erneut versuchen." },
+    "signature_invalid": { "title": "Signatur ungültig", "hint": "Das Update ist nicht vertrauenswürdig und wurde verworfen." },
+    "checksum_mismatch": { "title": "Prüfsumme falsch", "hint": "Download beschädigt. Erneut nach Updates suchen." },
+    "download_failed": { "title": "Download fehlgeschlagen", "hint": "Netzwerk prüfen und erneut versuchen." },
+    "busy": { "title": "Update gerade nicht möglich", "hint": "Es läuft ein Druckauftrag oder ein anderes Update. Später erneut versuchen." },
+    "apply_failed": { "title": "Update fehlgeschlagen", "hint": "Die vorige Version wurde wiederhergestellt. Support-Bericht erstellen und melden." }
+  },
+  "decoder": {
+    "unavailable": { "title": "Barcode-Decoder nicht verfügbar", "hint": "zxing-cpp ließ sich nicht laden (z. B. von Windows Smart App Control blockiert). Seriennummer von Hand eingeben, Drucken funktioniert weiter." }
+  },
+  "module": {
+    "disabled": { "title": "Modul ausgeschaltet", "hint": "Einschalten unter Einstellungen > Module oder mit „tapesmith module enable <modul>“." }
+  },
+  "aborted": { "title": "Abgebrochen", "hint": "Vorgang erneut starten." },
+  "internal": { "title": "Fehler", "hint": "Unerwarteter Fehler. Erneut versuchen, sonst Support-Bericht erstellen." },
+  "client": {
+    "offline": { "title": "Druckdienst nicht erreichbar", "hint": "Läuft der Druckdienst? Mit „p12 daemon start“ starten." },
+    "bad_response": { "title": "Unerwartete Antwort vom Druckdienst", "hint": "Oberfläche neu laden. Bleibt der Fehler, Druckdienst neu starten." }
+  }
+}

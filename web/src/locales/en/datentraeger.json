@@ -1,0 +1,47 @@
+{
+  "title": "Drives",
+  "tabs": {
+    "drives": "Drives",
+    "ssh": "SSH",
+    "replace": "Disk replacement (ZFS)"
+  },
+  "drives": {
+    "refresh": "Refresh",
+    "unknownFilesystem": "unknown",
+    "unlabeled": "Unlabeled",
+    "empty": {
+      "title": "No USB stick or SD card found",
+      "body": "Plug in a drive and click \"Refresh\"."
+    },
+    "print": "Print",
+    "adjust": "Adjust in quick print"
+  },
+  "ssh": {
+    "host": "Host",
+    "scan": "Scan",
+    "scanning": "Scanning …",
+    "hostsEmpty": {
+      "title": "No SSH hosts configured",
+      "before": "Example for",
+      "after": "in the settings:",
+      "link": "Go to settings"
+    },
+    "foundDisks": "Disks found",
+    "select": "Select {{device}}",
+    "slotFor": "Slot for {{device}}",
+    "table": {
+      "device": "Device",
+      "model": "Model",
+      "serial": "Serial number",
+      "size": "Size",
+      "pool": "Pool/vdev",
+      "byId": "by-id",
+      "slot": "Slot"
+    },
+    "chain": "As a chain",
+    "cutMarks": "Cut marks",
+    "preview": "Preview",
+    "planning": "Planning …",
+    "print": "Print"
+  }
+}

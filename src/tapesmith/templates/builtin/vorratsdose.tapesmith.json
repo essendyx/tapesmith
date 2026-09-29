@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "name": "vorratsdose",
+  "description": "Vorratsdose mit Symbol-Icon und großem Inhaltstext, einheitliches Set fürs Küchenregal.",
+  "category": "Haushalt",
+  "tags": ["haushalt", "vorrat", "kueche"],
+  "fields": [
+    {"id": "inhalt", "label": "Inhalt", "type": "input", "required": true, "max_len": 16},
+    {"id": "symbol", "label": "Symbol", "type": "input", "default": "Mehl",
+     "choices": ["Mehl", "Zucker", "Salz", "Kaffee", "Tee", "Nudeln", "Reis", "Müsli"]},
+    {"id": "icon", "label": "Icon", "type": "lookup", "source": "symbol",
+     "map": {"Mehl": "tabler:bread", "Zucker": "tabler:cookie", "Salz": "tabler:salt",
+             "Kaffee": "tabler:coffee", "Tee": "tabler:milk", "Nudeln": "tabler:soup",
+             "Reis": "tabler:bread", "Müsli": "tabler:apple"}}
+  ],
+  "document": {
+    "objects": [
+      {"kind": "icon", "id": "icon1", "x": 8, "y": 8, "w": 72, "h": 72, "icon": "{icon}"},
+      {"kind": "text", "id": "text1", "x": 92, "y": 0, "w": 460, "h": 88, "text": "{inhalt}", "font": "sans-bold", "size": null}
+    ]
+  },
+  "sample": {"inhalt": "Mehl", "symbol": "Mehl"},
+  "translations": {
+    "en": {
+      "title": "pantry-jar",
+      "description": "Pantry jar with a symbol icon and large contents text, a uniform set for the kitchen shelf.",
+      "category": "Household",
+      "tags": ["household", "pantry", "kitchen"],
+      "fields": {
+        "inhalt": {"label": "Contents"},
+        "symbol": {"label": "Symbol", "choices": ["Flour", "Sugar", "Salt", "Coffee", "Tea", "Pasta", "Rice", "Muesli"]},
+        "icon": {"label": "Icon", "map": {"Flour": "tabler:bread", "Sugar": "tabler:cookie", "Salt": "tabler:salt", "Coffee": "tabler:coffee", "Tea": "tabler:milk", "Pasta": "tabler:soup", "Rice": "tabler:bread", "Muesli": "tabler:apple"}}
+      },
+      "sample": {"inhalt": "Flour", "symbol": "Flour"}
+    }
+  }
+}

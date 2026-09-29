@@ -1,0 +1,10 @@
+event: message
+data: {"jsonrpc": "2.0", "method": "notifications/message", "params": {"level": "info", "data": "lese Notiz"}}
+
+: kommentar
+
+event: message
+id: abc
+data: {"jsonrpc": "2.0", "id": 2, "result": {"content": [{"type": "text", "text": "# pmx30 · Proxmox VE (Testserver)\n\n- **IP:** 192.0.2.99 · WebUI `https://192.0.2.99:8006/` · SSH `root@192.0.2.99`\n- **Version:** pve-manager 9.2.x\n- **Platten:** 2× Testplatte 256 GB\n- **Doku**: siehe [[Dienste/testdienst|Testdienst]]\n  - **Unterpunkt:** wird ignoriert\n\n## Platten\n\n| Label | Seriennummer | Rolle |\n|---|---|---|\n| SSD-1 | 111111274913 | `rpool` Spiegel |\n| SSD-2 | 222222274988 | `rpool` Spiegel |\n\n## Gäste\n\n| ID | Name | IP |\n|:--|:--|--:|\n| 101 | testvm | 192.0.2.101 |\n| 102 | [[Dienste/testlxc\\|testlxc]] | 192.0.2.102 |\n| 103 | kurz |\n"}],
+data: "isError": false}}
+

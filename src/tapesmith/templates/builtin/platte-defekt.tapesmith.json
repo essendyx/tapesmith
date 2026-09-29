@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "name": "platte-defekt",
+  "description": "Label für eine ausgebaute defekte Platte (Assistent Platte tauschen): Datum, Grund, Host/Slot und Seriennummer.",
+  "category": "Datenträger",
+  "tags": ["zfs", "defekt", "storage"],
+  "fields": [
+    {"id": "host", "label": "Host", "type": "input", "required": true, "max_len": 10, "default": "pmx10"},
+    {"id": "slot", "label": "Slot", "type": "input", "max_len": 10, "default": "SSD-1"},
+    {"id": "sn", "label": "Seriennummer oder by-id-Name", "type": "input", "clean": "serial", "required": true},
+    {"id": "datum", "label": "Datum (TT.MM.JJJJ)", "type": "input", "required": true, "max_len": 10},
+    {"id": "grund", "label": "Grund", "type": "input", "max_len": 16, "default": "faulted"}
+  ],
+  "layout": {"lines": ["DEFEKT {datum} · {grund}", "{host} {slot} SN {sn|last:6}"], "font": "sans"},
+  "sample": {"host": "pmx10", "slot": "SSD-1", "sn": "S5Y1NX0R123456", "datum": "28.09.2026", "grund": "faulted"},
+  "translations": {
+    "en": {
+      "title": "failed-disk",
+      "description": "Label for a removed failed disk (Replace disk assistant): date, reason, host/slot and serial number.",
+      "category": "Disks",
+      "tags": ["zfs", "failed", "storage"],
+      "fields": {
+        "host": {"label": "Host"},
+        "slot": {"label": "Slot"},
+        "sn": {"label": "Serial number or by-id name"},
+        "datum": {"label": "Date (DD.MM.YYYY)"},
+        "grund": {"label": "Reason"}
+      },
+      "lines": ["FAILED {datum} · {grund}", "{host} {slot} SN {sn|last:6}"]
+    }
+  }
+}

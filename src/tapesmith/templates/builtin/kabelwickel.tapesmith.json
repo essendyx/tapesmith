@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "name": "kabelwickel",
+  "description": "Kabelwickel: Kabel-ID mehrfach um das Kabel gewickelt (π·d + Überlappung).",
+  "category": "Kabel",
+  "tags": ["kabel", "wickel", "cat6"],
+  "generator": {"name": "kabelwickel", "params": {}},
+  "fields": [
+    {"id": "kabel_id", "label": "Kabel-ID", "type": "input", "required": true, "max_len": 12},
+    {"id": "kabeltyp", "label": "Kabeltyp", "type": "input", "default": "Cat6",
+     "choices": ["Cat6", "Cat6a", "Kaltgeräte", "DAC", "LWL"]},
+    {"id": "durchmesser_mm", "label": "Durchmesser (mm, überschreibt Kabeltyp)", "type": "input"}
+  ],
+  "default_copies": 1,
+  "sample": {"kabel_id": "K-017"},
+  "translations": {
+    "en": {
+      "title": "cable-wrap",
+      "description": "Cable wrap: cable ID repeated around the cable (π·d + overlap).",
+      "category": "Cables",
+      "tags": ["cable", "wrap", "cat6"],
+      "fields": {
+        "kabel_id": {"label": "Cable ID"},
+        "kabeltyp": {"label": "Cable type", "choice_labels": {"Kaltgeräte": "Power cord", "LWL": "Fiber"}},
+        "durchmesser_mm": {"label": "Diameter (mm, overrides cable type)"}
+      }
+    }
+  }
+}

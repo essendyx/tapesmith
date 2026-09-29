@@ -1,0 +1,93 @@
+{
+  "title": "History",
+  "search": {
+    "label": "Search history",
+    "placeholder": "Search, e.g. 274913"
+  },
+  "empty": {
+    "titleQuery": "No matches for “{{query}}”",
+    "titleNone": "Nothing printed yet",
+    "bodyQuery": "Try a different search term.",
+    "bodyNone": "Printed labels will appear here."
+  },
+  "status": {
+    "ok": "ok",
+    "läuft": "running",
+    "abgebrochen": "cancelled",
+    "unvollständig": "incomplete",
+    "wartet": "waiting",
+    "fehler": "Error"
+  },
+  "length": {
+    "copies": " ×{{count}}",
+    "chain": " · chain"
+  },
+  "secret": {
+    "wifiPassword": "Wi-Fi password (password)",
+    "generic": "Sensitive field “{{id}}”"
+  },
+  "columns": {
+    "thumb": "Preview",
+    "title": "Title",
+    "time": "Time",
+    "source": "Source",
+    "length": "Length/copies",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "grid": {
+    "label": "History entries"
+  },
+  "actions": {
+    "reprint": "Reprint",
+    "reprintAmount": "Reprint (×{{count}})",
+    "reprintDisabledHint": "Sensitive entry without image or template: cannot be reprinted",
+    "editInEditor": "Open in editor",
+    "saveAsTemplate": "Save as template",
+    "copyPng": "Copy PNG",
+    "export": "Export",
+    "archive": "Archive",
+    "for": "{{action}}: {{title}}"
+  },
+  "sensitiveNoImage": "sensitive entry, no image saved",
+  "noImage": "no image",
+  "thumbAlt": "Thumbnail",
+  "drawer": {
+    "close": "Close",
+    "time": "Time",
+    "sourceLength": "Source · length",
+    "missingSecret": "(sensitive, will be requested when reprinting)",
+    "error": "Error",
+    "previewAlt": "Preview"
+  },
+  "reprintDialog": {
+    "title": "Reprint",
+    "copies": "Copies",
+    "chain": "Print as chain"
+  },
+  "templateDialog": {
+    "title": "Save as template",
+    "name": "Name",
+    "description": "Description",
+    "category": "Category"
+  },
+  "notify": {
+    "pngCopied": "PNG copied to clipboard",
+    "copyFailed": "Could not copy",
+    "copyError": "Copying PNG failed",
+    "exportFailed": "Export failed",
+    "archived": "Archived",
+    "archiveFailed": "Archiving failed",
+    "templateSaved": "Saved as template: {{name}}",
+    "templateSaveFailed": "Template not saved"
+  },
+  "commands": {
+    "search": "Search history"
+  },
+  "time": {
+    "noAppointment": "not scheduled",
+    "now": "now",
+    "inSeconds": "in {{count}} s",
+    "inMinutes": "in {{count}} min"
+  }
+}

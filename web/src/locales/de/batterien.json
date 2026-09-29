@@ -1,0 +1,56 @@
+{
+  "page": {
+    "title": "Batterien",
+    "subtitle": "Batteriestände aus Home Assistant und Wartungsetiketten"
+  },
+  "tabs": {
+    "batterien": "Batterien",
+    "wartung": "Wartung"
+  },
+  "list": {
+    "sectionTitle": "Geräte mit Batterie",
+    "sectionDescription": "Aus Home Assistant, inklusive Homematic IP.",
+    "filterPlaceholder": "nur unter … %",
+    "filterAria": "Nur Geräte unter X Prozent",
+    "printSeries": "Etiketten als Serie",
+    "loading": "Lade Geräte …",
+    "empty": {
+      "title": "Keine Geräte mit Batterie gefunden",
+      "body": "Home Assistant meldet keine Batteriesensoren. Prüfe in den Einstellungen Adresse und Token."
+    },
+    "tableAriaLabel": "Geräte mit Batterie",
+    "columns": {
+      "select": "Auswahl",
+      "device": "Gerät",
+      "area": "Raum",
+      "level": "Stand",
+      "type": "Typ",
+      "actions": "Aktionen"
+    },
+    "selectRowAria": "{{device}} auswählen",
+    "low": "schwach",
+    "levelText": "{{level}} %",
+    "levelUnknown": "-",
+    "levelProgressAria": "Batteriestand {{device}}",
+    "typeAria": "Batterietyp {{device}}",
+    "printRow": "Etikett drucken"
+  },
+  "wartung": {
+    "suggestions": {
+      "usvAkku": "USV-Akku",
+      "luftfilter": "Luftfilter",
+      "waermeleitpaste": "Wärmeleitpaste",
+      "rauchmelderTesten": "Rauchmelder testen"
+    },
+    "wasLabel": "Was",
+    "datumLabel": "Datum (TT.MM.JJJJ)",
+    "intervallLabel": "Intervall (Monate)",
+    "notizLabel": "Notiz",
+    "reminderLabel": "Erinnerung in Home Assistant anlegen",
+    "dueHint": "Fällig am {{date}}",
+    "previewLoading": "Vorschau …",
+    "previewAlt": "Vorschau des Wartungsetiketts",
+    "print": "Drucken",
+    "reminderCreated": "Erinnerung in Home Assistant angelegt"
+  }
+}

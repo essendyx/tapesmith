@@ -1,0 +1,6 @@
+﻿ID,Label,Side A,Termination A,Side B,Termination B,Type,Status,Color,Length,Length unit
+1,K-100,SW1,P12,pmx10,eno1,cat6,connected,blue,2,m
+2,,SW1,P13,pmx11,eno1,cat6a,connected,yellow,3,m
+3,K-102,SW2,P1,core1,Gi1/0/1,smf,connected,,10,m
+4,,SW2,P2,san1,port0,dac-passive,connected,black,1,m
+5,K-104,PDU1,out3,srv1,psu1,power,connected,grey,1.5,m

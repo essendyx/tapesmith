@@ -1,0 +1,34 @@
+{
+  "schema_version": 2,
+  "name": "asset-kurz",
+  "description": "Anlagen-Kennzeichnung mit QR auf den Kurz-Link des Asset-Registers, Nummer fett und Bezeichnung.",
+  "category": "Homelab",
+  "tags": ["homelab", "asset", "qr", "kurz-link"],
+  "fields": [
+    {"id": "nummer", "label": "Nummer", "type": "input", "required": true, "max_len": 16},
+    {"id": "bezeichnung", "label": "Bezeichnung", "type": "input", "max_len": 20},
+    {"id": "link", "label": "Kurz-Link", "type": "input", "required": true, "max_len": 64}
+  ],
+  "document": {
+    "objects": [
+      {"kind": "qr", "id": "qr1", "x": 8, "y": 0, "w": 88, "h": 88, "data": "{link}", "error": "m"},
+      {"kind": "text", "id": "text1", "x": 112, "y": 2, "w": 300, "h": 42, "text": "{nummer}", "font": "sans-bold", "size": null},
+      {"kind": "text", "id": "text2", "x": 112, "y": 46, "w": 400, "h": 38, "text": "{bezeichnung}", "size": null}
+    ]
+  },
+  "sample": {"nummer": "HL-0042", "bezeichnung": "Patchkabel Cat6 3m", "link": "HTTPS://L.EXAMPLE.COM/HL-0042"},
+  "translations": {
+    "en": {
+      "title": "asset-short-link",
+      "description": "Asset tag with a QR code to the short link of the asset register, number in bold and description.",
+      "category": "Homelab",
+      "tags": ["homelab", "asset", "qr", "short-link"],
+      "fields": {
+        "nummer": {"label": "Number"},
+        "bezeichnung": {"label": "Description"},
+        "link": {"label": "Short link"}
+      },
+      "sample": {"bezeichnung": "Patch cable Cat6 3 m"}
+    }
+  }
+}

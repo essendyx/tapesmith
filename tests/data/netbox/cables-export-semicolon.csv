@@ -1,0 +1,6 @@
+Kabel;Seite A;Anschluss A;Seite B;Anschluss B;Typ
+K-100;SW1;P12;pmx10;eno1;cat6
+;SW1;P13;pmx11;eno1;cat6a
+K-102;SW2;P1;core1;Gi1/0/1;smf
+;SW2;P2;san1;port0;dac-passive
+K-104;PDU1;out3;srv1;psu1;power

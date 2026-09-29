@@ -1,0 +1,54 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tapesmith"
+version = "0.3.0"
+description = "Label studio for the Phomemo P12"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+authors = [{name = "Tapesmith contributors"}]
+keywords = ["phomemo", "p12", "label printer", "labels", "windows"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: Microsoft :: Windows",
+    "Environment :: Win32 (MS Windows)",
+]
+requires-python = ">=3.11"
+dependencies = ["pillow>=10.1", "pyserial>=3.5", "segno>=1.6", "zxing-cpp>=3.0", "PySide6>=6.6", "ppf-datamatrix>=0.2", "openpyxl>=3.1", "bleak>=0.22", "fastapi>=0.115", "uvicorn>=0.30", "mcp>=2.2,<3", "paho-mqtt>=2.0", "keyring>=25", "httpx>=0.27", "cryptography>=42"]
+
+[project.urls]
+Homepage = "https://github.com/essendyx/tapesmith"
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-qt>=4.4", "httpx>=0.27"]
+golden = ["phomemo-p12-tools==0.0.5"]
+build = ["pyinstaller>=6.6"]
+screenshots = ["playwright>=1.47"]
+
+[project.scripts]
+tapesmith = "tapesmith.cli:main"
+p12 = "tapesmith.cli:main"
+phomemo_render_label = "tapesmith.compat:main_render"
+phomemo_print_p12 = "tapesmith.compat:main_print"
+p12d = "tapesmith.daemon.instance:main"
+
+[project.gui-scripts]
+tapesmith-app = "tapesmith.webui.browser:main"
+tapesmith-tray = "tapesmith.gui.tray:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tapesmith"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["hardware: braucht den echten Drucker (nur mit --hardware)"]
+qt_api = "pyside6"
+filterwarnings = [
+    "error",
+    # Starlette >= 1.x empfiehlt für den TestClient das Paket httpx2; der TestClient funktioniert mit
+    # httpx unverändert (nur Tests). Entfällt, sobald httpx2 im venv ist.
+    "ignore:Using .httpx. with .starlette.testclient. is deprecated:UserWarning",
+]

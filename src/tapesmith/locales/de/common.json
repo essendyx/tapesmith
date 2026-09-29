@@ -1,0 +1,18 @@
+{
+  "app": {
+    "name": "Tapesmith"
+  },
+  "language": {
+    "auto": "Wie Windows",
+    "de": "Deutsch",
+    "en": "English"
+  },
+  "theme": {
+    "system": "Wie Windows",
+    "hell": "Hell",
+    "dunkel": "Dunkel"
+  },
+  "units": {
+    "mm": "{value} mm"
+  }
+}

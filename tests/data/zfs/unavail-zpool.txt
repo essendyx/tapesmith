@@ -1,0 +1,11 @@
+  pool: rpool
+ state: DEGRADED
+config:
+
+	NAME                                                                    STATE     READ WRITE CKSUM
+	rpool                                                                   DEGRADED     0     0     0
+	  raidz1-0                                                              DEGRADED     0     0     0
+	    9876543210987654321                                                 UNAVAIL      0     0     0  was /dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K1234567-part1
+	    /dev/sdd1                                                          ONLINE       0     0     0
+
+errors: No known data errors

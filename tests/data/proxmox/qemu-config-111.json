@@ -1,0 +1,1 @@
+{"data": {"name": "webapp1", "cores": 8, "memory": "32768", "agent": "1", "net0": "virtio=BC:24:11:00:00:01,bridge=vmbr0", "hostpci0": "0000:01:00.0,pcie=1", "usb0": "host=1-2", "digest": "abc"}}

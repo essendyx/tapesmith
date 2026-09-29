@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "name": "absender",
+  "description": "Absenderetikett (3 Zeilen): Name, Straße, Ort. Bei drei vollen Zeilen ist die Schrift auf 12 mm knapp, daher kurz halten.",
+  "category": "Büro",
+  "tags": ["buero", "absender", "post"],
+  "fields": [
+    {"id": "name", "label": "Name", "type": "input", "required": true, "max_len": 20},
+    {"id": "strasse", "label": "Straße", "type": "input", "required": true, "max_len": 20},
+    {"id": "ort", "label": "Ort", "type": "input", "required": true, "max_len": 20}
+  ],
+  "layout": {"lines": ["{name}", "{strasse}", "{ort}"]},
+  "checks": {"min_font_mm": 2.5},
+  "sample": {"name": "Max Mustermann", "strasse": "Musterstr. 1", "ort": "12345 Musterstadt"},
+  "translations": {
+    "en": {
+      "title": "return-address",
+      "description": "Return address label (3 lines): name, street, city. With three full lines the font is tight on 12 mm tape, so keep it short.",
+      "category": "Office",
+      "tags": ["office", "sender", "mail"],
+      "fields": {
+        "name": {"label": "Name"},
+        "strasse": {"label": "Street"},
+        "ort": {"label": "City"}
+      },
+      "sample": {"name": "Jane Doe", "strasse": "1 Sample St", "ort": "Springfield 12345"}
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "name": "reserviert",
+  "description": "„Reserviert für“-Etikett mit Namen und Datum/Frist als Freitext.",
+  "category": "Haushalt",
+  "tags": ["haushalt", "reserviert", "kleinanzeigen"],
+  "fields": [
+    {"id": "name", "label": "Name", "type": "input", "required": true, "max_len": 16},
+    {"id": "bis", "label": "Bis", "type": "input", "required": true, "max_len": 12}
+  ],
+  "layout": {"lines": ["Reserviert für {name}", "bis {bis}"]},
+  "sample": {"name": "Hubert", "bis": "30.09.2026"},
+  "translations": {
+    "en": {
+      "title": "reserved",
+      "description": "“Reserved for” label with name and date or deadline as free text.",
+      "category": "Household",
+      "tags": ["household", "reserved", "classifieds"],
+      "fields": {
+        "name": {"label": "Name"},
+        "bis": {"label": "Until"}
+      },
+      "lines": ["Reserved for {name}", "until {bis}"],
+      "sample": {"name": "Alex", "bis": "30 Sep 2026"}
+    }
+  }
+}

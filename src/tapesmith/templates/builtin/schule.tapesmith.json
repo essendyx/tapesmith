@@ -1,0 +1,38 @@
+{
+  "schema_version": 2,
+  "name": "schule",
+  "description": "Schulsachen-Etikett mit Symbol-Icon, Name und Klasse.",
+  "category": "Haushalt",
+  "tags": ["haushalt", "schule", "kind"],
+  "fields": [
+    {"id": "name", "label": "Name", "type": "input", "required": true, "max_len": 16},
+    {"id": "klasse", "label": "Klasse", "type": "input", "required": true, "max_len": 6},
+    {"id": "symbol", "label": "Symbol", "type": "input", "default": "Stern",
+     "choices": ["Stern", "Buch", "Stift", "Rucksack"]},
+    {"id": "icon", "label": "Icon", "type": "lookup", "source": "symbol",
+     "map": {"Stern": "tabler:star", "Buch": "tabler:book", "Stift": "tabler:pencil", "Rucksack": "tabler:backpack"}}
+  ],
+  "document": {
+    "objects": [
+      {"kind": "icon", "id": "icon1", "x": 8, "y": 8, "w": 72, "h": 72, "icon": "{icon}"},
+      {"kind": "text", "id": "text1", "x": 92, "y": 0, "w": 400, "h": 88, "text": "{name}\nKlasse {klasse}", "size": null}
+    ]
+  },
+  "sample": {"name": "Mia", "klasse": "3b", "symbol": "Stern"},
+  "translations": {
+    "en": {
+      "title": "school",
+      "description": "School supplies label with a symbol icon, name and class.",
+      "category": "Household",
+      "tags": ["household", "school", "kids"],
+      "fields": {
+        "name": {"label": "Name"},
+        "klasse": {"label": "Class"},
+        "symbol": {"label": "Symbol", "choices": ["Star", "Book", "Pencil", "Backpack"]},
+        "icon": {"label": "Icon", "map": {"Star": "tabler:star", "Book": "tabler:book", "Pencil": "tabler:pencil", "Backpack": "tabler:backpack"}}
+      },
+      "texts": {"text1": "{name}\nClass {klasse}"},
+      "sample": {"symbol": "Star"}
+    }
+  }
+}

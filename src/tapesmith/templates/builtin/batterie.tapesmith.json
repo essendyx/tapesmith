@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "name": "batterie",
+  "description": "Batterie-Etikett für Home-Assistant-Geräte: Gerät, Raum, Typ und Wechseldatum.",
+  "category": "Haushalt",
+  "tags": ["batterie", "wartung"],
+  "fields": [
+    {"id": "geraet", "label": "Gerät", "type": "input", "required": true, "max_len": 18},
+    {"id": "raum", "label": "Raum", "type": "input", "max_len": 14},
+    {"id": "typ", "label": "Batterietyp", "type": "input", "required": true, "max_len": 12,
+     "choices": ["CR2032", "CR2450", "AA", "AAA", "CR123A", "9V"]},
+    {"id": "datum", "label": "Datum (TT.MM.JJJJ)", "type": "input", "required": true, "max_len": 10}
+  ],
+  "layout": {"lines": ["{geraet} · {raum}", "Batterie {typ} · {datum}"]},
+  "sample": {"geraet": "Fensterkontakt Bad", "raum": "Bad", "typ": "CR2032", "datum": "28.09.2026"},
+  "translations": {
+    "en": {
+      "title": "battery",
+      "description": "Battery label for Home Assistant devices: device, room, type and replacement date.",
+      "category": "Household",
+      "tags": ["battery", "maintenance"],
+      "fields": {
+        "geraet": {"label": "Device"},
+        "raum": {"label": "Room"},
+        "typ": {"label": "Battery type"},
+        "datum": {"label": "Date (DD.MM.YYYY)"}
+      },
+      "lines": ["{geraet} · {raum}", "Battery {typ} · {datum}"],
+      "sample": {"geraet": "Window sensor bath", "raum": "Bathroom"}
+    }
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "menu": {
+    "updateCheck": "Check for updates",
+    "updateAvailable": "Update to {version} available",
+    "main": "Open web interface",
+    "quick": "Quick print",
+    "clipboard": "Clipboard to quick print",
+    "hotkeySuffix": " ({hotkey})",
+    "favorites": "Favorites",
+    "favoritesEmpty": "No favorites (Settings, tray and shortcuts)",
+    "recent": "Recent labels",
+    "recentEmpty": "Nothing printed yet",
+    "test": "Print test label",
+    "history": "History",
+    "queuePause": "Queue paused",
+    "status": "Printer status",
+    "log": "Log and diagnostics",
+    "settings": "Settings",
+    "autostart": "Start with Windows",
+    "quit": "Quit"
+  },
+  "favorite": {
+    "default": "Favorite {index}"
+  },
+  "notify": {
+    "connecting": "Print service still connecting",
+    "connectingTooltip": "Tapesmith · connecting to print service…",
+    "printingTooltip": "Printing… {percent} % · {status}",
+    "hint": {
+      "title": "Note"
+    },
+    "backendUnavailable": {
+      "title": "Print backend not available"
+    },
+    "clipboardUnreadable": {
+      "title": "Clipboard not readable"
+    },
+    "clipboardEmpty": {
+      "title": "No text in clipboard",
+      "text": "Nothing for quick print"
+    },
+    "favoriteNotPrintable": {
+      "title": "Favorite cannot be printed"
+    },
+    "inputsMissing": {
+      "title": "Missing input",
+      "text": "{error}. Web interface opened in the browser"
+    },
+    "notPrinted": {
+      "title": "Not printed",
+      "tapeReason": "{reason}. Please print from the web interface",
+      "noBackend": "No print backend available, please use the web interface",
+      "busy": "Print still running"
+    },
+    "reprintOnlyMain": {
+      "title": "Reprint only from the web interface"
+    },
+    "reprintNotPossible": {
+      "title": "Reprint not possible"
+    },
+    "testNotPrintable": {
+      "title": "Test label cannot be printed"
+    },
+    "queue": {
+      "title": "Queue"
+    },
+    "statusUnavailable": {
+      "title": "Status not available"
+    },
+    "autostartFailed": {
+      "title": "Autostart not changed"
+    },
+    "openFailed": {
+      "title": "Web interface not opened"
+    },
+    "countersFailed": {
+      "title": "Counter not saved"
+    },
+    "printed": {
+      "title": "Printed",
+      "withHints": "{title} · Note: {hints}"
+    },
+    "waiting": {
+      "title": "Waiting in the queue (#{queueId})",
+      "text": "Printer not reachable, will print automatically"
+    },
+    "confirmNeeded": {
+      "title": "Not printed: confirmation needed",
+      "text": "{reasons}. Please print from the web interface"
+    },
+    "cancelled": {
+      "title": "Print canceled",
+      "text": "The printer finished feeding"
+    },
+    "incomplete": {
+      "title": "Print incomplete",
+      "fallbackText": "Connection lost"
+    },
+    "hotkeyInactive": {
+      "title": "Hotkey not active"
+    },
+    "clipboardTruncated": {
+      "title": "Clipboard shortened",
+      "text": "Only the first {max} characters were taken over"
+    },
+    "configInvalid": {
+      "title": "Settings not applied"
+    }
+  },
+  "cli": {
+    "description": "Tapesmith in the notification area",
+    "noHotkeys": "do not register global hotkeys"
+  }
+}

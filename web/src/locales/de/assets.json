@@ -1,0 +1,105 @@
+{
+  "page": {
+    "title": "Assets",
+    "subtitle": "Nummernkreis, Register und Kurz-Links für Anlagen-Kennzeichnungen"
+  },
+  "actions": {
+    "new": "Neue Assets",
+    "import": "Vorhandene Nummer übernehmen",
+    "export": "CSV exportieren",
+    "printSeries": "Als Serie drucken ({{count}})"
+  },
+  "nextNumber": "Nächste Nummer: {{next}}",
+  "shortlinkWarning": {
+    "title": "Kurz-Link-Dienst nicht eingerichtet",
+    "body": "Labels zeigen bis dahin auf das lange Ziel (falls gesetzt)."
+  },
+  "loadErrorFallback": "Assets konnten nicht geladen werden",
+  "toolbar": {
+    "searchAria": "Assets durchsuchen",
+    "searchPlaceholder": "Suchen…",
+    "statusLabel": "Status",
+    "statusFilterAria": "Statusfilter"
+  },
+  "status": {
+    "all": "alle",
+    "aktiv": "aktiv",
+    "verworfen": "verworfen",
+    "ausgemustert": "ausgemustert"
+  },
+  "table": {
+    "ariaLabel": "Assets",
+    "selectAllAria": "Alle auswählen",
+    "selectRowAria": "{{id}} auswählen",
+    "columns": {
+      "id": "Nummer",
+      "bezeichnung": "Bezeichnung",
+      "kategorie": "Kategorie",
+      "standort": "Standort",
+      "sn": "SN",
+      "host": "Host",
+      "status": "Status",
+      "ziel": "Ziel",
+      "actions": "Aktionen"
+    }
+  },
+  "rowActions": {
+    "edit": "Bearbeiten",
+    "printLabel": "Label drucken",
+    "createVaultNote": "Vault-Notiz anlegen",
+    "copyShortlink": "Kurz-Link kopieren",
+    "void": "Verwerfen"
+  },
+  "empty": {
+    "title": "Noch kein Asset angelegt",
+    "body": "Lege eine Nummer an, klebe das Etikett aufs Gerät und finde es später über die Nummer oder den QR-Code wieder."
+  },
+  "loading": "Assets werden geladen …",
+  "notify": {
+    "vaultCreated": "Vault-Notiz angelegt: {{path}}",
+    "vaultExists": "Notiz existiert bereits",
+    "vaultFailed": "Vault-Notiz konnte nicht angelegt werden",
+    "labelFailed": "Label konnte nicht geladen werden",
+    "shortlinkCopied": "Kurz-Link kopiert",
+    "shortlinkMissing": "Kein Kurz-Link vorhanden",
+    "shortlinkFailed": "Kurz-Link konnte nicht geladen werden",
+    "voidSuccess": "Verworfen: {{id}}",
+    "voidFailed": "Verwerfen fehlgeschlagen",
+    "seriesFailed": "Serie konnte nicht vorbereitet werden",
+    "exportFailed": "Export fehlgeschlagen"
+  },
+  "void": {
+    "dialogTitle": "Asset verwerfen",
+    "confirmTitle": "„{{id}}\" verwerfen?",
+    "confirmMessage": "Die Nummer wird nie wieder vergeben.",
+    "confirmButton": "Verwerfen",
+    "reasonLabel": "Grund",
+    "continue": "Weiter"
+  },
+  "dialog": {
+    "titles": {
+      "create": "Neue Assets",
+      "import": "Vorhandene Nummer übernehmen",
+      "edit": "Asset bearbeiten"
+    },
+    "fields": {
+      "id": "Nummer",
+      "count": "Anzahl",
+      "bezeichnung": "Bezeichnung",
+      "kategorie": "Kategorie",
+      "standort": "Standort",
+      "seriennummer": "Seriennummer",
+      "host": "Host",
+      "ziel": "Ziel-URL",
+      "paperlessDoc": "Paperless-Dokument",
+      "notiz": "Notiz"
+    },
+    "paperlessInvalid": "Muss eine Zahl sein",
+    "notify": {
+      "created": "{{count}} Asset(s) angelegt",
+      "imported": "Übernommen: {{id}}",
+      "updated": "Gespeichert: {{id}}",
+      "failed": "Speichern fehlgeschlagen"
+    }
+  }
+}
