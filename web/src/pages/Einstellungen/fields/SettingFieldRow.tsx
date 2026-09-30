@@ -4,7 +4,7 @@ import { Input, Select, Textarea, makeStyles, tokens } from '@fluentui/react-com
 import { Dismiss16Regular, Folder16Regular } from '@fluentui/react-icons';
 import { useTranslation } from 'react-i18next';
 import { useSettingsEdit } from '../context';
-import { FieldRow, InlineAction, ToggleControl } from '../FieldRow';
+import { FieldRow, InlineAction, ToggleControl } from '../../../components/FieldRow';
 import { hotkeyFromEvent } from '../format';
 import { translateOr } from '../../../i18n';
 import { isAppWindow, pickFolder } from '../../../platform';

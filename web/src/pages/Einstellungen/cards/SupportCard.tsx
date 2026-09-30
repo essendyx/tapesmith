@@ -10,7 +10,7 @@ import { Section } from '../../../components/Section';
 import { ErrorMessage } from '../../../components/ErrorMessage';
 import { useNotify } from '../../../components/NotifyProvider';
 import { apiDownload } from '../../../api/client';
-import { FieldRows } from '../FieldRow';
+import { FieldRows } from '../../../components/FieldRow';
 import { DaemonInfoRows } from './DaemonCard';
 import { SUPPORT_CARD_ID } from '../sectionIds';
 

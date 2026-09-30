@@ -26,7 +26,8 @@
     "revokeConfirmTitle": "Token „{{name}}“ widerrufen?",
     "revokeConfirmMessage": "Wer dieses Token nutzt, verliert sofort den Zugriff.",
     "revokeSuccess": "Token „{{name}}“ widerrufen",
-    "revokeErrorTitle": "Widerrufen fehlgeschlagen"
+    "revokeErrorTitle": "Widerrufen fehlgeschlagen",
+    "revokeFor": "Widerrufen: {{name}}"
   },
   "newToken": {
     "titleCreate": "Neues Token",

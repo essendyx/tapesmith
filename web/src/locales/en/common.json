@@ -55,5 +55,23 @@
     "fileUnreadable": "The file could not be read",
     "badStatus": "Unexpected response from the print service (HTTP {{status}})",
     "badJson": "Response from the print service is not valid JSON"
+  },
+  "rowActions": {
+    "more": "More actions for {{title}}",
+    "tooltip": "More actions"
+  },
+  "systemTitle": {
+    "calibrateRuler": "Calibration ruler",
+    "calibrateEdge": "Calibration edge test",
+    "calibrate": "Calibration {{name}}",
+    "testLabel": "Test label",
+    "clipboardImage": "Image from clipboard",
+    "reprintPrefix": "Reprint #{{id}}: ",
+    "seriesPrefix": "Series ({{count}}): ",
+    "wifi": "Wi-Fi {{ssid}}",
+    "wifiSecret": "Wi-Fi {{ssid}} (password {{redacted}})"
+  },
+  "dataList": {
+    "region": "{{label}} (table area)"
   }
 }

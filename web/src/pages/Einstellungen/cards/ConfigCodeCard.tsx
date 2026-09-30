@@ -8,7 +8,7 @@ import { useConfirm } from '../../../components/ConfirmProvider';
 import { useNotify } from '../../../components/NotifyProvider';
 import { isAppWindow, pickFolder } from '../../../platform';
 import { postConfigExport, postConfigImport } from '../api';
-import { FieldRow, FieldRows, InlineAction, ToggleControl } from '../FieldRow';
+import { FieldRow, FieldRows, InlineAction, ToggleControl } from '../../../components/FieldRow';
 import { CONFIG_CODE_ID } from '../sectionIds';
 
 const useStyles = makeStyles({

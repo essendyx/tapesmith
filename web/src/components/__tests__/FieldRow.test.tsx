@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '../../test/utils';
-import { FieldRow, FieldRows } from './FieldRow';
+import { FieldRow, FieldRows } from '../FieldRow';
 
 describe('FieldRow', () => {
   it('Neustart-Hinweis erscheint nur einmal, auch wenn der Hilfetext ihn schon nennt', () => {

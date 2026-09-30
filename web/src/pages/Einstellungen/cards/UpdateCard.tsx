@@ -29,7 +29,7 @@ import {
 } from '../../../api/update';
 import { useFormat } from '../../../i18n/format';
 import { useLayoutStyles } from '../../../theme/layout';
-import { FieldRow, FieldRows } from '../FieldRow';
+import { FieldRow, FieldRows } from '../../../components/FieldRow';
 
 type Action = 'check' | 'install' | 'rollback';
 

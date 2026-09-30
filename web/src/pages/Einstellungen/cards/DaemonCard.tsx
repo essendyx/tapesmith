@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { isAppWindow, openPath } from '../../../platform';
 import { useDaemon } from '../api';
 import { formatUptime } from '../format';
-import { FieldRow, ValueText } from '../FieldRow';
+import { FieldRow, ValueText } from '../../../components/FieldRow';
 
 /** Zeilen für eine `FieldRows`-Liste; ohne Angaben ein kurzer Hinweis. */
 export function DaemonInfoRows(): JSX.Element {

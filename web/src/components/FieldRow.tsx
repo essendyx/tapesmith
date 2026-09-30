@@ -1,5 +1,6 @@
 /**
- * Zeilenbaustein der Einstellungsseite im Stil der Windows-11-Einstellungen (Fluent 2): links
+ * Formularzeile im Stil der Windows-11-Einstellungen (Fluent 2), gemeinsam für Einstellungen,
+ * Zugriff und alle Modulseiten mit Einstellungen: links
  * Beschriftung (normales Gewicht) mit Hilfetext darunter, rechts eine Steuerspalte fester Breite
  * (`form.controlWidth`). Eingabefelder, Zahlenfelder, Auswahllisten und Knöpfe füllen diese Spalte
  * exakt aus, Schalter und Plaketten stehen rechtsbündig darin. Listen-Editoren nutzen
@@ -9,7 +10,7 @@
 import type { ReactNode } from 'react';
 import { Badge, Body1, Button, Caption1, Switch, Tooltip, makeStyles, mergeClasses, tokens } from '@fluentui/react-components';
 import { useTranslation } from 'react-i18next';
-import { form } from '../../theme/layout';
+import { form } from '../theme/layout';
 
 /** Steuerelemente, die die Steuerspalte ausfüllen (mehrere teilen sie sich zu gleichen Teilen). */
 const FILL = '& > .fui-Input, & > .fui-SpinButton, & > .fui-Select, & > .fui-Combobox, & > .fui-Dropdown, & > .fui-Button, & > .fui-Textarea';

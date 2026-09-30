@@ -7,7 +7,7 @@ import { translateOr } from '../../i18n';
 import { useSettingsEdit } from './context';
 import { useSaveSection } from './useSaveSection';
 import { SettingFieldRow } from './fields/SettingFieldRow';
-import { FieldRows } from './FieldRow';
+import { FieldRows } from '../../components/FieldRow';
 import type { SettingsSection, TemplateSummary, TransportChoice } from '../../api/types';
 
 const useStyles = makeStyles({

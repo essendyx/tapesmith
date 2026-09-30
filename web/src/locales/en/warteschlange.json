@@ -1,6 +1,9 @@
 {
   "title": "Queue",
-  "status": { "paused": "paused", "active": "active" },
+  "status": {
+    "paused": "paused",
+    "active": "active"
+  },
   "autoRetry": "Automatic retry",
   "probe": {
     "label": "Check: {{value}}",
@@ -19,7 +22,9 @@
     "up": "Move up",
     "down": "Move down",
     "duplicate": "Duplicate",
-    "retry": "Retry now"
+    "retry": "Retry now",
+    "for": "{{action}}: {{title}}",
+    "cancelJob": "Cancel job"
   },
   "empty": {
     "title": "No pending jobs",
@@ -27,7 +32,8 @@
   },
   "job": {
     "sensitive": " (sensitive, memory only: lost when the service stops)",
-    "attempts": "Attempts: {{count}}"
+    "attempts": "Attempts: {{count}}",
+    "sensitiveShort": "sensitive, memory only"
   },
   "state": {
     "wartet": "waiting",
@@ -36,7 +42,12 @@
     "fehler": "Error",
     "abgebrochen": "cancelled"
   },
-  "source": { "gui": "GUI", "cli": "CLI", "hotkey": "Hotkey", "api": "API" },
+  "source": {
+    "gui": "GUI",
+    "cli": "CLI",
+    "hotkey": "Hotkey",
+    "api": "API"
+  },
   "confirm": {
     "cancelTitle": "Cancel job?",
     "cancelMessage": "Cancel the job \"{{title}}\"?",
@@ -50,5 +61,15 @@
     "cancelFailed": "Cancelling failed",
     "actionFailed": "Action failed",
     "autoRetryFailed": "Setting not applied"
-  }
+  },
+  "columns": {
+    "position": "Pos.",
+    "title": "Job",
+    "source": "Source",
+    "attempts": "Attempts",
+    "nextTry": "Next try",
+    "state": "Status",
+    "actions": "Actions"
+  },
+  "listLabel": "Jobs in the queue"
 }

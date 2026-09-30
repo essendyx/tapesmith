@@ -8,7 +8,7 @@ import { useNotify } from '../../../components/NotifyProvider';
 import { usePrint } from '../../../components/usePrint';
 import { postCalibrationLength, resetCalibrationLength, useCalibration } from '../api';
 import { useConfirm } from '../../../components/ConfirmProvider';
-import { FieldRow, FieldRows, ToggleControl } from '../FieldRow';
+import { FieldRow, FieldRows, ToggleControl } from '../../../components/FieldRow';
 
 export function CalibrationCard(): JSX.Element {
   const { t } = useTranslation('einstellungen');

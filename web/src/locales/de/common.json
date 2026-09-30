@@ -55,5 +55,23 @@
     "fileUnreadable": "Datei konnte nicht gelesen werden",
     "badStatus": "Unerwartete Antwort vom Druckdienst (HTTP {{status}})",
     "badJson": "Antwort des Druckdienstes ist kein gültiges JSON"
+  },
+  "rowActions": {
+    "more": "Weitere Aktionen für {{title}}",
+    "tooltip": "Weitere Aktionen"
+  },
+  "systemTitle": {
+    "calibrateRuler": "Kalibrierung Lineal",
+    "calibrateEdge": "Kalibrierung Kantentest",
+    "calibrate": "Kalibrierung {{name}}",
+    "testLabel": "Testlabel",
+    "clipboardImage": "Bild aus Zwischenablage",
+    "reprintPrefix": "Nachdruck #{{id}}: ",
+    "seriesPrefix": "Serie ({{count}}): ",
+    "wifi": "WLAN {{ssid}}",
+    "wifiSecret": "WLAN {{ssid}} (Passwort {{redacted}})"
+  },
+  "dataList": {
+    "region": "{{label}} (Tabellenbereich)"
   }
 }

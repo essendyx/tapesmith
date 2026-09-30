@@ -26,7 +26,8 @@
     "revokeConfirmTitle": "Revoke token \"{{name}}\"?",
     "revokeConfirmMessage": "Anyone using this token loses access immediately.",
     "revokeSuccess": "Token \"{{name}}\" revoked",
-    "revokeErrorTitle": "Revoke failed"
+    "revokeErrorTitle": "Revoke failed",
+    "revokeFor": "Revoke: {{name}}"
   },
   "newToken": {
     "titleCreate": "New token",
