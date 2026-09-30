@@ -9,8 +9,8 @@
 
   Die Regel erlaubt nur eingehendes TCP auf dem Port des Druckdienstes (Standard 8712), nur aus den
   angegebenen privaten IPv4-Netzen (Standard 192.168.0.0/16) und nur in den Profilen Privat und
-  Domaene. Sie nennt bewusst kein Programm (der Python-Pfad aendert sich mit venv bzw. portabler
-  Version); die Begrenzung erfolgt ueber Port und Remote-Adresse.
+  Domaene. Sie nennt bewusst kein Programm (der Python-Pfad aendert sich mit jeder Version,
+  denn jede Version ist eine eigene Python-Umgebung); die Begrenzung erfolgt ueber Port und Remote-Adresse.
 
   Anlegen, Aendern und Entfernen brauchen Administratorrechte. -Status geht ohne.
   Am Ende zeigt das Skript immer den Status und die naechsten Schritte.

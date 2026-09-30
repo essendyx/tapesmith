@@ -128,7 +128,7 @@ def test_readme_contains_required_pieces():
     text = _readme()
     for piece in (
         "setup-tapesmith-lan.ps1",
-        "build-tapesmith-portable.ps1",
+        "release.yml",
         "lan.enabled",
         "p12 token add",
         "Uptime",

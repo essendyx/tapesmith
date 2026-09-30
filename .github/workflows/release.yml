@@ -1,18 +1,18 @@
-# Release: Tests, Web-Build, portabler Build (PyInstaller), Code-Signatur über SignPath (Zertifikat der
-# SignPath Foundation), Zip, signiertes Update-Manifest und GitHub-Release.
+# Release: Tests, Web-Build, Wheel und sdist, Lock-Liste, signiertes Update-Manifest, PyPI (Trusted
+# Publishing) und GitHub-Release. Tapesmith wird über Python verteilt (py -m pip install tapesmith,
+# py -m tapesmith install); es gibt keine eigene EXE und kein Zip.
 #
 # Ablauf und Sicherungen:
-#   build    Version aus src/tapesmith/__init__.py muss zum Tag v<version> (und zu pyproject.toml)
-#            passen. Danach Tests, Web-Build, Build mit Selbsttest, Upload des unsignierten Ordners
-#            als Workflow-Artifact (kein Release).
-#   sign     Ohne Secret SIGNPATH_API_TOKEN oder Variable SIGNPATH_ORGANIZATION_ID Abbruch mit Meldung,
-#            es gibt nie ein unsigniertes Release. Signaturanfrage an SignPath (dort manuelle Freigabe),
-#            Warten auf den signierten Ordner, Prüfung der Authenticode-Signatur von Tapesmith.exe,
-#            dann Tapesmith-portable-<version>.zip mit Installieren.cmd.
-#   publish  Environment "release" (Freigabe durch den Maintainer): Update-Manifest mit Ed25519
-#            signieren (Secret TAPESMITH_UPDATE_SIGNING_KEY), gegen trusted_keys.json prüfen und das
-#            GitHub-Release mit manifest.json, manifest.json.sig und dem Zip anlegen.
-# Einrichtung: CODE_SIGNING_POLICY.md und .signpath/artifact-configuration.xml.
+#   build    Version aus src/tapesmith/__init__.py muss zu pyproject.toml und zum Tag v<version> passen.
+#            Tests, Web-Build, Wheel und sdist. Für Python 3.11 und 3.12 lädt pip download alle Wheels
+#            (nur fertige Wheels für win_amd64 bzw. any), daraus entstehen manifest.json (unsigniert)
+#            und lock.txt. Probeinstallation mit --require-hashes aus genau diesen Wheels plus
+#            Selbsttest je Python-Version.
+#   sign     Environment "release" (Freigabe durch den Maintainer): Manifest mit Ed25519 signieren
+#            (Secret TAPESMITH_UPDATE_SIGNING_KEY) und gegen trusted_keys.json prüfen.
+#   pypi     Environment "pypi": Veröffentlichung per Trusted Publishing (OIDC, kein API-Token).
+#   release  GitHub-Release mit manifest.json, manifest.json.sig, lock.txt und dem Wheel. Erst nach
+#            PyPI, damit installierte Apps nie ein Manifest sehen, dessen Pakete noch fehlen.
 name: Release
 
 on:
@@ -33,14 +33,9 @@ concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: false
 
-env:
-  SIGNPATH_PROJECT_SLUG: tapesmith
-  SIGNPATH_SIGNING_POLICY_SLUG: release-signing
-  SIGNPATH_ARTIFACT_CONFIGURATION_SLUG: initial
-
 jobs:
   build:
-    name: Tests und Build
+    name: Tests, Build und Lock-Liste
     runs-on: windows-latest
     timeout-minutes: 60
     defaults:
@@ -49,7 +44,6 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
       prerelease: ${{ steps.version.outputs.prerelease }}
-      artifact-id: ${{ steps.upload.outputs.artifact-id }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -62,6 +56,7 @@ jobs:
           $init = Get-Content -Raw -Encoding utf8 src/tapesmith/__init__.py
           if ($init -notmatch '__version__\s*=\s*"([^"]+)"') { Write-Output "::error::__version__ fehlt in src/tapesmith/__init__.py"; exit 1 }
           $version = $Matches[1]
+          if ($version -notmatch '^\d+(\.\d+)*((a|b|rc)\d+)?$') { Write-Output "::error::Version $version ist keine PEP-440-Version (z. B. 0.4.0 oder 0.4.0b1)"; exit 1 }
           $pyproject = Get-Content -Raw -Encoding utf8 pyproject.toml
           if ($pyproject -notmatch '(?m)^version\s*=\s*"([^"]+)"' -or $Matches[1] -ne $version) {
             Write-Output "::error::pyproject.toml (version) passt nicht zu __version__ $version"; exit 1
@@ -75,7 +70,14 @@ jobs:
           Write-Output "Version $version (Vorabversion: $prerelease)"
 
       # Kein Cache im Release: der Build soll nur aus Quellen und Paketindex entstehen.
+      - name: Python 3.12
+        id: py312
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
       - name: Python 3.11
+        id: py311
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.11"
@@ -83,7 +85,7 @@ jobs:
       - name: Python-Pakete
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -c constraints-ci.txt -e ".[dev,build]"
+          python -m pip install -c constraints-ci.txt -e ".[dev]"
 
       - name: Node.js LTS
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -99,105 +101,163 @@ jobs:
       - name: Python-Tests
         run: python -m pytest -q -p no:cacheprovider -W error
 
-      - name: Web-Oberfläche bauen und prüfen
+      - name: Web-Oberfläche bauen
         run: python tools/build_web.py --skip-check
 
-      - name: Portabler Build mit Selbsttest (ohne Zip)
-        run: python tools/build_portable.py --dist dist
-
-      - name: Unsignierten Ordner bereitstellen
+      - name: Wheel und sdist bauen
         run: |
-          New-Item -ItemType Directory -Force unsigned | Out-Null
-          Move-Item dist/Tapesmith unsigned/Tapesmith
-          if (-not (Test-Path unsigned/Tapesmith/Tapesmith.exe)) { Write-Output "::error::Tapesmith.exe fehlt"; exit 1 }
+          python -m build --outdir dist .
+          if ($LASTEXITCODE -ne 0) { Write-Output "::error::python -m build fehlgeschlagen"; exit 1 }
+          $wheel = "dist/tapesmith-$($env:VERSION)-py3-none-any.whl"
+          if (-not (Test-Path $wheel)) { Write-Output "::error::$wheel fehlt"; exit 1 }
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
 
-      # Wurzel des Artifacts ist der Ordner Tapesmith/ (siehe .signpath/artifact-configuration.xml).
-      - name: Unsignierten Ordner hochladen
-        id: upload
+      # Alle Wheels je Python-Version, nur fertige Wheels. Tapesmith selbst kommt aus dist/, der Rest
+      # von PyPI. Daraus entstehen Lock-Liste und Manifest (Name, Version, SHA-256).
+      - name: Wheels für die Lock-Liste laden
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          PY311: ${{ steps.py311.outputs.python-path }}
+          PY312: ${{ steps.py312.outputs.python-path }}
+        run: |
+          $wheel = "dist/tapesmith-$($env:VERSION)-py3-none-any.whl"
+          foreach ($pair in @(@("py311", $env:PY311), @("py312", $env:PY312))) {
+            & $pair[1] -m pip download --disable-pip-version-check --only-binary=:all: --dest "wheels/$($pair[0])" $wheel
+            if ($LASTEXITCODE -ne 0) { Write-Output "::error::pip download für $($pair[0]) fehlgeschlagen"; exit 1 }
+          }
+
+      - name: Manifest und lock.txt erzeugen (unsigniert)
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          PRERELEASE: ${{ steps.version.outputs.prerelease }}
+          INPUT_NOTES: ${{ github.event.inputs.notes }}
+        run: |
+          $notes = if ($env:INPUT_NOTES) { $env:INPUT_NOTES } else { "Tapesmith $($env:VERSION)" }
+          $channel = if ($env:PRERELEASE -eq "true") { "beta" } else { "stable" }
+          python tools/release.py manifest --version $env:VERSION --channel $channel --notes $notes `
+            --wheels 3.11=wheels/py311 --wheels 3.12=wheels/py312 --out out
+          if ($LASTEXITCODE -ne 0) { Write-Output "::error::tools/release.py manifest fehlgeschlagen"; exit 1 }
+          Set-Content -Encoding utf8 -NoNewline -Path out/notes.txt -Value $notes
+
+      # Wie der Updater: neue Umgebung, pip nur mit Prüfsummen aus lock.txt und nur aus den geladenen
+      # Wheels, dann der Selbsttest der installierten Version.
+      - name: Probeinstallation mit --require-hashes und Selbsttest
+        env:
+          PY311: ${{ steps.py311.outputs.python-path }}
+          PY312: ${{ steps.py312.outputs.python-path }}
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          foreach ($pair in @(@("py311", $env:PY311), @("py312", $env:PY312))) {
+            $venv = Join-Path $env:RUNNER_TEMP "probe-$($pair[0])"
+            & $pair[1] -m venv $venv
+            & "$venv/Scripts/python.exe" -m pip install --disable-pip-version-check --no-index --find-links "wheels/$($pair[0])" `
+              --only-binary=:all: --require-hashes -r out/lock.txt
+            if ($LASTEXITCODE -ne 0) { Write-Output "::error::Probeinstallation $($pair[0]) fehlgeschlagen"; exit 1 }
+            $env:TAPESMITH_HOME = Join-Path $env:RUNNER_TEMP "probe-home-$($pair[0])"
+            & "$venv/Scripts/python.exe" -m tapesmith.selftest --selftest-out "$env:RUNNER_TEMP/selftest-$($pair[0]).txt"
+            $code = $LASTEXITCODE
+            Get-Content "$env:RUNNER_TEMP/selftest-$($pair[0]).txt"
+            if ($code -ne 0) { Write-Output "::error::Selbsttest $($pair[0]) fehlgeschlagen"; exit 1 }
+          }
+
+      - name: Pakete hochladen
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: Tapesmith-unsigned-${{ steps.version.outputs.version }}
-          path: unsigned/
+          name: dist
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Manifest hochladen (unsigniert)
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: manifest-unsigned
+          path: out/
           if-no-files-found: error
           retention-days: 7
 
   sign:
-    name: Code-Signatur (SignPath)
+    name: Update-Manifest signieren
     needs: build
     runs-on: windows-latest
-    timeout-minutes: 240
-    permissions:
-      contents: read
-      actions: read
+    timeout-minutes: 30
+    environment: release
     defaults:
       run:
         shell: pwsh
     steps:
-      - name: SignPath eingerichtet?
-        env:
-          SIGNPATH_API_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
-          SIGNPATH_ORGANIZATION_ID: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
-        run: |
-          if (-not $env:SIGNPATH_API_TOKEN) {
-            Write-Output "::error::Secret SIGNPATH_API_TOKEN ist nicht gesetzt. Ohne Code-Signatur über SignPath gibt es kein Release (keine unsignierten Releases). Einrichtung: CODE_SIGNING_POLICY.md"
-            exit 1
-          }
-          if (-not $env:SIGNPATH_ORGANIZATION_ID) {
-            Write-Output "::error::Repository-Variable SIGNPATH_ORGANIZATION_ID ist nicht gesetzt (Settings, Secrets and variables, Actions, Variables)."
-            exit 1
-          }
-
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-
-      # Die Freigabe der Signaturanfrage erfolgt in SignPath von Hand; bis dahin wartet der Schritt.
-      - name: Signaturanfrage an SignPath
-        uses: signpath/github-action-submit-signing-request@f6d04783b4569d051e0c80105fe66e82819d0092 # v3.0
-        with:
-          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
-          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
-          project-slug: ${{ env.SIGNPATH_PROJECT_SLUG }}
-          signing-policy-slug: ${{ env.SIGNPATH_SIGNING_POLICY_SLUG }}
-          artifact-configuration-slug: ${{ env.SIGNPATH_ARTIFACT_CONFIGURATION_SLUG }}
-          github-artifact-id: ${{ needs.build.outputs.artifact-id }}
-          parameters: |
-            version: "${{ needs.build.outputs.version }}"
-          wait-for-completion: true
-          wait-for-completion-timeout-in-seconds: 13500
-          output-artifact-directory: signed
-
-      - name: Signatur von Tapesmith.exe prüfen
-        run: |
-          $exe = "signed/Tapesmith/Tapesmith.exe"
-          if (-not (Test-Path $exe)) { Write-Output "::error::$exe fehlt im signierten Artifact"; exit 1 }
-          $sig = Get-AuthenticodeSignature $exe
-          if ($sig.Status -ne "Valid") { Write-Output "::error::Tapesmith.exe ist nicht gültig signiert ($($sig.Status))"; exit 1 }
-          Write-Output "Signiert von: $($sig.SignerCertificate.Subject)"
 
       - name: Python 3.11
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.11"
 
-      - name: Zip mit Installieren.cmd
-        run: python tools/build_portable.py --zip-from signed/Tapesmith --dist release
+      # tools/release.py importiert tapesmith.update und damit Teile des Kerns.
+      - name: Python-Pakete für tools/release.py
+        run: python -m pip install -c constraints-ci.txt -e .
 
-      - name: Zip hochladen
+      - name: Manifest holen
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: manifest-unsigned
+          path: out
+
+      - name: Manifest signieren und prüfen
+        env:
+          TAPESMITH_UPDATE_SIGNING_KEY: ${{ secrets.TAPESMITH_UPDATE_SIGNING_KEY }}
+        run: |
+          if (-not $env:TAPESMITH_UPDATE_SIGNING_KEY) {
+            Write-Output "::error::Secret TAPESMITH_UPDATE_SIGNING_KEY fehlt im Environment release."
+            exit 1
+          }
+          $key = Join-Path $env:RUNNER_TEMP "tapesmith-update-key.pem"
+          [System.IO.File]::WriteAllText($key, $env:TAPESMITH_UPDATE_SIGNING_KEY)
+          python tools/release.py sign --key $key out/manifest.json
+          $code = $LASTEXITCODE
+          Remove-Item -Force $key -ErrorAction SilentlyContinue
+          if ($code -ne 0) { Write-Output "::error::tools/release.py sign fehlgeschlagen"; exit 1 }
+          python tools/release.py verify --keys src/tapesmith/update/trusted_keys.json out/manifest.json
+          if ($LASTEXITCODE -ne 0) { Write-Output "::error::Manifest-Signatur passt nicht zu src/tapesmith/update/trusted_keys.json"; exit 1 }
+
+      - name: Signiertes Manifest hochladen
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: Tapesmith-portable-${{ needs.build.outputs.version }}
-          path: release/Tapesmith-portable-${{ needs.build.outputs.version }}.zip
+          name: manifest-signed
+          path: out/
           if-no-files-found: error
           retention-days: 7
 
-  publish:
-    name: Update-Manifest und GitHub-Release
+  pypi:
+    name: PyPI (Trusted Publishing)
     needs: [build, sign]
+    # Die Veröffentlichungs-Action ist eine Container-Action und läuft nur unter Linux.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: pypi
+      url: https://pypi.org/project/tapesmith/
+    permissions:
+      id-token: write
+    steps:
+      - name: Pakete holen
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: dist
+          path: dist
+
+      - name: Auf PyPI veröffentlichen
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+
+  release:
+    name: GitHub-Release
+    needs: [build, sign, pypi]
     runs-on: windows-latest
-    timeout-minutes: 30
-    environment: release
+    timeout-minutes: 15
     permissions:
       contents: write
     defaults:
@@ -207,59 +267,29 @@ jobs:
       VERSION: ${{ needs.build.outputs.version }}
       PRERELEASE: ${{ needs.build.outputs.prerelease }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Python 3.11
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-        with:
-          python-version: "3.11"
-
-      # tools/release.py importiert tapesmith.update und damit Teile des Kerns (Pillow, segno, ...).
-      - name: Python-Pakete für tools/release.py
-        run: python -m pip install -c constraints-ci.txt -e .
-
-      - name: Signiertes Zip holen
+      - name: Pakete holen
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: Tapesmith-portable-${{ needs.build.outputs.version }}
-          path: release
+          name: dist
+          path: dist
 
-      - name: Manifest erzeugen und signieren
-        env:
-          TAPESMITH_UPDATE_SIGNING_KEY: ${{ secrets.TAPESMITH_UPDATE_SIGNING_KEY }}
-          INPUT_NOTES: ${{ github.event.inputs.notes }}
-        run: |
-          if (-not $env:TAPESMITH_UPDATE_SIGNING_KEY) {
-            Write-Output "::error::Secret TAPESMITH_UPDATE_SIGNING_KEY fehlt im Environment release."
-            exit 1
-          }
-          $notes = if ($env:INPUT_NOTES) { $env:INPUT_NOTES } else { "Tapesmith $($env:VERSION)" }
-          # Release-Seite: Hinweis auf die Code signing policy (Bedingung der SignPath Foundation).
-          $policy = "$($env:GITHUB_SERVER_URL)/$($env:GITHUB_REPOSITORY)/blob/main/CODE_SIGNING_POLICY.md"
-          $releaseNotes = "$notes`n`nFree code signing provided by SignPath.io, certificate by SignPath Foundation. Code signing policy: $policy"
-          Set-Content -Encoding utf8 -NoNewline -Path "$env:RUNNER_TEMP/notes.txt" -Value $releaseNotes
-          $channel = if ($env:PRERELEASE -eq "true") { "beta" } else { "stable" }
-          $key = Join-Path $env:RUNNER_TEMP "tapesmith-update-key.pem"
-          [System.IO.File]::WriteAllText($key, $env:TAPESMITH_UPDATE_SIGNING_KEY)
-          python tools/release.py publish-dir --zip "release/Tapesmith-portable-$($env:VERSION).zip" `
-            --version $env:VERSION --channel $channel --notes $notes --key $key --out out
-          $code = $LASTEXITCODE
-          Remove-Item -Force $key -ErrorAction SilentlyContinue
-          if ($code -ne 0) { Write-Output "::error::tools/release.py publish-dir fehlgeschlagen"; exit 1 }
-          python tools/release.py verify --keys src/tapesmith/update/trusted_keys.json out/manifest.json
-          if ($LASTEXITCODE -ne 0) { Write-Output "::error::Manifest-Signatur passt nicht zu src/tapesmith/update/trusted_keys.json"; exit 1 }
+      - name: Signiertes Manifest holen
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: manifest-signed
+          path: out
 
       - name: GitHub-Release anlegen
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           $tag = "v$($env:VERSION)"
-          $files = @("out/manifest.json", "out/manifest.json.sig", "out/Tapesmith-portable-$($env:VERSION).zip")
+          $notes = Get-Content -Raw -Encoding utf8 out/notes.txt
+          $install = "Installation (Windows, Python 3.11 oder 3.12): py -m pip install --user tapesmith, dann py -m tapesmith install. Update und Deinstallation: siehe README."
+          Set-Content -Encoding utf8 -NoNewline -Path "$env:RUNNER_TEMP/release-notes.txt" -Value "$notes`n`n$install"
+          $files = @("out/manifest.json", "out/manifest.json.sig", "out/lock.txt", "dist/tapesmith-$($env:VERSION)-py3-none-any.whl")
           $ghArgs = @("release", "create", $tag) + $files + @("--repo", $env:GITHUB_REPOSITORY,
-            "--title", "Tapesmith $($env:VERSION)", "--notes-file", "$env:RUNNER_TEMP/notes.txt",
+            "--title", "Tapesmith $($env:VERSION)", "--notes-file", "$env:RUNNER_TEMP/release-notes.txt",
             "--target", $env:GITHUB_SHA)
           if ($env:PRERELEASE -eq "true") { $ghArgs += "--prerelease" }
           gh @ghArgs

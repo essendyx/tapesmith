@@ -5,8 +5,6 @@ Betriebsdoku: LAN-Freigabe des Druckdienstes, Zugangs-Tokens, Home Assistant, Te
 Skripte in diesem Ordner:
 
 - `setup-tapesmith-lan.ps1`: legt die Windows-Firewallregel für den Druckdienst an, prüft oder entfernt sie (idempotent, einmaliger Admin-Schritt).
-- `build-tapesmith-portable.ps1`: baut die portable App (PyInstaller onedir) und prüft sie per Selbsttest.
-- `publish-tapesmith-release.ps1`: baut, signiert und veröffentlicht ein Update-Release als GitHub-Release (Abschnitt 11).
 - `proxmox-tapesmith-role.sh`: legt auf einem Proxmox-Host eine Rolle nur mit Leserechten und ein API-Token für die Proxmox-Integration an.
 
 ## 1. Überblick
@@ -80,7 +78,7 @@ Rückbau:
 ## 7. MCP (Claude)
 
 - Einrichtung anzeigen: `p12 mcp --config` (startet nichts).
-- stdio für Claude Code auf diesem PC: `claude mcp add p12 -- <Pfad zum Repo>\.venv\Scripts\python.exe -m tapesmith.cli mcp` (bzw. der Python-Pfad der portablen App). Der MCP-Prozess spricht per HTTP mit dem lokalen Druckdienst.
+- stdio für Claude Code auf diesem PC: `claude mcp add p12 -- <Pfad zum Repo>\.venv\Scripts\python.exe -m tapesmith.cli mcp` (bzw. `%LOCALAPPDATA%\Programs\Tapesmith\current\Scripts\python.exe` der installierten App). Der MCP-Prozess spricht per HTTP mit dem lokalen Druckdienst.
 - HTTP-Variante im Dienst (`mcp.http = true`): `claude mcp add --transport http p12-http http://127.0.0.1:8712/mcp --header "Authorization: Bearer <TOKEN>"`. Das Token vorher mit `p12 token add Claude --rolle drucken` anlegen.
 - Werkzeuge: `list_templates`, `label_preview`, `label_print`, `printer_status`, `print_history`, `queue_list`. Gedruckt wird nur mit einer `preview_id` aus `label_preview` und `confirm=true`.
 
@@ -107,11 +105,21 @@ Das Modul `Tapesmith` spricht die REST-API an (lokal mit der Sitzung des Dienste
 
 ## 11. Release und Update
 
+Tapesmith wird über Python verteilt: das Paket `tapesmith` liegt auf PyPI, die installierte App
+(`py -m tapesmith install`) hat je Version eine eigene Python-Umgebung unter
+`%LOCALAPPDATA%\Programs\Tapesmith\versions\<Version>` und startet immer mit dem signierten
+`pythonw.exe` (`-m tapesmith...`), nie mit einer eigenen EXE. So blockiert Windows Smart App Control
+nichts, obwohl Tapesmith keine Code-Signatur hat.
+
 Die installierte App sucht Updates in `update.source` (Standard: die GitHub-Releases des Projekts,
 `github:essendyx/tapesmith`) und nimmt nur Manifeste an, deren Ed25519-Signatur zu einem Schlüssel in
-`src/tapesmith/update/trusted_keys.json` passt. Solange die Datei leer ist, meldet die App „Kein
-vertrauenswürdiger Signaturschlüssel“ und installiert nichts. Wer einen eigenen Fork verteilt, erzeugt
-einen eigenen Schlüssel und trägt die eigene Quelle ein.
+`src/tapesmith/update/trusted_keys.json` passt. Das Manifest enthält eine vollständige Lock-Liste
+(Paketname, Version und SHA-256 aller Wheels für `win_amd64` und die unterstützten
+Python-Versionen). Der Updater legt damit eine neue Umgebung an, installiert mit
+`pip install --require-hashes --only-binary=:all: -r lock.txt` (nur Dateien mit passender
+Prüfsumme, nur fertige Wheels), führt den Selbsttest der neuen Version aus und schaltet erst im
+Leerlauf um. Wer einen eigenen Fork verteilt, erzeugt einen eigenen Schlüssel und trägt die eigene
+Quelle ein.
 
 1. **Signaturschlüssel erzeugen** (einmalig, im App-Repo):
 
@@ -121,28 +129,31 @@ einen eigenen Schlüssel und trägt die eigene Quelle ein.
 
    Der private Schlüssel liegt nur im gewählten Schlüsselordner außerhalb des Repos (das Werkzeug
    beschränkt die Rechte auf den aktuellen Benutzer), nie im Repo. Den öffentlichen Schlüssel in
-   `trusted_keys.json` committen, danach Web- und portablen Build neu erzeugen
-   (`python tools\build_web.py --install`, `python tools\build_portable.py --zip`). Schlüsseltausch:
-   neuen Schlüssel mit `keygen` zusätzlich in `trusted_keys.json` aufnehmen, eine Version mit beiden
-   Schlüsseln ausliefern, erst danach mit dem neuen signieren.
+   `trusted_keys.json` committen. Den Inhalt der PEM-Datei als Secret `TAPESMITH_UPDATE_SIGNING_KEY`
+   im GitHub-Environment `release` hinterlegen. Schlüsseltausch: neuen Schlüssel mit `keygen`
+   zusätzlich in `trusted_keys.json` aufnehmen, eine Version mit beiden Schlüsseln ausliefern, erst
+   danach mit dem neuen signieren.
 2. **Kein GitHub-Token nötig:** Das Repository ist öffentlich, die App fragt die Releases ohne Token ab.
-3. **Release veröffentlichen** mit `publish-tapesmith-release.ps1`:
-
-   ```
-   .\publish-tapesmith-release.ps1 -Version 0.3.1 -Notes "Fehlerbehebungen" -KeyPath <Schlüsselordner>\tapesmith_update_signing_key.pem -WhatIf
-   .\publish-tapesmith-release.ps1 -Version 0.3.1 -Notes "Fehlerbehebungen" -KeyPath <Schlüsselordner>\tapesmith_update_signing_key.pem
-   ```
-
-   Das Skript baut `dist\Tapesmith-portable-<Version>.zip` (Version aus `src\tapesmith\__init__.py`),
-   legt mit `tools\release.py publish-dir` `manifest.json`, `manifest.json.sig` und das Zip in einen
-   Temp-Ordner und erzeugt mit `gh release create v<Version>` das Release (`-Prerelease` für den Kanal
-   `beta`). Ohne `-Repo` nimmt es das GitHub-Repository des lokalen Checkouts. Existiert das Release
-   schon, bricht es ab.
-4. **Dateifreigabe als Quelle** (optional): `tools\release.py publish-dir --zip <Zip> --version <v>
-   --notes "…" --key <Schlüsselordner>\tapesmith_update_signing_key.pem --out \\<server>\<freigabe>\tapesmith`
-   und in der App `update.source = "file:\\<server>\<freigabe>\tapesmith"`. Der Benutzer braucht nur
-   Leserecht, kein Token.
+3. **Release veröffentlichen:** Version in `pyproject.toml` und `src\tapesmith\__init__.py` erhöhen
+   (PEP 440, z. B. `0.4.0` oder `0.4.0b1` für den Kanal `beta`), committen, Tag `v<Version>` pushen.
+   Der Workflow `.github/workflows/release.yml` prüft die Version, führt die Tests aus, baut Web-Oberfläche,
+   Wheel und sdist, lädt mit `pip download` für Python 3.11 und 3.12 alle Wheels, erzeugt daraus mit
+   `tools\release.py` Manifest und `lock.txt`, signiert das Manifest (Environment `release` mit
+   Freigabe), veröffentlicht auf PyPI per Trusted Publishing (Environment `pypi`) und legt das
+   GitHub-Release mit `manifest.json`, `manifest.json.sig`, `lock.txt` und dem Wheel an.
+4. **Dateifreigabe als Quelle** (optional, ohne PyPI): Wheels je Python-Version mit
+   `py -3.11 -m pip download --only-binary=:all: -d wheels\py311 dist\tapesmith-<v>-py3-none-any.whl`
+   (ebenso für 3.12) laden, dann `tools\release.py publish-dir --version <v> --wheels 3.11=wheels\py311
+   --wheels 3.12=wheels\py312 --notes "…" --key <Schlüsselordner>\tapesmith_update_signing_key.pem
+   --copy-wheels --out \\<server>\<freigabe>\tapesmith` und in der App
+   `update.source = "file:\\<server>\<freigabe>\tapesmith"`. Liegen Wheels im Ordner (bzw. in
+   `wheels`), installiert pip nur von dort. Der Benutzer braucht nur Leserecht, kein Token.
 5. **Rückfall:** Meldet `/health` der neuen Version nicht binnen 60 s die neue Versionsnummer, stellt
    der Updater automatisch auf die vorige zurück und trägt die Version in `install.json` unter `failed`
    ein (nie wieder automatisch angeboten). Manuell: `p12 update rollback` bzw. Einstellungen › Updates
    › „Auf vorige Version zurück“. Protokoll: `%APPDATA%\Tapesmith\logs\update.log`.
+6. **Umzug vom früheren portablen Build:** Die App-Versionen bis 0.3 waren eine PyInstaller-EXE. Sie
+   können das neue Manifest (Schema 2) nicht lesen und melden bei der Update-Prüfung einen Fehler.
+   Einmal `py -m pip install --user tapesmith` und `py -m tapesmith install` ausführen: die
+   Installation übernimmt den Ordner, ersetzt Autostart, Startmenü und Apps-und-Features-Eintrag und
+   entfernt die alte EXE. Benutzerdaten in `%APPDATA%\Tapesmith` bleiben unverändert.
