@@ -32,7 +32,7 @@ describe('DatentraegerPage', () => {
     expect(screen.getByText('USB-Stick')).toBeInTheDocument();
     expect(screen.getByText('Kingston 64 GB')).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: 'Drucken' }));
+    await user.click(screen.getByRole('button', { name: /^Drucken: / }));
     await waitFor(() => expect(api.calls.some((c) => c.path === '/api/v1/labels/print')).toBe(true));
     const call = api.calls.find((c) => c.path === '/api/v1/labels/print');
     const body = call?.body as { source: { kind: string; lines: string[] } };
@@ -61,7 +61,7 @@ describe('DatentraegerPage', () => {
       { route: '/datentraeger' },
     );
     await screen.findByText((text) => text.includes('64 GB · exFAT'));
-    await user.click(screen.getByRole('button', { name: 'Im Schnelldruck anpassen' }));
+    await user.click(screen.getByRole('button', { name: /^Im Schnelldruck anpassen: / }));
     await waitFor(() =>
       expect(screen.getByTestId('location')).toHaveTextContent(`/schnelldruck?text=${encodeURIComponent('USB-Stick\nKingston 64 GB')}`),
     );

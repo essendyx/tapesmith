@@ -4,7 +4,6 @@ import { Tab, TabList } from '@fluentui/react-components';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../components/PageHeader';
 import { moduleTexts } from '../../modules';
-import { Section } from '../../components/Section';
 import { useLayoutStyles } from '../../theme/layout';
 import { AsnView } from './AsnView';
 import { GarantieView } from './GarantieView';
@@ -19,12 +18,10 @@ export default function PaperlessPage(): JSX.Element {
   return (
     <div className={layout.stack}>
       <PageHeader title={moduleTexts('paperless').name} subtitle={moduleTexts('paperless').description} />
-      <Section flush>
-        <TabList selectedValue={tab} onTabSelect={(_e, data) => setTab(data.value as TabKey)}>
-          <Tab value="asn">{t('tabs.asn')}</Tab>
-          <Tab value="garantie">{t('tabs.garantie')}</Tab>
-        </TabList>
-      </Section>
+      <TabList selectedValue={tab} onTabSelect={(_e, data) => setTab(data.value as TabKey)}>
+        <Tab value="asn">{t('tabs.asn')}</Tab>
+        <Tab value="garantie">{t('tabs.garantie')}</Tab>
+      </TabList>
       {tab === 'asn' ? <AsnView /> : <GarantieView />}
     </div>
   );

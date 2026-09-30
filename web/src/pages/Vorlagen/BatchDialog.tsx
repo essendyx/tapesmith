@@ -539,10 +539,12 @@ export function BatchDialog(props: {
               }}
             />
           </DialogContent>
-          <DialogActions>
+          <DialogActions position="start">
             <Button icon={<ArrowClockwise20Regular />} onClick={onContactSheet} disabled={!plan}>
               {t('batch.contactSheet')}
             </Button>
+          </DialogActions>
+          <DialogActions position="end">
             <Button appearance="primary" onClick={onPrint} disabled={!canPrint}>
               {t('common:actions.print')}
             </Button>

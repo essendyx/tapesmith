@@ -233,11 +233,11 @@ export function SnippetView(): JSX.Element {
               </Field>
             </DialogContent>
             <DialogActions>
-              <Button appearance="secondary" onClick={() => setDialogOpen(false)}>
-                {tc('actions.cancel')}
-              </Button>
               <Button appearance="primary" disabled={!clTitle.trim() || !clEntry.trim()} onClick={() => void onChangelog()}>
                 {t('changelogDialog.submit')}
+              </Button>
+              <Button appearance="secondary" onClick={() => setDialogOpen(false)}>
+                {tc('actions.cancel')}
               </Button>
             </DialogActions>
           </DialogBody>

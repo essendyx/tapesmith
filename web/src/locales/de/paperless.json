@@ -24,7 +24,8 @@
     "voidDialog": {
       "title": "ASN verwerfen",
       "reason": "Grund"
-    }
+    },
+    "discardFor": "Verwerfen: {{asn}}"
   },
   "garantie": {
     "searchTitle": "Rechnung suchen",

@@ -25,6 +25,7 @@ import type { TemplateDetail, TemplateSummary } from '../../api/types';
 import { useConfirm } from '../../components/ConfirmProvider';
 import { useNotify } from '../../components/NotifyProvider';
 import { LoadingState } from '../../components/LoadingState';
+import { NavList } from '../../components/NavList';
 import { PageHeader } from '../../components/PageHeader';
 import { PlausiHint, usePlausi } from '../../components/PlausiHint';
 import { PrintOptionsBar } from '../../components/PrintOptionsBar';
@@ -51,8 +52,6 @@ const useStyles = makeStyles({
   layoutNarrow: { display: 'grid', gridTemplateColumns: '1fr', rowGap: tokens.spacingVerticalL },
   listCol: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalS },
   categoryTitle: { margin: `${tokens.spacingVerticalM} 0 ${tokens.spacingVerticalXXS}`, fontSize: tokens.fontSizeBase200, fontWeight: tokens.fontWeightSemibold, color: tokens.colorNeutralForeground3, textTransform: 'uppercase' },
-  listButton: { justifyContent: 'flex-start', textAlign: 'left' },
-  listButtonActive: { backgroundColor: tokens.colorBrandBackground2 },
   /** Aktionen in Reihen, alle Knöpfe gleich hoch (stretch je Reihe), Primär „Drucken“ zuerst. */
   buttons: { display: 'flex', flexWrap: 'wrap', alignItems: 'stretch', columnGap: tokens.spacingHorizontalS, rowGap: tokens.spacingVerticalS },
   /** Nebenaktion unter dem Formular: nicht über die ganze Breite ziehen. */
@@ -397,16 +396,11 @@ export default function VorlagenPage(): JSX.Element {
             ? categories.map((cat) => (
                 <div key={cat.name}>
                   <h2 className={styles.categoryTitle}>{cat.name}</h2>
-                  {cat.templates.map((tpl) => (
-                    <Button
-                      key={tpl.name}
-                      appearance={tpl.name === template?.name ? 'primary' : 'subtle'}
-                      className={styles.listButton}
-                      onClick={() => selectTemplate(tpl.name)}
-                    >
-                      {tpl.title ?? tpl.name}
-                    </Button>
-                  ))}
+                  <NavList
+                    items={cat.templates.map((tpl) => ({ key: tpl.name, label: tpl.title ?? tpl.name }))}
+                    selected={template?.name}
+                    onSelect={selectTemplate}
+                  />
                 </div>
               ))
             : null}

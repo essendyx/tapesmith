@@ -3,12 +3,6 @@ import { useEffect, useState } from 'react';
 import {
   Button,
   Input,
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableHeaderCell,
-  TableRow,
   Tab,
   TabList,
   makeStyles,
@@ -17,8 +11,10 @@ import {
 import { Delete20Regular, Search20Regular } from '@fluentui/react-icons';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { DataList, type ListColumn } from '../../components/DataList';
 import { EmptyState } from '../../components/EmptyState';
 import { ErrorMessage } from '../../components/ErrorMessage';
+import { ListToolbar, useToolbarSearchStyles } from '../../components/ListToolbar';
 import { PageHeader } from '../../components/PageHeader';
 import { moduleTexts } from '../../modules';
 import { Section } from '../../components/Section';
@@ -27,6 +23,7 @@ import { deleteKabelEntry, fetchKabelRegister } from './api';
 import { IdSchemaView } from './IdSchemaView';
 import { NetboxView } from './NetboxView';
 import type { KabelEntryJson } from './types';
+import { dateOnly } from '../Verlauf/time';
 
 type TabKey = 'netbox' | 'schema' | 'register';
 
@@ -37,13 +34,13 @@ function currentTab(value: string | null): TabKey {
 
 const useStyles = makeStyles({
   col: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalM },
-  toolbar: { display: 'flex', alignItems: 'center', columnGap: tokens.spacingHorizontalM, flexWrap: 'wrap' },
-  tableWrap: { overflowX: 'auto', maxWidth: '100%' },
+  id: { fontFamily: tokens.fontFamilyMonospace, fontSize: tokens.fontSizeBase200 },
   tabs: { marginTop: tokens.spacingVerticalM },
 });
 
 function RegisterView(): JSX.Element {
   const styles = useStyles();
+  const toolbarStyles = useToolbarSearchStyles();
   const { t } = useTranslation('kabel');
   const confirm = useConfirm();
   const [query, setQuery] = useState('');
@@ -73,59 +70,55 @@ function RegisterView(): JSX.Element {
     load(query);
   }
 
+  const columns: ListColumn<KabelEntryJson>[] = [
+    { id: 'id', header: t('register.columns.id'), cell: (entry) => <span className={styles.id}>{entry.id}</span> },
+    { id: 'source', header: t('register.columns.source'), kind: 'title', cell: (entry) => entry.quelle },
+    { id: 'target', header: t('register.columns.target'), cell: (entry) => entry.ziel },
+    { id: 'type', header: t('register.columns.type'), cell: (entry) => entry.kabeltyp },
+    { id: 'origin', header: t('register.columns.origin'), cell: (entry) => entry.quelle_import },
+    { id: 'created', header: t('register.columns.created'), cell: (entry) => (entry.created ? dateOnly(entry.created) : '') },
+    {
+      id: 'actions',
+      header: t('register.columns.actions'),
+      kind: 'actions',
+      cell: (entry) => (
+        <Button
+          appearance="subtle"
+          icon={<Delete20Regular />}
+          aria-label={t('register.removeAria', { id: entry.id })}
+          onClick={() => void remove(entry.id)}
+        />
+      ),
+    },
+  ];
+
   return (
-    <div className={styles.col}>
-      <div className={styles.toolbar}>
+    <div>
+      <ListToolbar>
         <Input
+          className={toolbarStyles.search}
           value={query}
+          aria-label={t('register.searchPlaceholder')}
           placeholder={t('register.searchPlaceholder')}
           contentBefore={<Search20Regular />}
           onChange={(_e, d) => setQuery(d.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') load(query);
+          }}
         />
         <Button onClick={() => load(query)}>{t('register.search')}</Button>
-      </div>
-      {error ? <ErrorMessage error={error} /> : null}
-      {loaded && entries.length === 0 ? (
-        <EmptyState title={t('register.empty.title')} body={t('register.empty.body')} />
-      ) : (
-        <div className={styles.tableWrap}>
-          <Table size="small" aria-label={t('register.tableAriaLabel')}>
-            <TableHeader>
-              <TableRow>
-                <TableHeaderCell>{t('register.columns.id')}</TableHeaderCell>
-                <TableHeaderCell>{t('register.columns.source')}</TableHeaderCell>
-                <TableHeaderCell>{t('register.columns.target')}</TableHeaderCell>
-                <TableHeaderCell>{t('register.columns.type')}</TableHeaderCell>
-                <TableHeaderCell>{t('register.columns.origin')}</TableHeaderCell>
-                <TableHeaderCell>{t('register.columns.created')}</TableHeaderCell>
-                <TableHeaderCell>
-                  <span className="p12-visually-hidden">{t('register.columns.actions')}</span>
-                </TableHeaderCell>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {entries.map((entry) => (
-                <TableRow key={entry.id}>
-                  <TableCell>{entry.id}</TableCell>
-                  <TableCell>{entry.quelle}</TableCell>
-                  <TableCell>{entry.ziel}</TableCell>
-                  <TableCell>{entry.kabeltyp}</TableCell>
-                  <TableCell>{entry.quelle_import}</TableCell>
-                  <TableCell>{entry.created}</TableCell>
-                  <TableCell>
-                    <Button
-                      appearance="subtle"
-                      icon={<Delete20Regular />}
-                      aria-label={t('register.removeAria', { id: entry.id })}
-                      onClick={() => void remove(entry.id)}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      )}
+      </ListToolbar>
+      {error && entries.length > 0 ? <ErrorMessage error={error} /> : null}
+      <DataList
+        items={entries}
+        columns={columns}
+        getKey={(entry) => entry.id}
+        label={t('register.tableAriaLabel')}
+        loading={!loaded}
+        error={error}
+        onRetry={() => load(query)}
+        empty={<EmptyState title={t('register.empty.title')} body={t('register.empty.body')} />}
+      />
     </div>
   );
 }

@@ -38,11 +38,11 @@ export function HotfolderCard(props: { data: AccessJson }): JSX.Element {
       actions={
         edit.dirty ? (
           <>
-            <Button appearance="secondary" disabled={saving} onClick={edit.discard}>
-              {t('common:actions.cancel')}
-            </Button>
             <Button appearance="primary" disabled={saving} aria-busy={saving} onClick={() => void onSave()}>
               {t('common:actions.save')}
+            </Button>
+            <Button appearance="secondary" disabled={saving} onClick={edit.discard}>
+              {t('common:actions.cancel')}
             </Button>
           </>
         ) : undefined

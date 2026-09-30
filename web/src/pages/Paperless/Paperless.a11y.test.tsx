@@ -58,7 +58,7 @@ describe.each(['de', 'en'] as Language[])('Paperless a11y (%s)', (language) => {
     const { container, user } = renderWithProviders(<PaperlessPage />, { language });
     await screen.findByText('ASN00042', { exact: false });
     await user.click(screen.getByRole('button', { name: language === 'de' ? 'Reservieren und Serie öffnen' : 'Reserve and open series' }));
-    await user.click(await screen.findByRole('button', { name: DISCARD[language] }));
+    await user.click(await screen.findByRole('button', { name: new RegExp(`^${DISCARD[language]}: `) }));
     await findDialog(language === 'de' ? 'ASN verwerfen' : 'Discard ASN');
     await expectNoA11yViolations(container);
   });
@@ -91,7 +91,7 @@ describe('Paperless Tastatur', () => {
     expect(reserveButton).toHaveFocus();
     await user.keyboard('{Enter}');
 
-    const discardTrigger = await screen.findByRole('button', { name: 'Verwerfen' });
+    const discardTrigger = await screen.findByRole('button', { name: /^Verwerfen: / });
     discardTrigger.focus();
     await user.keyboard('{Enter}');
     const dialog = await findDialog('ASN verwerfen');

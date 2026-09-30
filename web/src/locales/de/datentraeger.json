@@ -14,7 +14,8 @@
       "body": "Datenträger einstecken und „Aktualisieren” klicken."
     },
     "print": "Drucken",
-    "adjust": "Im Schnelldruck anpassen"
+    "adjust": "Im Schnelldruck anpassen",
+    "for": "{{action}}: {{drive}}"
   },
   "ssh": {
     "host": "Host",
@@ -42,6 +43,7 @@
     "cutMarks": "Schnittmarken",
     "preview": "Vorschau",
     "planning": "Plane …",
-    "print": "Drucken"
+    "print": "Drucken",
+    "selectAll": "Alle Platten auswählen"
   }
 }

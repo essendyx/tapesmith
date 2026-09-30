@@ -22,6 +22,6 @@ describe('Seite Batterien: Englisch', () => {
     mockApi({ 'GET /api/v1/homelab/ha/batteries': () => ({ devices: [device], todo_entity: null, warnings: [] }) });
     renderWithProviders(<BatterienPage />, { route: '/homelab/batterien', language: 'en' });
     expect(await screen.findByRole('heading', { level: 1, name: 'Home Assistant' })).toBeInTheDocument();
-    expect(await screen.findByRole('button', { name: 'Print label' })).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: /^Print label: / })).toBeInTheDocument();
   });
 });

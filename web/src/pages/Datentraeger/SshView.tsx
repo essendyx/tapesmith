@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   Button,
-  Checkbox,
   Dropdown,
   Field,
   Input,
@@ -12,12 +11,6 @@ import {
   Option,
   Spinner,
   Switch,
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableHeaderCell,
-  TableRow,
   Text,
   makeStyles,
   tokens,
@@ -25,7 +18,7 @@ import {
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ApiError, pngSrc } from '../../api/client';
-import { useMediaQuery } from '../../components/useMediaQuery';
+import { DataList, type ListColumn } from '../../components/DataList';
 import { usePrintFlow } from '../../components/usePrint';
 import { WarningList } from '../../components/WarningList';
 import type { BatchPlanJson, DiskJson, SshHostJson, SshSeriesRequest } from '../../api/types';
@@ -36,31 +29,23 @@ const useStyles = makeStyles({
   hostRow: { display: 'flex', alignItems: 'flex-end', columnGap: tokens.spacingHorizontalM, marginBottom: tokens.spacingVerticalM, flexWrap: 'wrap' },
   options: { display: 'flex', flexWrap: 'wrap', columnGap: tokens.spacingHorizontalL, rowGap: tokens.spacingVerticalS, margin: `${tokens.spacingVerticalM} 0` },
   actions: { display: 'flex', flexWrap: 'wrap', columnGap: tokens.spacingHorizontalS, rowGap: tokens.spacingVerticalS, margin: `${tokens.spacingVerticalM} 0` },
-  /** Eigener Scroll-Container: eine breite Tabelle scrollt hier seitlich, nie die ganze Seite. */
-  tableScroll: { overflowX: 'auto', maxWidth: '100%' },
-  cards: { listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalS },
-  card: {
-    display: 'grid',
-    gridTemplateColumns: 'auto 1fr',
-    columnGap: tokens.spacingHorizontalS,
-    rowGap: tokens.spacingVerticalXXS,
-    padding: tokens.spacingHorizontalM,
-    borderRadius: tokens.borderRadiusMedium,
-    border: `${tokens.strokeWidthThin} solid ${tokens.colorNeutralStroke2}`,
-    backgroundColor: tokens.colorNeutralBackground1,
-    minWidth: 0,
+  mono: { fontFamily: tokens.fontFamilyMonospace, fontSize: tokens.fontSizeBase200, overflowWrap: 'anywhere' },
+  slotInput: { width: '88px' },
+  deviceCell: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalXXS, minWidth: 0 },
+  device: { fontWeight: tokens.fontWeightSemibold },
+  byId: {
+    fontFamily: tokens.fontFamilyMonospace,
+    fontSize: tokens.fontSizeBase100,
+    color: tokens.colorNeutralForeground3,
+    overflowWrap: 'anywhere',
   },
-  cardHead: { gridColumn: '1 / -1', display: 'flex', alignItems: 'center', columnGap: tokens.spacingHorizontalS, fontWeight: tokens.fontWeightSemibold },
-  cardLabel: { color: tokens.colorNeutralForeground3, fontSize: tokens.fontSizeBase200 },
-  cardValue: { minWidth: 0, overflowWrap: 'anywhere', fontSize: tokens.fontSizeBase200 },
-  slotInput: { width: '72px' },
   previewGrid: { display: 'flex', flexWrap: 'wrap', gap: tokens.spacingHorizontalM, marginTop: tokens.spacingVerticalM },
   previewCard: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalXS, alignItems: 'center' },
   previewImg: { maxWidth: '160px', borderRadius: tokens.borderRadiusMedium, boxShadow: tokens.shadow4 },
 });
 
-/** Ab dieser Breite werden die Platten als Karten statt als Tabelle gezeigt (responsiv bis 360 px). */
-const NARROW_QUERY = '(max-width: 639px)';
+/** Unterhalb dieser Breite stehen die Platten als Karten (die Tabelle hat viele Spalten). */
+const NARROW_QUERY = '(max-width: 1023px)';
 
 function poolText(disk: DiskJson): string {
   if (!disk.pool) return '';
@@ -86,7 +71,6 @@ export function SshView(): JSX.Element {
   const [planError, setPlanError] = useState<{ title: string; hint?: string } | null>(null);
 
   const printFlow = usePrintFlow<SshSeriesRequest>((req, opts) => printSshSeries(req, opts));
-  const narrow = useMediaQuery(NARROW_QUERY);
   /** Zählt jede Änderung an Auswahl, Slot, Kette oder Schnittmarken: eine ältere Vorschau (auch eine noch
    *  laufende Anfrage) passt dann nicht mehr und wird verworfen. Drucken geht erst nach neuer Vorschau. */
   const inputRevision = useRef(0);
@@ -166,6 +150,37 @@ export function SshView(): JSX.Element {
 
   const canPrint = plan !== null && plan.errors.length === 0 && !printFlow.busy;
 
+  const columns: ListColumn<DiskJson>[] = [
+    {
+      id: 'device',
+      header: t('ssh.table.device'),
+      kind: 'title',
+      cell: (disk) => (
+        <div className={styles.deviceCell}>
+          <span className={styles.device}>{disk.device}</span>
+          {disk.by_id ? <span className={styles.byId}>{disk.by_id}</span> : null}
+        </div>
+      ),
+    },
+    { id: 'model', header: t('ssh.table.model'), cell: (disk) => disk.model },
+    { id: 'serial', header: t('ssh.table.serial'), cell: (disk) => <span className={styles.mono}>{disk.serial}</span> },
+    { id: 'size', header: t('ssh.table.size'), kind: 'number', cell: (disk) => disk.size },
+    { id: 'pool', header: t('ssh.table.pool'), cell: (disk) => poolText(disk) },
+    {
+      id: 'slot',
+      header: t('ssh.table.slot'),
+      cell: (disk) => (
+        <Input
+          className={styles.slotInput}
+          size="small"
+          value={slots[disk.device] ?? ''}
+          onChange={(_e, d) => changeSlot(disk.device, d.value)}
+          aria-label={t('ssh.slotFor', { device: disk.device })}
+        />
+      ),
+    },
+  ];
+
   if (hostsError) {
     return (
       <MessageBar intent="error">
@@ -227,85 +242,23 @@ export function SshView(): JSX.Element {
 
       {disks.length > 0 ? (
         <>
-          {narrow ? (
-            <ul className={styles.cards} aria-label={t('ssh.foundDisks')}>
-              {disks.map((disk) => (
-                <li key={disk.device} className={styles.card}>
-                  <div className={styles.cardHead}>
-                    <Checkbox
-                      checked={checked[disk.device] ?? true}
-                      onChange={(_e, d) => toggleDisk(disk.device, Boolean(d.checked))}
-                      aria-label={t('ssh.select', { device: disk.device })}
-                    />
-                    <span>{disk.device}</span>
-                  </div>
-                  <span className={styles.cardLabel}>{t('ssh.table.model')}</span>
-                  <span className={styles.cardValue}>{disk.model}</span>
-                  <span className={styles.cardLabel}>{t('ssh.table.serial')}</span>
-                  <span className={styles.cardValue}>{disk.serial}</span>
-                  <span className={styles.cardLabel}>{t('ssh.table.size')}</span>
-                  <span className={styles.cardValue}>{disk.size}</span>
-                  <span className={styles.cardLabel}>{t('ssh.table.pool')}</span>
-                  <span className={styles.cardValue}>{poolText(disk)}</span>
-                  <span className={styles.cardLabel}>{t('ssh.table.byId')}</span>
-                  <span className={styles.cardValue}>{disk.by_id ?? ''}</span>
-                  <span className={styles.cardLabel}>{t('ssh.table.slot')}</span>
-                  <Input
-                    className={styles.slotInput}
-                    size="small"
-                    value={slots[disk.device] ?? ''}
-                    onChange={(_e, d) => changeSlot(disk.device, d.value)}
-                    aria-label={t('ssh.slotFor', { device: disk.device })}
-                  />
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className={styles.tableScroll}>
-              <Table aria-label={t('ssh.foundDisks')}>
-                <TableHeader>
-                  <TableRow>
-                    <TableHeaderCell />
-                    <TableHeaderCell>{t('ssh.table.device')}</TableHeaderCell>
-                    <TableHeaderCell>{t('ssh.table.model')}</TableHeaderCell>
-                    <TableHeaderCell>{t('ssh.table.serial')}</TableHeaderCell>
-                    <TableHeaderCell>{t('ssh.table.size')}</TableHeaderCell>
-                    <TableHeaderCell>{t('ssh.table.pool')}</TableHeaderCell>
-                    <TableHeaderCell>{t('ssh.table.byId')}</TableHeaderCell>
-                    <TableHeaderCell>{t('ssh.table.slot')}</TableHeaderCell>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {disks.map((disk) => (
-                    <TableRow key={disk.device}>
-                      <TableCell>
-                        <Checkbox
-                          checked={checked[disk.device] ?? true}
-                          onChange={(_e, d) => toggleDisk(disk.device, Boolean(d.checked))}
-                          aria-label={t('ssh.select', { device: disk.device })}
-                        />
-                      </TableCell>
-                      <TableCell>{disk.device}</TableCell>
-                      <TableCell>{disk.model}</TableCell>
-                      <TableCell>{disk.serial}</TableCell>
-                      <TableCell>{disk.size}</TableCell>
-                      <TableCell>{poolText(disk)}</TableCell>
-                      <TableCell>{disk.by_id ?? ''}</TableCell>
-                      <TableCell>
-                        <Input
-                          className={styles.slotInput}
-                          size="small"
-                          value={slots[disk.device] ?? ''}
-                          onChange={(_e, d) => changeSlot(disk.device, d.value)}
-                          aria-label={t('ssh.slotFor', { device: disk.device })}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          )}
+          <DataList
+            items={disks}
+            columns={columns}
+            getKey={(disk) => disk.device}
+            label={t('ssh.foundDisks')}
+            narrowQuery={NARROW_QUERY}
+            selection={{
+              isSelected: (disk) => checked[disk.device] ?? true,
+              onChange: (disk, on) => toggleDisk(disk.device, on),
+              onChangeAll: (on) => {
+                setChecked(Object.fromEntries(disks.map((d) => [d.device, on])));
+                invalidatePlan();
+              },
+              itemLabel: (disk) => t('ssh.select', { device: disk.device }),
+              allLabel: t('ssh.selectAll'),
+            }}
+          />
 
           <div className={styles.options}>
             <Switch
@@ -327,11 +280,11 @@ export function SshView(): JSX.Element {
           </div>
 
           <div className={styles.actions}>
-            <Button onClick={() => void runPlan()} disabled={selectedDisks.length === 0 || planning}>
-              {planning ? <Spinner size="tiny" label={t('ssh.planning')} labelPosition="after" /> : t('ssh.preview')}
-            </Button>
             <Button appearance="primary" onClick={runPrint} disabled={!canPrint}>
               {t('ssh.print')}
+            </Button>
+            <Button onClick={() => void runPlan()} disabled={selectedDisks.length === 0 || planning}>
+              {planning ? <Spinner size="tiny" label={t('ssh.planning')} labelPosition="after" /> : t('ssh.preview')}
             </Button>
           </div>
 

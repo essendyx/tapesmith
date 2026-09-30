@@ -435,11 +435,11 @@ export function HomelabSettingsCard(props: {
             {saving ? <Spinner size="tiny" /> : null}
             {dirty ? (
               <>
-                <Button appearance="secondary" disabled={saving} onClick={discard}>
-                  {tSettings('generic.discard')}
-                </Button>
                 <Button appearance="primary" disabled={saving} onClick={() => void save()}>
                   {tSettings('generic.save')}
+                </Button>
+                <Button appearance="secondary" disabled={saving} onClick={discard}>
+                  {tSettings('generic.discard')}
                 </Button>
               </>
             ) : null}

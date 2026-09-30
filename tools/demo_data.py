@@ -20,11 +20,14 @@ wurden; Vorlagen rendern in der Sprache des Aufrufs.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timedelta
 from pathlib import Path
+from types import SimpleNamespace
 
 from tapesmith import config as config_mod, numbering, paths
+from tapesmith.calibrate import edge_test_head, ruler_content
+from tapesmith.i18n import _t
 from tapesmith import modules
 from tapesmith.daemon.queue import JobQueue
 from tapesmith.device.profile import DeviceProfile, load_profile
@@ -35,6 +38,7 @@ from tapesmith.ipc.codec import encode_request
 from tapesmith.jobs import JobMeta
 from tapesmith.labelmeta import qr_meta, text_meta
 from tapesmith.pipeline import PrintLabel, PrintRequest
+from tapesmith.protocol.raster import place_on_head
 from tapesmith.render.compose import LabelSpec, RenderResult, render_label
 from tapesmith.render.qrcontent import url_content, wifi_content
 from tapesmith.tape.profiles import TapeProfile, current_tape
@@ -62,6 +66,10 @@ DEMO_TEXTS: dict[str, dict[str, object]] = {
         "wifi_password": "geheimes-passwort-42", "offline": "Drucker nicht erreichbar",
         "box_main_place": "Keller Regal 2", "box_secondary_place": "Büro",
         "items": (("HDMI-Adapter", 2), ("USB-C-Kabel", 3)), "loan": ("Akkuschrauber", "Jan"),
+        "more_boxes": (("BOX-03", "Werkstatt", (("Schraubensortiment", 1), ("Kabelbinder", 100), ("Lötzinn", 2))),
+                       ("BOX-15", "Dachboden", (("Weihnachtsdeko", 1),)),
+                       ("BOX-21", "Keller Regal 1", (("Ersatzlüfter 120 mm", 4), ("SATA-Kabel", 6), ("Netzteil 12 V", 2)))),
+        "more_loans": (("Leiter", "Mia", 3, 11), ("Beamer", "Tom", 12, None)),
         "drafts": ("Serverschrank, geändert", "Unbenannt"),
     },
     "en": {
@@ -71,6 +79,10 @@ DEMO_TEXTS: dict[str, dict[str, object]] = {
         "wifi_password": "secret-password-42", "offline": "Printer unreachable",
         "box_main_place": "Basement shelf 2", "box_secondary_place": "Office",
         "items": (("HDMI adapter", 2), ("USB-C cable", 3)), "loan": ("Cordless drill", "Sam"),
+        "more_boxes": (("BOX-03", "Workshop", (("Screw assortment", 1), ("Cable ties", 100), ("Solder", 2))),
+                       ("BOX-15", "Attic", (("Christmas decorations", 1),)),
+                       ("BOX-21", "Basement shelf 1", (("Spare fan 120 mm", 4), ("SATA cable", 6), ("Power supply 12 V", 2)))),
+        "more_loans": (("Ladder", "Mia", 3, 11), ("Projector", "Tom", 12, None)),
         "drafts": ("Server rack, changed", "Untitled"),
     },
 }
@@ -167,6 +179,41 @@ def _wifi_qr(ssid: str, password: str, profile: DeviceProfile, *, source: str = 
     return _Rendered(meta, result)
 
 
+def _head_only(meta: JobMeta, head, length_mm: float, tape_mm: float) -> _Rendered:
+    """Eintrag ohne Vorlage und ohne Spec (Kalibrierung, Bild): nur das Kopfbild wie beim echten Druck."""
+    result = SimpleNamespace(head=head, landscape=None, length_mm=length_mm, tape_mm=tape_mm)
+    return _Rendered(meta, result)  # type: ignore[arg-type]
+
+
+def _system_entries(profile: DeviceProfile, tape: TapeProfile, *, now: datetime) -> list[tuple[timedelta, _Rendered, str, str]]:
+    """Einträge mit Titeln, die der Druckdienst selbst vergibt (in der Sprache beim Drucken):
+    Kalibrierung (Lineal, Kantentest), Testlabel, Bild aus der Zwischenablage, Nachdruck und Serie."""
+    plain = _plain(profile, ("Tapesmith", "Test " + now.strftime("%d.%m.%Y %H:%M")))
+    tape_mm = plain.result.tape_mm
+    ruler = _head_only(JobMeta(source="gui", kind="calibrate", title=_t("Kalibrierung Lineal")),
+                       place_on_head(ruler_content(profile, 100), profile), 100.0, tape_mm)
+    edge = _head_only(JobMeta(source="gui", kind="calibrate", title=_t("Kalibrierung Kantentest")),
+                      edge_test_head(profile), 118.0, tape_mm)
+    test = _Rendered(replace(plain.meta, kind="test", title=_t("Testlabel")), plain.result)
+    clip = _plain(profile, ("Screenshot", "Router-Menü"))
+    image = _Rendered(JobMeta(source="hotkey", kind="image", title=_t("Bild aus Zwischenablage")), clip.result)
+    disk = _from_template("datentraeger", {"host": "pmx10", "slot": "SSD-1", "sn": "112233274913"},
+                          profile, tape, source="gui", now=now)
+    reprint = _Rendered(replace(disk.meta, kind="reprint", title=_t("Nachdruck #{id}: ", id=1) + disk.meta.title),
+                        disk.result)
+    cable = _from_template("kabelfahne", {"kabel_id": "K-020", "quelle": "SW2/P01", "ziel": "nas/eth0"},
+                           profile, tape, source="gui", now=now)
+    series = _Rendered(replace(cable.meta, title=_t("Serie ({count}): ", count=3) + cable.meta.title), cable.result)
+    return [
+        (timedelta(hours=30), ruler, "ok", ""),
+        (timedelta(hours=29, minutes=40), edge, "ok", ""),
+        (timedelta(hours=26), test, "ok", ""),
+        (timedelta(hours=9), image, "ok", ""),
+        (timedelta(hours=6), series, "ok", ""),
+        (timedelta(hours=1), reprint, "ok", ""),
+    ]
+
+
 def _seed_history(profile: DeviceProfile, tape: TapeProfile, *, now: datetime) -> list[int]:
     store = HistoryStore(clock=_Clock(now))
     try:
@@ -214,7 +261,9 @@ def _seed_history(profile: DeviceProfile, tape: TapeProfile, *, now: datetime) -
             (timedelta(hours=2),
              _plain(profile, ("pmx10 SSD-1 · SN 274913",)),
              "ok", ""),
+            *_system_entries(profile, tape, now=now),
         ]
+        entries.sort(key=lambda item: item[0], reverse=True)
         for age, rendered, status, error in entries:
             store._clock.value = now - age  # noqa: SLF001 (eigener Test-Helfer, kein öffentliches API)
             entry_id = store.record(
@@ -240,7 +289,18 @@ def _seed_queue(profile: DeviceProfile, tape: TapeProfile, *, now: datetime) -> 
         stuck_id = queue.add(_payload_for(stuck.meta, stuck.result), source=stuck.meta.source,
                              title=stuck.meta.title, sensitive=stuck.meta.sensitive)
         queue.mark_retry(stuck_id, demo_text("offline"), now + timedelta(minutes=7))
-        return [waiting_id, stuck_id]
+
+        cable = _from_template("kabelfahne", {"kabel_id": "K-021", "quelle": "SW2/P02", "ziel": "nas/eth1"},
+                               profile, tape, source="api", now=now)
+        series_title = _t("Serie ({count}): ", count=4) + cable.meta.title
+        series_id = queue.add(_payload_for(cable.meta, cable.result), source="api", title=series_title,
+                              sensitive=False)
+
+        ruler = place_on_head(ruler_content(profile, 100), profile)
+        calib_meta = JobMeta(source="gui", kind="calibrate", title=_t("Kalibrierung Lineal"))
+        calib_id = queue.add({"request": encode_request(PrintRequest(labels=(PrintLabel(head=ruler),), meta=calib_meta))},
+                             source="gui", title=calib_meta.title, sensitive=False)
+        return [waiting_id, stuck_id, series_id, calib_id]
     finally:
         queue.close()
 
@@ -255,7 +315,16 @@ def _seed_inventory(*, now: datetime) -> dict:
         thing, person = demo_text("loan")
         loan = store.lend(thing, person, since=(now - timedelta(days=20)).date(),
                           due=(now - timedelta(days=5)).date())
-        return {"boxes": [BOX_MAIN, BOX_SECONDARY], "loan_id": loan.id}
+        boxes = [BOX_MAIN, BOX_SECONDARY]
+        for box_id, place, items in demo_text("more_boxes"):
+            store.add_box(box_id, place)
+            boxes.append(box_id)
+            for item, qty in items:
+                store.add_item(item, box_id=box_id, qty=qty)
+        for thing, person, days_ago, due_in in demo_text("more_loans"):
+            store.lend(thing, person, since=(now - timedelta(days=days_ago)).date(),
+                       due=(now + timedelta(days=due_in)).date() if due_in is not None else None)
+        return {"boxes": boxes, "loan_id": loan.id}
     finally:
         store.close()
 
