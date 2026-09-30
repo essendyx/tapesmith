@@ -11,21 +11,17 @@ import {
   DialogTitle,
   Field,
   Input,
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableHeaderCell,
-  TableRow,
   ToggleButton,
   makeStyles,
   tokens,
 } from '@fluentui/react-components';
-import { ErrorCircle16Filled } from '@fluentui/react-icons';
+import { Add20Regular, ArrowUndo20Regular, ErrorCircle16Filled, Tag20Regular } from '@fluentui/react-icons';
 import { useTranslation } from 'react-i18next';
 import { errorText } from './errors';
+import { DataList, type ListColumn } from '../../components/DataList';
 import { EmptyState } from '../../components/EmptyState';
-import { useMediaQuery } from '../../components/useMediaQuery';
+import { ListToolbar } from '../../components/ListToolbar';
+import { RowActions } from '../../components/RowActions';
 import { useNotify } from '../../components/NotifyProvider';
 import { useFormat } from '../../i18n/format';
 import type { InventoryLabelRequest, LoanJson } from '../../api/types';
@@ -36,26 +32,8 @@ const useStyles = makeStyles({
   toolbar: { display: 'flex', justifyContent: 'space-between', marginBottom: tokens.spacingVerticalM, flexWrap: 'wrap', gap: tokens.spacingHorizontalS },
   switcher: { display: 'flex', columnGap: tokens.spacingHorizontalXS },
   formRow: { display: 'flex', columnGap: tokens.spacingHorizontalS, rowGap: tokens.spacingVerticalXS, flexWrap: 'wrap' },
-  /** Eigener Scroll-Container: eine breite Tabelle scrollt hier seitlich, nie die ganze Seite. */
-  tableScroll: { overflowX: 'auto', maxWidth: '100%' },
-  cards: { listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalS },
-  card: {
-    display: 'flex',
-    flexDirection: 'column',
-    rowGap: tokens.spacingVerticalXS,
-    padding: tokens.spacingHorizontalM,
-    borderRadius: tokens.borderRadiusMedium,
-    border: `${tokens.strokeWidthThin} solid ${tokens.colorNeutralStroke2}`,
-    backgroundColor: tokens.colorNeutralBackground1,
-    minWidth: 0,
-  },
-  cardHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', columnGap: tokens.spacingHorizontalS, flexWrap: 'wrap' },
-  cardTitle: { fontWeight: tokens.fontWeightSemibold, overflowWrap: 'anywhere', minWidth: 0 },
-  cardMeta: { color: tokens.colorNeutralForeground3, fontSize: tokens.fontSizeBase200, overflowWrap: 'anywhere' },
 });
 
-/** Ab dieser Breite werden die Posten als Karten statt als Tabelle gezeigt (responsiv bis 360 px). */
-const NARROW_QUERY = '(max-width: 639px)';
 
 export function LoansView(): JSX.Element {
   const { t } = useTranslation('inventar');
@@ -67,7 +45,6 @@ export function LoansView(): JSX.Element {
   };
   const styles = useStyles();
   const notify = useNotify();
-  const narrow = useMediaQuery(NARROW_QUERY);
   const [openOnly, setOpenOnly] = useState(true);
   const [loans, setLoans] = useState<LoanJson[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -127,23 +104,43 @@ export function LoansView(): JSX.Element {
     );
 
   const actions = (loan: LoanJson) => (
-    <div className={styles.formRow}>
-      {loan.open ? (
-        <Button size="small" onClick={() => void onReturn(loan)}>
-          {t('loans.returned')}
-        </Button>
-      ) : null}
-      <Button size="small" onClick={() => setLabelLoanId(loan.id)}>
-        {t('loans.label')}
-      </Button>
-    </div>
+    <RowActions
+      title={loan.item}
+      primary={
+        loan.open ? (
+          <Button
+            icon={<ArrowUndo20Regular />}
+            aria-label={t('loans.for', { action: t('loans.returned'), item: loan.item })}
+            onClick={() => void onReturn(loan)}
+          >
+            {t('loans.returned')}
+          </Button>
+        ) : undefined
+      }
+      actions={[{ key: 'label', label: t('loans.label'), icon: <Tag20Regular />, onClick: () => setLabelLoanId(loan.id) }]}
+    />
   );
+
+  const columns: ListColumn<LoanJson>[] = [
+    { id: 'item', header: t('loans.table.item'), kind: 'title', cell: (loan) => loan.item },
+    { id: 'person', header: t('loans.table.person'), cell: (loan) => loan.person },
+    { id: 'since', header: t('loans.table.since'), cell: (loan) => fmtDate(loan.since) },
+    { id: 'due', header: t('loans.table.due'), cell: (loan) => fmtDate(loan.due) },
+    { id: 'status', header: t('loans.table.status'), kind: 'status', cell: (loan) => statusBadge(loan) },
+    { id: 'actions', header: t('loans.table.actions'), kind: 'actions', cell: (loan) => actions(loan) },
+  ];
 
   const labelRequest: InventoryLabelRequest | null = labelLoanId !== null ? { type: 'loan', loan_id: labelLoanId } : null;
 
   return (
     <div>
-      <div className={styles.toolbar}>
+      <ListToolbar
+        actions={
+          <Button appearance="primary" icon={<Add20Regular />} onClick={() => setLendOpen(true)}>
+            {t('loans.lend')}
+          </Button>
+        }
+      >
         <div className={styles.switcher} role="group" aria-label={t('loans.a11y.view')}>
           <ToggleButton checked={openOnly} onClick={() => setOpenOnly(true)}>
             {t('loans.open')}
@@ -152,59 +149,16 @@ export function LoansView(): JSX.Element {
             {t('loans.all')}
           </ToggleButton>
         </div>
-        <Button appearance="primary" onClick={() => setLendOpen(true)}>
-          {t('loans.lend')}
-        </Button>
-      </div>
+      </ListToolbar>
 
-      {loaded && loans.length === 0 ? (
-        <EmptyState title={t('loans.empty.title')} body={t('loans.empty.body')} />
-      ) : narrow ? (
-        <ul className={styles.cards} aria-label={t('loans.a11y.list')}>
-          {loans.map((loan) => (
-            <li key={loan.id} className={styles.card}>
-              <div className={styles.cardHead}>
-                <span className={styles.cardTitle}>{loan.item}</span>
-                {statusBadge(loan)}
-              </div>
-              <span className={styles.cardMeta}>{loan.person}</span>
-              <span className={styles.cardMeta}>
-                {loan.due
-                  ? t('loans.sinceDue', { date: fmtDate(loan.since), due: fmtDate(loan.due) })
-                  : t('loans.since', { date: fmtDate(loan.since) })}
-              </span>
-              {actions(loan)}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div className={styles.tableScroll}>
-          <Table aria-label={t('loans.a11y.list')}>
-            <TableHeader>
-              <TableRow>
-                <TableHeaderCell>{t('loans.table.item')}</TableHeaderCell>
-                <TableHeaderCell>{t('loans.table.person')}</TableHeaderCell>
-                <TableHeaderCell>{t('loans.table.since')}</TableHeaderCell>
-                <TableHeaderCell>{t('loans.table.due')}</TableHeaderCell>
-                <TableHeaderCell>{t('loans.table.status')}</TableHeaderCell>
-                <TableHeaderCell>{t('loans.table.actions')}</TableHeaderCell>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loans.map((loan) => (
-                <TableRow key={loan.id}>
-                  <TableCell>{loan.item}</TableCell>
-                  <TableCell>{loan.person}</TableCell>
-                  <TableCell>{fmtDate(loan.since)}</TableCell>
-                  <TableCell>{fmtDate(loan.due)}</TableCell>
-                  <TableCell>{statusBadge(loan)}</TableCell>
-                  <TableCell>{actions(loan)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      )}
+      <DataList
+        items={loans}
+        columns={columns}
+        getKey={(loan) => loan.id}
+        label={t('loans.a11y.list')}
+        loading={!loaded}
+        empty={<EmptyState title={t('loans.empty.title')} body={t('loans.empty.body')} />}
+      />
 
       <Dialog open={lendOpen} onOpenChange={(_e, data) => !data.open && setLendOpen(false)}>
         <DialogSurface>

@@ -1,5 +1,5 @@
 /** Startansicht: Raster großer Kacheln, eine je freigegebener Vorlage. */
-import { Body1, Title3, makeStyles, tokens } from '@fluentui/react-components';
+import { Body1, makeStyles, tokens } from '@fluentui/react-components';
 import type { FamilyTemplate } from './types';
 
 const useStyles = makeStyles({
@@ -14,7 +14,7 @@ const useStyles = makeStyles({
     '@media (min-width: 1100px)': { gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' },
   },
   tile: {
-    minHeight: '96px',
+    minHeight: '72px',
     minWidth: 0,
     display: 'flex',
     flexDirection: 'column',
@@ -31,6 +31,16 @@ const useStyles = makeStyles({
     font: 'inherit',
     color: 'inherit',
   },
+  /** Titel ruhig und lesbar: halbfett in Grundschrift, höchstens drei Zeilen. */
+  title: {
+    fontSize: tokens.fontSizeBase400,
+    lineHeight: tokens.lineHeightBase400,
+    fontWeight: tokens.fontWeightSemibold,
+    display: '-webkit-box',
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+  },
   description: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -45,7 +55,7 @@ export function TemplateGrid(props: { templates: FamilyTemplate[]; onSelect: (na
     <div className={styles.grid}>
       {props.templates.map((t) => (
         <button key={t.name} type="button" className={styles.tile} onClick={() => props.onSelect(t.name)}>
-          <Title3>{t.title}</Title3>
+          <span className={styles.title}>{t.title}</span>
           {t.description && t.description !== t.title ? <Body1 className={styles.description}>{t.description}</Body1> : null}
         </button>
       ))}

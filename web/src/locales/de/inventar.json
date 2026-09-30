@@ -12,7 +12,9 @@
       "body": "Lege eine Box an, beschrifte sie mit QR-Code und finde später über die Suche, wo etwas liegt."
     },
     "items_one": "{{count}} Gegenstand",
-    "items_other": "{{count}} Gegenstände"
+    "items_other": "{{count}} Gegenstände",
+    "count_one": "{{count}} Box",
+    "count_other": "{{count}} Boxen"
   },
   "detail": {
     "title": "Box {{boxId}}",
@@ -84,7 +86,8 @@
     "sinceDue": "seit {{date}}, bis {{due}}",
     "item": "Gegenstand",
     "person": "An wen?",
-    "due": "Rückgabe bis"
+    "due": "Rückgabe bis",
+    "for": "{{action}}: {{item}}"
   },
   "search": {
     "placeholder": "z. B. HDMI-Adapter",

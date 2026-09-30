@@ -77,7 +77,7 @@ describe('InventarPage', () => {
     });
     const { user } = renderWithProviders(<InventarPage />, { route: '/inventar?tab=verleih' });
     expect(await screen.findByText('überfällig')).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Zurückgegeben' }));
+    await user.click(screen.getByRole('button', { name: /^Zurückgegeben: / }));
     await waitFor(() => expect(api.calls.some((c) => c.path === '/api/v1/inventory/loans/5/return' && c.method === 'POST')).toBe(true));
   });
 
@@ -167,7 +167,7 @@ describe('InventarPage', () => {
         new MockResponse(500, { error: { kind: 'ValueError', message: 'Rückgabe fehlgeschlagen', hint: '', exit_code: 1, details: null } }),
     });
     const { user } = renderWithProviders(<InventarPage />, { route: '/inventar?tab=verleih' });
-    await user.click(await screen.findByRole('button', { name: 'Zurückgegeben' }));
+    await user.click(await screen.findByRole('button', { name: /^Zurückgegeben: / }));
     expect(await screen.findByText('Rückgabe fehlgeschlagen')).toBeInTheDocument();
   });
 
@@ -238,7 +238,7 @@ describe('InventarPage', () => {
       expect(within(card).getByText('Bohrmaschine')).toBeInTheDocument();
       expect(within(card).getByText('Hubert')).toBeInTheDocument();
       expect(within(card).getByText('überfällig')).toBeInTheDocument();
-      await user.click(within(card).getByRole('button', { name: 'Zurückgegeben' }));
+      await user.click(within(card).getByRole('button', { name: /^Zurückgegeben: / }));
       await waitFor(() => expect(api.calls.some((c) => c.path === '/api/v1/inventory/loans/5/return')).toBe(true));
     } finally {
       restore();

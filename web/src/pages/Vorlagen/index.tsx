@@ -16,7 +16,7 @@ import {
   makeStyles,
   tokens,
 } from '@fluentui/react-components';
-import { ArrowExport20Regular } from '@fluentui/react-icons';
+import { ArrowExport20Regular, Delete20Regular, Edit20Regular } from '@fluentui/react-icons';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { ApiError } from '../../api/client';
@@ -29,6 +29,7 @@ import { NavList } from '../../components/NavList';
 import { PageHeader } from '../../components/PageHeader';
 import { PlausiHint, usePlausi } from '../../components/PlausiHint';
 import { PrintOptionsBar } from '../../components/PrintOptionsBar';
+import { RowActions } from '../../components/RowActions';
 import { Section } from '../../components/Section';
 import { TapePreview } from '../../components/TapePreview';
 import { WarningList } from '../../components/WarningList';
@@ -457,12 +458,34 @@ export default function VorlagenPage(): JSX.Element {
                     </MenuList>
                   </MenuPopover>
                 </Menu>
-                {canEditInEditor ? (
-                  <Button onClick={() => navigate(`/editor?vorlage=${encodeURIComponent(template.name)}`)}>{t('editInEditor')}</Button>
-                ) : null}
-                {isGenerator ? <Button onClick={() => void onExportAssignment()}>{t('exportAssignment')}</Button> : null}
                 <Button onClick={() => setBatchOpen(true)}>{t('batchOpen')}</Button>
-                {!template.builtin ? <Button onClick={() => void onDelete()}>{t('common:actions.delete')}</Button> : null}
+                <RowActions
+                  title={template.title ?? template.name}
+                  actions={[
+                    {
+                      key: 'editor',
+                      label: t('editInEditor'),
+                      icon: <Edit20Regular />,
+                      hidden: !canEditInEditor,
+                      onClick: () => navigate(`/editor?vorlage=${encodeURIComponent(template.name)}`),
+                    },
+                    {
+                      key: 'assignment',
+                      label: t('exportAssignment'),
+                      icon: <ArrowExport20Regular />,
+                      hidden: !isGenerator,
+                      onClick: () => void onExportAssignment(),
+                    },
+                    {
+                      key: 'delete',
+                      label: t('common:actions.delete'),
+                      icon: <Delete20Regular />,
+                      danger: true,
+                      hidden: template.builtin,
+                      onClick: () => void onDelete(),
+                    },
+                  ]}
+                />
               </div>
             </>
           ) : (

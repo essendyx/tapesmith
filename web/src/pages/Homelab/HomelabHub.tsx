@@ -80,6 +80,8 @@ const useStyles = makeStyles({
   description: { color: tokens.colorNeutralForeground2 },
   // Zustands-Plakette nie umbrechen (Englisch „no service needed“ lief sonst aus der Pille).
   badge: { whiteSpace: 'nowrap', flexShrink: 0 },
+  // Zustand unter dem Namen statt daneben: lange Namen brechen so nicht um.
+  state: { display: 'block', marginTop: tokens.spacingVerticalXXS },
 });
 
 export function HomelabHub(): JSX.Element {
@@ -121,11 +123,13 @@ export function HomelabHub(): JSX.Element {
                   <CardHeader
                     image={<span className={styles.icon}>{TILE_ICONS[m.id]}</span>}
                     header={<Text weight="semibold">{texts.name}</Text>}
-                    action={
+                    description={
                       state ? (
-                        <Badge appearance="tint" color={state.color} icon={state.icon} className={styles.badge}>
-                          {state.text}
-                        </Badge>
+                        <span className={styles.state}>
+                          <Badge appearance="tint" color={state.color} icon={state.icon} className={styles.badge}>
+                            {state.text}
+                          </Badge>
+                        </span>
                       ) : undefined
                     }
                   />

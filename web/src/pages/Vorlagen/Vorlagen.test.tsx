@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
-import { findDialogByRole, fixtures, mockApi, MockResponse, renderWithProviders, restoreAllMocks } from '../../test/utils';
+import { chooseRowAction, findDialogByRole, fixtures, mockApi, MockResponse, renderWithProviders, restoreAllMocks } from '../../test/utils';
 import type { FieldJson, TemplateDetail, TemplateSummary } from '../../api/types';
 import VorlagenPage from './index';
 
@@ -122,9 +122,11 @@ describe('Vorlagen', () => {
       'POST /api/v1/homelab/plausi': () => ({ findings: [], worst: null }),
       'POST /api/v1/labels/render': () => fixtures.renderJson(),
     });
-    renderWithProviders(<VorlagenPage />, { route: '/vorlagen?vorlage=datentraeger' });
+    const { user } = renderWithProviders(<VorlagenPage />, { route: '/vorlagen?vorlage=datentraeger' });
     await screen.findByRole('button', { name: 'Drucken' });
-    expect(screen.queryByRole('button', { name: 'Belegung exportieren' })).not.toBeInTheDocument();
+    await user.click(await screen.findByRole('button', { name: /^Weitere Aktionen für / }));
+    expect(await screen.findByRole('menuitem', { name: 'Im Editor öffnen' })).toBeInTheDocument();
+    expect(screen.queryByRole('menuitem', { name: 'Belegung exportieren' })).not.toBeInTheDocument();
   });
 
   it('Belegung exportieren sichtbar bei kind: generator', async () => {
@@ -134,8 +136,9 @@ describe('Vorlagen', () => {
       'POST /api/v1/homelab/plausi': () => ({ findings: [], worst: null }),
       'POST /api/v1/labels/render': () => fixtures.renderJson(),
     });
-    renderWithProviders(<VorlagenPage />, { route: '/vorlagen?vorlage=datentraeger' });
-    expect(await screen.findByRole('button', { name: 'Belegung exportieren' })).toBeInTheDocument();
+    const { user } = renderWithProviders(<VorlagenPage />, { route: '/vorlagen?vorlage=datentraeger' });
+    await user.click(await screen.findByRole('button', { name: /^Weitere Aktionen für / }));
+    expect(await screen.findByRole('menuitem', { name: 'Belegung exportieren' })).toBeInTheDocument();
   });
 
   it('zeigt „Gekürzt: …“ für Felder aus render.shortened', async () => {
@@ -205,8 +208,8 @@ describe('Vorlagen', () => {
       'DELETE /api/v1/templates/:name': () => ({}),
     });
     const { user } = renderWithProviders(<VorlagenPage />, { route: '/vorlagen?vorlage=datentraeger' });
-    const del = await screen.findByRole('button', { name: 'Löschen' });
-    await user.click(del);
+    await screen.findByRole('button', { name: /^Weitere Aktionen für / });
+    await chooseRowAction(user, 'datentraeger', 'Löschen');
     const dialog = await findDialogByRole('alertdialog');
     await user.click(within(dialog).getByRole('button', { name: 'Löschen', hidden: true }));
     await waitFor(() => expect(api.calls.some((c) => c.method === 'DELETE' && c.path === '/api/v1/templates/datentraeger')).toBe(true));
