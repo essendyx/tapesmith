@@ -52,7 +52,7 @@ def _report(ctx, exc: UpdateError) -> int:
 
 
 def _confirm(ctx, question: str) -> bool:
-    ctx.stdout.write(f"{question} [j/N] ")
+    ctx.stdout.write(f"{question} {_t('[j/N]')} ")
     ctx.stdout.flush()
     answer = ctx.stdin.readline().strip().lower()
     return answer in YES_ANSWERS
@@ -65,8 +65,8 @@ def _print_status(ctx, status) -> None:
         if status.previous:
             ctx.out(_t("Vorige Version: {previous}", previous=status.previous))
     ctx.out(_t("Quelle: {source} (Kanal {channel})", source=status.source, channel=status.channel))
-    ctx.out(_t("Suche: {value}, automatisch installieren: {value2}", value='an' if status.enabled else 'aus', value2='an' if status.auto_install else 'aus'))
-    ctx.out(_t("Letzte Prüfung: {value}", value=status.last_check or 'noch nie'))
+    ctx.out(_t("Suche: {value}, automatisch installieren: {value2}", value=_t('an') if status.enabled else _t('aus'), value2=_t('an') if status.auto_install else _t('aus')))
+    ctx.out(_t("Letzte Prüfung: {value}", value=status.last_check or _t('noch nie')))
     if status.available:
         ctx.out(_t("Verfügbar: {version}", version=status.available['version']))
     ctx.out(_t("Zustand: {t}", t=_t(STATE_TEXT.get(status.state, status.state))))

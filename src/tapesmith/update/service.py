@@ -295,6 +295,11 @@ class UpdateService:
                     raise UpdateError("update.checksum_mismatch",
                                       _t("Ein Paket für {version} passt nicht zur Prüfsumme im signierten Manifest", version=version),
                                       hint=_t("Update-Quelle prüfen; veränderte Pakete werden nie installiert.")) from exc
+                if exc.step == "pip" and "NO MATCHING DISTRIBUTION FOUND FOR TAPESMITH==" in exc.output.upper():
+                    # PyPI verteilt ein neues Release erst nach einigen Minuten über alle Spiegel
+                    raise UpdateError("update.download_failed",
+                                      _t("Version {version} ist auf PyPI noch nicht abrufbar", version=version),
+                                      hint=_t("Das Release ist wohl gerade erst erschienen; in ein paar Minuten erneut versuchen.")) from exc
                 if exc.step == "pip":
                     raise UpdateError("update.download_failed",
                                       _t("Pakete für {version} nicht installierbar: {exc}", version=version, exc=exc),
