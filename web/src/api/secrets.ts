@@ -10,6 +10,18 @@ export interface SecretSlot {
   label: string;
   source: SecretSource;
   set: boolean;
+  /** Modul, zu dem der Slot gehört; `null`: Kernfunktion (Seite Zugriff). */
+  module?: string | null;
+  /** Ist das Modul eingeschaltet? Ohne Modul immer `true`. */
+  module_enabled?: boolean;
+  /** Ort in der Oberfläche, an dem der Dienst eingerichtet wird. */
+  target?: string;
+}
+
+export interface AdoptAllResult {
+  adopted: string[];
+  skipped: { id: string; label: string; reason: string }[];
+  slots: SecretSlot[];
 }
 
 export const SECRETS_KEY = ['secrets'] as const;
@@ -31,6 +43,11 @@ export function putSecret(id: string, value: string): Promise<SecretSlot> {
 
 export function adoptSecret(id: string): Promise<SecretSlot> {
   return apiPost<SecretSlot>(`${slotPath(id)}/adopt`, {});
+}
+
+/** Übernimmt alle Slots mit externer Quelle; leere Quellen werden mit Grund übersprungen. */
+export function adoptAllSecrets(): Promise<AdoptAllResult> {
+  return apiPost<AdoptAllResult>('/api/v1/secrets/adopt-all', {});
 }
 
 export function deleteSecret(id: string): Promise<SecretSlot> {

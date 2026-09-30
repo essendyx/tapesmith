@@ -16,7 +16,8 @@
     "updates": "Updates",
     "support": "Hilfe und Diagnose",
     "advanced": "Erweitert",
-    "sections": "Abschnitte"
+    "sections": "Abschnitte",
+    "tokens": "Tokens und Passwörter"
   },
   "generic": {
     "save": "Speichern",
@@ -465,5 +466,23 @@
     "description": "Selten gebrauchte Einstellungen: Druckerverbindung, Obergrenzen, Ordner, Web-Port und Windows-Einträge.",
     "show": "Anzeigen",
     "hide": "Ausblenden"
+  },
+  "secrets": {
+    "title": "Tokens und Passwörter",
+    "description": "Alle Zugangsdaten an einer Stelle, auch die von ausgeschalteten Modulen. Werte werden nie angezeigt und liegen in den Windows-Anmeldeinformationen.",
+    "adoptAll": "Alle aus externen Quellen übernehmen",
+    "adoptAllDone_one": "{{count}} Wert in Tapesmith übernommen",
+    "adoptAllDone_other": "{{count}} Werte in Tapesmith übernommen",
+    "adoptAllSkipped_one": "{{count}} übersprungen: {{list}}",
+    "adoptAllSkipped_other": "{{count}} übersprungen: {{list}}",
+    "adoptAllFailed": "Übernahme fehlgeschlagen",
+    "moduleOff": "Modul aus",
+    "moduleOffHelp": "Gehört zum Modul „{{module}}“, das ausgeschaltet ist. Der Wert bleibt gespeichert und wird genutzt, sobald das Modul an ist.",
+    "moduleHelp": "Gehört zum Modul „{{module}}“.",
+    "accessHelp": "Wird auf der Seite Zugriff eingerichtet.",
+    "enableModule": "Modul einschalten",
+    "openSettings": "Einstellungen öffnen",
+    "openAccess": "Zugriff öffnen",
+    "none": "Keine Geheimwerte vorhanden."
   }
 }

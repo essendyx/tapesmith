@@ -43,6 +43,17 @@ def get_secrets(ctx: ApiContext = Depends(get_ctx)) -> dict:
     return {"slots": secretslots.statuses(keyring_module=_keyring(ctx), environ=ctx.extras.get("environ"))}
 
 
+@router.post("/secrets/adopt-all", summary="Alle externen Quellen in Tapesmith übernehmen")
+def post_secrets_adopt_all(ctx: ApiContext = Depends(get_ctx)) -> dict:
+    result = secretslots.adopt_all(keyring_module=_keyring(ctx), environ=ctx.extras.get("environ"))
+    if result["adopted"]:
+        ctx.service.request_reload()
+        keys = [f"secrets.{slot_id}" for slot_id in result["adopted"]]
+        ctx.publish("config", {"keys": keys})
+        ctx.publish("homelab", {"keys": keys})
+    return result
+
+
 @router.put("/secrets/{slot_id}", summary="Geheimwert speichern (Windows-Anmeldeinformationen)")
 def put_secret(slot_id: str, body: SecretValueBody, ctx: ApiContext = Depends(get_ctx)) -> dict:
     return _call(ctx, slot_id, secretslots.store, value=body.value)

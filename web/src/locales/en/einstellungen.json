@@ -16,7 +16,8 @@
     "updates": "Updates",
     "support": "Help and diagnostics",
     "advanced": "Advanced",
-    "sections": "Sections"
+    "sections": "Sections",
+    "tokens": "Tokens and passwords"
   },
   "generic": {
     "save": "Save",
@@ -465,5 +466,23 @@
     "description": "Rarely needed settings: printer connection, limits, folders, web port and Windows entries.",
     "show": "Show",
     "hide": "Hide"
+  },
+  "secrets": {
+    "title": "Tokens and passwords",
+    "description": "All credentials in one place, including those of disabled modules. Values are never shown and are stored in Windows Credential Manager.",
+    "adoptAll": "Take over all external sources",
+    "adoptAllDone_one": "{{count}} value taken over into Tapesmith",
+    "adoptAllDone_other": "{{count}} values taken over into Tapesmith",
+    "adoptAllSkipped_one": "{{count}} skipped: {{list}}",
+    "adoptAllSkipped_other": "{{count}} skipped: {{list}}",
+    "adoptAllFailed": "Take over failed",
+    "moduleOff": "Module off",
+    "moduleOffHelp": "Belongs to the module “{{module}}”, which is disabled. The value stays stored and is used as soon as the module is on.",
+    "moduleHelp": "Belongs to the module “{{module}}”.",
+    "accessHelp": "Set up on the Access page.",
+    "enableModule": "Enable module",
+    "openSettings": "Open settings",
+    "openAccess": "Open Access",
+    "none": "No secrets available."
   }
 }

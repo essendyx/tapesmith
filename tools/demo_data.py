@@ -20,6 +20,7 @@ wurden; Vorlagen rendern in der Sprache des Aufrufs.
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, replace
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -115,6 +116,10 @@ def _key_file(home: Path) -> Path:
     return path
 
 
+DEMO_TELEGRAM_ENV = "TAPESMITH_DEMO_TELEGRAM_TOKEN"
+DEMO_PAPERLESS_ENV = "TAPESMITH_DEMO_PAPERLESS_TOKEN"
+
+
 def _write_config(home: Path) -> None:
     key_path = _key_file(home)
     config_mod.save_config({
@@ -131,7 +136,15 @@ def _write_config(home: Path) -> None:
         "queue": {"auto_retry": True},
         # Demo mit allen Modulen; Aufnahmen „ohne Module“ schalten sie im Werkzeug vorübergehend aus.
         "modules": {"enabled": list(modules.MODULE_IDS)},
+        # Geheimwerte: Telegram aus einer (Demo-)Umgebungsvariable, für die Karte „Tokens und Passwörter“
+        "telegram": {"token_ref": f"env:{DEMO_TELEGRAM_ENV}"},
     })
+    # Paperless zeigt auf eine leere externe Quelle („Externe Quelle leer“)
+    from tapesmith.integrations import settings as homelab_settings
+
+    homelab_settings.update_settings({"paperless.token_ref": f"env:{DEMO_PAPERLESS_ENV}"})
+    os.environ[DEMO_TELEGRAM_ENV] = "demo-wert"
+    os.environ.pop(DEMO_PAPERLESS_ENV, None)
 
 
 def _payload_for(meta: JobMeta, result: RenderResult) -> dict:

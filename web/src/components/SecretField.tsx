@@ -4,8 +4,8 @@
  * Der gespeicherte Wert wird nie angezeigt; gespeichert wird in den Windows-Anmeldeinformationen.
  */
 import { useId, useState, type ReactNode } from 'react';
-import { Badge, Button, Input, Spinner, makeStyles, tokens } from '@fluentui/react-components';
-import { ArrowDownload20Regular, Delete20Regular } from '@fluentui/react-icons';
+import { Badge, Button, Input, Spinner, Text, makeStyles, tokens } from '@fluentui/react-components';
+import { ArrowDownload20Regular, Delete20Regular, Warning16Regular } from '@fluentui/react-icons';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { ApiError } from '../api/client';
@@ -18,7 +18,25 @@ const useStyles = makeStyles({
   control: { display: 'flex', columnGap: tokens.spacingHorizontalS, width: '100%', minWidth: 0 },
   input: { flex: '1 1 auto', minWidth: 0 },
   save: { flex: '0 0 auto' },
-  actions: { display: 'flex', columnGap: tokens.spacingHorizontalS, rowGap: tokens.spacingVerticalXS, flexWrap: 'wrap' },
+  actions: {
+    display: 'flex',
+    alignItems: 'center',
+    columnGap: tokens.spacingHorizontalS,
+    rowGap: tokens.spacingVerticalXS,
+    flexWrap: 'wrap',
+  },
+  empty: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    columnGap: tokens.spacingHorizontalXS,
+    color: tokens.colorStatusWarningForeground3,
+    fontWeight: tokens.fontWeightSemibold,
+  },
+  badges: {
+    display: 'inline-flex',
+    columnGap: tokens.spacingHorizontalXS,
+    flexWrap: 'wrap',
+  },
 });
 
 export function SecretStateBadge(props: { slot: SecretSlot | undefined }): JSX.Element | null {
@@ -44,6 +62,10 @@ export function SecretField(props: {
   slotId: string;
   label: ReactNode;
   help?: ReactNode;
+  /** Weitere Plaketten neben dem Zustand (z. B. „Modul aus“). */
+  extraBadges?: ReactNode;
+  /** Weitere Aktionen unter der Zeile (z. B. „Einstellungen öffnen“). */
+  extraActions?: ReactNode;
 }): JSX.Element {
   const { t } = useTranslation('secrets');
   const styles = useStyles();
@@ -94,43 +116,72 @@ export function SecretField(props: {
 
   const helpLines: ReactNode[] = [];
   if (props.help) helpLines.push(props.help);
-  if (slot?.source === 'extern') helpLines.push(t('externalHelp'));
+  const external = slot?.source === 'extern';
+  if (external) helpLines.push(slot.set ? t('externalHelp') : t('externalEmptyHelp'));
   const canRemove = slot !== undefined && (slot.set || slot.source === 'extern');
   const details =
-    slot?.source === 'extern' || canRemove ? (
-      <div className={styles.actions}>
-        {slot?.source === 'extern' ? (
-          <Button
-            size="small"
-            icon={<ArrowDownload20Regular />}
-            aria-label={t('adoptAria', { name: labelText })}
-            disabled={busy || !slot.set}
-            onClick={adopt}
-          >
-            {t('adopt')}
-          </Button>
+    external || canRemove || props.extraActions ? (
+      <>
+        {external && !slot.set ? (
+          <Text size={200} className={styles.empty} role="status">
+            <Warning16Regular aria-hidden />
+            {t('externalEmpty')}
+          </Text>
         ) : null}
-        {canRemove ? (
-          <Button
-            size="small"
-            appearance="subtle"
-            icon={<Delete20Regular />}
-            aria-label={t('removeAria', { name: labelText })}
-            disabled={busy}
-            onClick={() => void remove()}
-          >
-            {t('remove')}
-          </Button>
-        ) : null}
-      </div>
+        <div className={styles.actions}>
+          {external && slot.set ? (
+            <Button
+              appearance="secondary"
+              icon={<ArrowDownload20Regular />}
+              aria-label={t('adoptAria', { name: labelText })}
+              disabled={busy}
+              onClick={adopt}
+            >
+              {t('adopt')}
+            </Button>
+          ) : null}
+          {props.extraActions}
+          {canRemove ? (
+            <Button
+              size="small"
+              appearance="subtle"
+              icon={<Delete20Regular />}
+              aria-label={t('removeAria', { name: labelText })}
+              disabled={busy}
+              onClick={() => void remove()}
+            >
+              {t('remove')}
+            </Button>
+          ) : null}
+        </div>
+      </>
     ) : undefined;
 
   return (
     <FieldRow
       htmlFor={inputId}
       label={props.label}
-      badges={<SecretStateBadge slot={slot} />}
-      help={helpLines.length > 1 ? <>{helpLines.map((line, i) => <span key={i}>{line} </span>)}</> : helpLines[0]}
+      badges={
+        props.extraBadges ? (
+          <span className={styles.badges}>
+            <SecretStateBadge slot={slot} />
+            {props.extraBadges}
+          </span>
+        ) : (
+          <SecretStateBadge slot={slot} />
+        )
+      }
+      help={
+        helpLines.length > 1 ? (
+          <>
+            {helpLines.map((line, i) => (
+              <span key={i}>{line} </span>
+            ))}
+          </>
+        ) : (
+          helpLines[0]
+        )
+      }
       details={details}
       control={
         <div className={styles.control}>

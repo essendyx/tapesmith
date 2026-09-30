@@ -47,6 +47,7 @@ import { BackupCard } from './cards/BackupCard';
 import { ConfigCodeCard } from './cards/ConfigCodeCard';
 import { UpdateCard } from './cards/UpdateCard';
 import { SupportCard } from './cards/SupportCard';
+import { SECRETS_CARD_ID, SecretsCard } from './cards/SecretsCard';
 import { ModulesCard } from './modules/ModulesCard';
 import { ModuleSettingsCards } from './modules/ModuleSettingsCards';
 import { HomelabSettingsCard } from './modules/HomelabSettingsCard';
@@ -270,6 +271,7 @@ export default function EinstellungenPage(): JSX.Element {
       { id: UPDATES_ID, title: t('nav.updates') },
       { id: BACKUP_ID, title: t('nav.backup') },
       { id: INTEGRATION_ID, title: t('nav.integration') },
+      { id: SECRETS_CARD_ID, title: t('nav.tokens') },
       { id: ACCESS_ID, title: t('nav.access') },
       { id: SUPPORT_CARD_ID, title: t('nav.support') },
       { id: ADVANCED_ID, title: t('nav.advanced') },
@@ -320,6 +322,7 @@ export default function EinstellungenPage(): JSX.Element {
           ) : null}
           <BackupCard section={backupSection} />
           <IntegrationCard id={INTEGRATION_ID} parts={['autostart']} />
+          <SecretsCard />
           <AccessLinkCard />
           <SupportCard />
 

@@ -63,6 +63,13 @@ describe('SecretField', () => {
     expect(await screen.findByText('Gespeichert')).toBeInTheDocument();
   });
 
+  it('leere externe Quelle: kein Übernehmen-Knopf, klarer Hinweis zum direkten Eingeben', async () => {
+    renderField({ 'GET /api/v1/secrets': () => makeSecrets([{ id: 'paperless', source: 'extern', set: false }]) });
+    expect(await screen.findByText('Externe Quelle leer: Wert direkt eingeben')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Wert für Paperless in Tapesmith übernehmen' })).toBeNull();
+    expect(screen.getByText(/liefert keinen Wert/)).toBeInTheDocument();
+  });
+
   it('Fehler des Dienstes erscheint als Meldung, Eingabe bleibt stehen', async () => {
     const { user } = renderField({
       'PUT /api/v1/secrets/:id': () => {

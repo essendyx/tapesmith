@@ -52,7 +52,7 @@ def test_list_slots_default(api):
     assert slots["mqtt"]["source"] == "tapesmith" and slots["mqtt"]["set"] is False
     assert slots["telegram"]["source"] == "none"
     for slot in slots.values():
-        assert set(slot) == {"id", "label", "source", "set"}
+        assert set(slot) == {"id", "label", "source", "set", "module", "module_enabled", "target"}
 
 
 def test_store_sets_managed_ref_and_never_returns_value(api, caplog):
@@ -60,7 +60,8 @@ def test_store_sets_managed_ref_and_never_returns_value(api, caplog):
     caplog.set_level(logging.DEBUG)
     r = client.put(f"{SECRETS}/telegram", json={"value": VALUE})
     assert r.status_code == 200, r.text
-    assert r.json() == {"id": "telegram", "label": "Telegram-Bot-Token", "source": "tapesmith", "set": True}
+    assert r.json() == {"id": "telegram", "label": "Telegram-Bot-Token", "source": "tapesmith", "set": True,
+                        "module": None, "module_enabled": True, "target": "/zugriff"}
     assert keyring.store[("tapesmith", "telegram")] == VALUE
     assert config_mod.setting(config_mod.load_config(), "telegram.token_ref") == "keyring:tapesmith/telegram"
     assert VALUE not in client.get(SECRETS).text
@@ -98,8 +99,9 @@ def test_adopt_external_file(api, tmp_path):
     token_file.write_text(VALUE + "\n", encoding="utf-8")
     homelab_settings.update_settings({"homeassistant.token_ref": f"file:{token_file}"})
     slots = _slots(client)
-    assert slots["homeassistant"] == {"id": "homeassistant", "label": "Home Assistant", "source": "extern",
-                                      "set": True}
+    assert {k: slots["homeassistant"][k] for k in ("id", "label", "source", "set", "module", "target")} == {
+        "id": "homeassistant", "label": "Home Assistant", "source": "extern", "set": True,
+        "module": "homeassistant", "target": "/einstellungen?abschnitt=modul-homeassistant"}
     assert str(token_file) not in client.get(SECRETS).text
     r = client.post(f"{SECRETS}/homeassistant/adopt")
     assert r.status_code == 200, r.text
@@ -184,3 +186,60 @@ def test_value_not_in_config_files(api, tmp_path):
     for path in (paths.config_path(), homelab_settings.settings_path()):
         assert VALUE not in path.read_text(encoding="utf-8")
     assert json.loads(homelab_settings.settings_path().read_text(encoding="utf-8"))
+
+
+def test_slots_of_disabled_modules_are_listed(api):
+    client, _ctx, _kr = api
+    config_mod.save_config({"modules": {"enabled": ["inventar"]}})
+    homelab_settings.update_settings({"proxmox.hosts": [{"name": "pve1", "url": "https://192.0.2.5:8006",
+                                                          "token_ref": None, "verify_tls": False}]})
+    slots = _slots(client)
+    assert {"paperless", "homeassistant", "shortlink", "proxmox:pve1"} <= set(slots)
+    assert slots["paperless"]["module"] == "paperless" and slots["paperless"]["module_enabled"] is False
+    assert slots["shortlink"]["module"] == "assets"
+    assert slots["proxmox:pve1"]["module"] == "proxmox"
+    assert slots["proxmox:pve1"]["target"] == "/einstellungen?abschnitt=modul-proxmox"
+    assert slots["mqtt"]["module"] is None and slots["mqtt"]["module_enabled"] is True
+    config_mod.save_config({"modules": {"enabled": ["inventar", "paperless"]}})
+    assert _slots(client)["paperless"]["module_enabled"] is True
+
+
+def test_adopt_all_summary(api, tmp_path, caplog):
+    client, ctx, keyring = api
+    caplog.set_level(logging.DEBUG)
+    config_mod.save_config({"modules": {"enabled": ["inventar"]}})
+    good = tmp_path / "ha.txt"
+    good.write_text(VALUE, encoding="utf-8")
+    empty = tmp_path / "leer.txt"
+    empty.write_text("", encoding="utf-8")
+    homelab_settings.update_settings({"homeassistant.token_ref": f"file:{good}",
+                                      "paperless.token_ref": f"file:{empty}"})
+    config_mod.save_config({"telegram": {"token_ref": "env:TG_TOKEN"}})
+    ctx.extras["environ"] = {"TG_TOKEN": VALUE + "-tg"}
+    client.put(f"{SECRETS}/shortlink", json={"value": VALUE})  # schon in Tapesmith: bleibt unberührt
+
+    r = client.post(f"{SECRETS}/adopt-all")
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert sorted(body["adopted"]) == ["homeassistant", "telegram"]
+    assert [s["id"] for s in body["skipped"]] == ["paperless"]
+    assert body["skipped"][0]["reason"]
+    assert keyring.store[("tapesmith", "homeassistant")] == VALUE
+    assert keyring.store[("tapesmith", "telegram")] == VALUE + "-tg"
+    by_id = {s["id"]: s for s in body["slots"]}
+    assert by_id["homeassistant"]["source"] == "tapesmith"
+    assert by_id["paperless"]["source"] == "extern" and by_id["paperless"]["set"] is False
+    for text in (r.text, client.get(SECRETS).text, caplog.text):
+        assert VALUE not in text
+        assert str(good) not in text and str(empty) not in text
+
+    again = client.post(f"{SECRETS}/adopt-all").json()
+    assert again["adopted"] == [] and [s["id"] for s in again["skipped"]] == ["paperless"]
+
+
+def test_adopt_all_requires_admin(api):
+    client, ctx, _kr = api
+    token = make_token(ctx, "drucken")
+    assert client.post(f"{SECRETS}/adopt-all", headers={"Authorization": f"Bearer {token}"}).status_code == 403
+    client.headers.pop("X-P12-Token", None)
+    assert client.post(f"{SECRETS}/adopt-all").status_code == 401

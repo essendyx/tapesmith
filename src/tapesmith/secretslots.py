@@ -17,6 +17,7 @@ import logging
 from dataclasses import dataclass
 
 from tapesmith import config as config_mod
+from tapesmith import modules
 from tapesmith.i18n import N_, _t
 from tapesmith.integrations import credentials
 from tapesmith.integrations import settings as homelab_settings
@@ -41,6 +42,11 @@ _HOMELAB_SLOTS = (
 )
 PROXMOX_PREFIX = "proxmox:"
 
+# Modul, zu dem ein Slot gehört (None: Kernfunktion auf der Seite Zugriff)
+_SLOT_MODULES = {"paperless": "paperless", "homeassistant": "homeassistant", "shortlink": "assets"}
+PROXMOX_MODULE = "proxmox"
+ACCESS_TARGET = "/zugriff"
+
 
 class SlotNotFound(KeyError):
     """Unbekannter Slot (z. B. Proxmox-Host, den es nicht gibt)."""
@@ -53,6 +59,17 @@ class Slot:
     store: str            # "config" | "homelab"
     key: str              # gepunkteter Schlüssel der Referenz, bei Proxmox "proxmox.hosts"
     host: str | None = None
+
+    @property
+    def module(self) -> str | None:
+        """Modul, dessen Einstellungen den Slot enthalten (None: Seite Zugriff)."""
+        return PROXMOX_MODULE if self.host is not None else _SLOT_MODULES.get(self.id)
+
+    @property
+    def target(self) -> str:
+        """Ort in der Oberfläche, an dem der Dienst eingerichtet wird."""
+        module = self.module
+        return f"/einstellungen?abschnitt=modul-{module}" if module else ACCESS_TARGET
 
     @property
     def managed_ref(self) -> str:
@@ -115,7 +132,11 @@ def slot_status(slot: Slot, *, cfg: dict | None = None, homelab: dict | None = N
         present = credentials.has_secret(ref, keyring_module=keyring_module, environ=environ)
     except Exception:  # noqa: BLE001 (jede Ausnahme beim Prüfen gilt als "nicht gesetzt")
         present = False
-    return {"id": slot.id, "label": _t(slot.label), "source": _source(slot, ref), "set": present}
+    cfg = config_mod.load_config() if cfg is None else cfg
+    module = slot.module
+    return {"id": slot.id, "label": _t(slot.label), "source": _source(slot, ref), "set": present,
+            "module": module, "module_enabled": True if module is None else modules.is_enabled(cfg, module),
+            "target": slot.target}
 
 
 def statuses(*, keyring_module=None, environ=None) -> list[dict]:
@@ -209,3 +230,26 @@ def remove(slot_id: str, *, keyring_module=None, environ=None) -> dict:
         _set_ref(slot, None)
     log.info("Geheimwert entfernt: %s", slot.id)
     return slot_status(slot, keyring_module=keyring_module, environ=environ)
+
+
+def adopt_all(*, keyring_module=None, environ=None) -> dict:
+    """Übernimmt jeden Slot mit externer Quelle, auch von ausgeschalteten Modulen. Slots, deren
+    Quelle keinen Wert liefert, werden mit Grund übersprungen; die anderen laufen trotzdem weiter."""
+    adopted: list[str] = []
+    skipped: list[dict] = []
+    for slot in all_slots():
+        if _source(slot, current_ref(slot)) != SOURCE_EXTERNAL:
+            continue
+        try:
+            adopt(slot.id, keyring_module=keyring_module, environ=environ)
+        except ValueError as exc:
+            skipped.append({"id": slot.id, "label": _t(slot.label), "reason": str(exc)})
+        except Exception as exc:  # noqa: BLE001 (ein kaputter Slot darf die anderen nicht aufhalten)
+            log.warning("Übernahme von %s gescheitert: %s", slot.id, type(exc).__name__)
+            skipped.append({"id": slot.id, "label": _t(slot.label),
+                            "reason": _t("Übernahme fehlgeschlagen ({kind})", kind=type(exc).__name__)})
+        else:
+            adopted.append(slot.id)
+    log.info("Geheimwerte übernommen: %d, übersprungen: %d", len(adopted), len(skipped))
+    return {"adopted": adopted, "skipped": skipped,
+            "slots": statuses(keyring_module=keyring_module, environ=environ)}
