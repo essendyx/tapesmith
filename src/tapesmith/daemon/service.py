@@ -680,8 +680,9 @@ class PrintService:
         self._closed = True
         runner = self._runner
         try:
-            if runner is not None:
-                runner.stop()
+            if runner is not None and runner.stop() is False:
+                log.warning("Warteschlangen-Läufer hat nicht rechtzeitig angehalten, "
+                            "Warteschlange wird trotzdem geschlossen")
         finally:
             try:
                 self._manager.close()

@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING
 
 from tapesmith.config import setting
 from tapesmith.daemon.probe import Backoff, ReachabilityProbe, RetryDecision, RetryScheduler, make_probe
-from tapesmith.daemon.queue import JobQueue
+from tapesmith.daemon.queue import JobQueue, QueueClosed
 from tapesmith.ipc.codec import decode_request
 from tapesmith.lock import PrinterBusy
 from tapesmith.transport.base import ConnectTimeout
@@ -81,19 +81,27 @@ class QueueRunner:
         self._thread = threading.Thread(target=self._loop, name=_t("p12d-Warteschlange"), daemon=True)
         self._thread.start()
 
-    def stop(self, timeout_s: float = 2.0) -> None:
+    def stop(self, timeout_s: float = 5.0) -> bool:
+        """Thread anhalten und auf ihn warten. False, wenn er nach `timeout_s` noch läuft (etwa
+        mitten in einem langen Druck); er beendet sich dann nach dem laufenden Schritt selbst."""
         self._stop.set()
         self._wake.set()
         thread = self._thread
+        stopped = True
         if thread is not None and thread is not threading.current_thread():
             thread.join(timeout_s)
+            stopped = not thread.is_alive()
         self._thread = None
+        return stopped
 
     def _loop(self) -> None:
         while not self._stop.is_set():
             self._wake.clear()
             try:
                 decision = self.tick()
+            except QueueClosed:
+                log.info("Warteschlangen-Läufer: Warteschlange geschlossen, Läufer endet")
+                break
             except Exception:  # noqa: BLE001 (der Läufer darf nie sterben)
                 log.exception("Warteschlangen-Läufer: Fehler")
                 decision = RetryDecision("warten", IDLE_WAIT_S, "")

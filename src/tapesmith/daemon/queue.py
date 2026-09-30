@@ -10,7 +10,8 @@ from __future__ import annotations
 import json
 import sqlite3
 import threading
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -100,11 +101,22 @@ class QueuedJob:
         )
 
 
+class QueueClosed(RuntimeError):
+    """Die Warteschlange wurde geschlossen (Dienst fährt herunter); kein Zugriff mehr möglich."""
+
+
 class JobQueue:
+    """Eine SQLite-Verbindung für alle Threads, jeder Zugriff unter `_lock`.
+
+    `close()` wartet auf einen laufenden Zugriff und schließt dann; spätere Aufrufe werfen
+    `QueueClosed` statt eines rohen `sqlite3.ProgrammingError` aus einer geschlossenen Verbindung.
+    """
+
     def __init__(self, path: Path | None = None, *, clock: Callable[[], datetime] = datetime.now):
         self.path = Path(path) if path is not None else (paths.app_dir() / "queue.sqlite3")
         self._clock = clock
         self._lock = threading.Lock()
+        self._closed = False
         self._memory: dict[int, dict] = {}
         self._conn = sqlite3.connect(str(self.path), check_same_thread=False)
         self._conn.row_factory = sqlite3.Row
@@ -118,6 +130,24 @@ class JobQueue:
             self._conn.commit()
 
     # ---------- interne Hilfen ----------
+
+    @contextmanager
+    def _open(self) -> Iterator[None]:
+        """Sperre halten und sicherstellen, dass die Verbindung noch offen ist.
+
+        Scheitert ein Zugriff mittendrin (etwa `commit()` bei vollem Datenträger oder gesperrter
+        Datei), wird die offene Transaktion zurückgerollt. Sonst bliebe sie hängen und der nächste
+        erfolgreiche Zugriff schriebe die halbe Änderung mit fest (ein Auftrag, dessen `add()` mit
+        Fehler endete, stünde dann doch in der Warteschlange)."""
+        with self._lock:
+            if self._closed:
+                raise QueueClosed(_t("Warteschlange ist geschlossen"))
+            try:
+                yield
+            except BaseException:
+                if self._conn.in_transaction:
+                    self._conn.rollback()
+                raise
 
     def _row_to_job(self, row: sqlite3.Row) -> QueuedJob:
         return QueuedJob(
@@ -157,7 +187,7 @@ class JobQueue:
 
     def add(self, payload: dict, *, source: str, title: str, sensitive: bool) -> int:
         created = self._clock()
-        with self._lock:
+        with self._open():
             position = self._next_position_locked()
             payload_json = None if sensitive else json.dumps(payload, ensure_ascii=False)
             cur = self._conn.execute(
@@ -167,17 +197,17 @@ class JobQueue:
                  None, "", int(sensitive), None, payload_json),
             )
             job_id = cur.lastrowid
+            self._conn.commit()
             if sensitive:
                 self._memory[job_id] = payload
-            self._conn.commit()
             return job_id
 
     def get(self, job_id: int) -> QueuedJob:
-        with self._lock:
+        with self._open():
             return self._row_to_job(self._get_row(job_id))
 
     def payload(self, job_id: int) -> dict | None:
-        with self._lock:
+        with self._open():
             row = self._get_row(job_id)
             if row["sensitive"]:
                 return self._memory.get(job_id)
@@ -186,7 +216,7 @@ class JobQueue:
             return json.loads(row["payload_json"])
 
     def list(self, include_done: bool = False) -> list[QueuedJob]:
-        with self._lock:
+        with self._open():
             rows = self._conn.execute(
                 "SELECT * FROM jobs WHERE state IN (?,?) ORDER BY position", ACTIVE_STATES
             ).fetchall()
@@ -199,7 +229,7 @@ class JobQueue:
             return jobs
 
     def active_count(self) -> int:
-        with self._lock:
+        with self._open():
             row = self._conn.execute(
                 "SELECT COUNT(*) FROM jobs WHERE state IN (?,?)", ACTIVE_STATES
             ).fetchone()
@@ -210,7 +240,7 @@ class JobQueue:
             return None
         now = now if now is not None else self._clock()
         now_iso = now.isoformat(timespec="seconds")
-        with self._lock:
+        with self._open():
             rows = self._conn.execute(
                 "SELECT * FROM jobs WHERE state='wartet' ORDER BY position"
             ).fetchall()
@@ -220,7 +250,7 @@ class JobQueue:
             return None
 
     def mark_running(self, job_id: int) -> None:
-        with self._lock:
+        with self._open():
             self._get_row(job_id)
             self._conn.execute(
                 "UPDATE jobs SET state='läuft', attempts=attempts+1 WHERE id=?", (job_id,)
@@ -228,7 +258,7 @@ class JobQueue:
             self._conn.commit()
 
     def mark_done(self, job_id: int, history_id: int | None) -> None:
-        with self._lock:
+        with self._open():
             self._get_row(job_id)
             self._conn.execute(
                 "UPDATE jobs SET state='fertig', history_id=?, payload_json=NULL WHERE id=?",
@@ -238,7 +268,7 @@ class JobQueue:
             self._memory.pop(job_id, None)
 
     def mark_retry(self, job_id: int, error: str, next_try: datetime) -> None:
-        with self._lock:
+        with self._open():
             self._get_row(job_id)
             self._conn.execute(
                 "UPDATE jobs SET state='wartet', last_error=?, next_try=? WHERE id=?",
@@ -247,7 +277,7 @@ class JobQueue:
             self._conn.commit()
 
     def mark_failed(self, job_id: int, error: str) -> None:
-        with self._lock:
+        with self._open():
             self._get_row(job_id)
             self._conn.execute(
                 "UPDATE jobs SET state='fehler', last_error=?, payload_json=NULL WHERE id=?",
@@ -257,7 +287,7 @@ class JobQueue:
             self._memory.pop(job_id, None)
 
     def cancel(self, job_id: int) -> bool:
-        with self._lock:
+        with self._open():
             row = self._conn.execute("SELECT state FROM jobs WHERE id=?", (job_id,)).fetchone()
             if row is None or row["state"] not in ACTIVE_STATES:
                 return False
@@ -270,7 +300,7 @@ class JobQueue:
             return True
 
     def duplicate(self, job_id: int) -> int:
-        with self._lock:
+        with self._open():
             row = self._get_row(job_id)
             if row["sensitive"]:
                 if job_id not in self._memory:
@@ -292,13 +322,13 @@ class JobQueue:
                  position, 0, None, "", row["sensitive"], None, payload_json),
             )
             new_id = cur.lastrowid
+            self._conn.commit()
             if row["sensitive"]:
                 self._memory[new_id] = payload
-            self._conn.commit()
             return new_id
 
     def move(self, job_id: int, position: int) -> None:
-        with self._lock:
+        with self._open():
             row = self._get_row(job_id)
             if row["state"] not in ACTIVE_STATES:
                 raise KeyError(_t("Warteschlangen-Auftrag {job_id} ist nicht aktiv", job_id=job_id))
@@ -314,7 +344,7 @@ class JobQueue:
             self._conn.commit()
 
     def retry_now(self, job_id: int | None = None) -> None:
-        with self._lock:
+        with self._open():
             if job_id is None:
                 self._conn.execute(
                     "UPDATE jobs SET next_try=NULL WHERE state IN (?,?)", ACTIVE_STATES
@@ -326,12 +356,12 @@ class JobQueue:
 
     @property
     def paused(self) -> bool:
-        with self._lock:
+        with self._open():
             row = self._conn.execute("SELECT value FROM meta WHERE key='paused'").fetchone()
             return row is not None and row["value"] == "1"
 
     def pause(self) -> None:
-        with self._lock:
+        with self._open():
             self._conn.execute(
                 "INSERT INTO meta(key, value) VALUES ('paused', '1') "
                 "ON CONFLICT(key) DO UPDATE SET value='1'"
@@ -339,7 +369,7 @@ class JobQueue:
             self._conn.commit()
 
     def resume(self) -> None:
-        with self._lock:
+        with self._open():
             self._conn.execute(
                 "INSERT INTO meta(key, value) VALUES ('paused', '0') "
                 "ON CONFLICT(key) DO UPDATE SET value='0'"
@@ -349,7 +379,7 @@ class JobQueue:
     def purge_done(self, older_than: timedelta = timedelta(days=7)) -> int:
         cutoff = self._clock() - older_than
         cutoff_iso = cutoff.isoformat(timespec="seconds")
-        with self._lock:
+        with self._open():
             rows = self._conn.execute(
                 "SELECT id FROM jobs WHERE state NOT IN (?,?) AND created<?",
                 (*ACTIVE_STATES, cutoff_iso),
@@ -364,14 +394,22 @@ class JobQueue:
             return len(ids)
 
     def earliest_next_try(self) -> datetime | None:
-        with self._lock:
+        with self._open():
             row = self._conn.execute(
                 "SELECT MIN(next_try) FROM jobs WHERE state='wartet' AND next_try IS NOT NULL"
             ).fetchone()
             return _from_iso(row[0]) if row and row[0] is not None else None
 
+    @property
+    def closed(self) -> bool:
+        return self._closed
+
     def close(self) -> None:
+        """Schließt die Verbindung, sobald kein anderer Thread mehr zugreift; mehrfach aufrufbar."""
         with self._lock:
+            if self._closed:
+                return
+            self._closed = True
             self._conn.close()
 
     def __enter__(self) -> "JobQueue":

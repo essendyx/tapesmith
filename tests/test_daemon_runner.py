@@ -1,5 +1,6 @@
 """Warteschlangen-Läufer: Backoff, Probe, Deckel, Lease, Fehler der Deckelprüfung, Duplikat."""
 
+import logging
 from dataclasses import replace
 from datetime import datetime, timedelta
 
@@ -341,6 +342,32 @@ def test_thread_start_wake_stop(env):
         e.runner.stop()
     assert e.runner.next_try() is None
 
+
+
+def test_service_close_joins_runner_thread(env):
+    """Herunterfahren: der Läufer-Thread ist beendet, bevor der Dienst zurückkehrt (und damit bevor
+    die Warteschlange schließt)."""
+    e = env()
+    e.runner.start()
+    thread = e.runner._thread
+    job_id = e.add()
+    e.runner.wake()
+    assert wait_until(lambda: e.job(job_id).state == "fertig")
+    e.service.close()
+    assert not thread.is_alive()
+
+
+def test_runner_thread_ends_quietly_when_queue_closed_under_it(env, caplog):
+    """Schließt die Warteschlange, während der Läufer noch läuft (Anhalten dauerte zu lange), endet
+    der Thread ohne Fehlerprotokoll statt alle 30 s gegen eine geschlossene Datenbank zu laufen."""
+    e = env()
+    e.runner.start()
+    thread = e.runner._thread
+    e.service.queue.close()
+    e.runner.wake()
+    thread.join(30)
+    assert not thread.is_alive()
+    assert [r for r in caplog.records if r.levelno >= logging.ERROR] == []
 
 def test_notify_offline_sets_next_try(env):
     e = env()

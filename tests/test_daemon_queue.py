@@ -1,12 +1,14 @@
 """Tests für den Warteschlangen-Kern: SQLite-Queue, Persistenz, sensible Aufträge."""
 
 import json
+import sqlite3
 import threading
+import time
 from datetime import datetime, timedelta
 
 import pytest
 
-from tapesmith.daemon.queue import ACTIVE_STATES, QUEUE_STATES, JobQueue, QueuedJob
+from tapesmith.daemon.queue import ACTIVE_STATES, QUEUE_STATES, JobQueue, QueueClosed, QueuedJob
 
 NOW = datetime(2026, 9, 27, 12, 0, 0)
 
@@ -214,23 +216,129 @@ def test_retry_now_and_earliest_next_try_and_purge(tmp_path):
         assert done == []
 
 
+class SlowCommits:
+    """Verbindung mit langsamem `commit()` wie auf einem CI-Rechner mit trägem Datenträger.
+
+    `before_commit` läuft vor jedem Commit (Verzögerung oder Anhalten an einem Event)."""
+
+    def __init__(self, conn, before_commit):
+        self._conn = conn
+        self._before_commit = before_commit
+
+    def commit(self):
+        self._before_commit()
+        self._conn.commit()
+
+    def __getattr__(self, name):
+        return getattr(self._conn, name)
+
+
+def _run_threads(target, count, *, deadline_s=120.0):
+    """Startet `count` Threads, wartet auf alle und meldet Ausnahmen aus den Threads als Liste.
+    Ein Thread, der nach `deadline_s` noch läuft, lässt den Test scheitern (statt still weiterzulaufen
+    und später auf eine geschlossene Warteschlange zu treffen)."""
+    errors = []
+
+    def guarded():
+        try:
+            target()
+        except BaseException as exc:  # noqa: BLE001 (im Test sichtbar machen)
+            errors.append(exc)
+
+    threads = [threading.Thread(target=guarded, daemon=True) for _ in range(count)]
+    for th in threads:
+        th.start()
+    end = time.monotonic() + deadline_s
+    for th in threads:
+        th.join(max(0.0, end - time.monotonic()))
+    assert not any(th.is_alive() for th in threads), f"Threads nach {deadline_s} s nicht fertig"
+    return errors
+
+
 # 8
 def test_thread_safety_concurrent_add(tmp_path):
+    """Viele Threads, verzögerte Commits: kein Auftrag geht verloren, Positionen lückenlos.
+
+    Die Verzögerung je Commit hält die Sperre länger und lässt die Threads sicher gegeneinander
+    laufen. Auf dem CI-Rechner dauerte ein Commit bis zu 0,2 s; deshalb wenige Einfügungen je
+    Thread und eine großzügige Frist statt einer knappen festen Wartezeit."""
     t = [NOW]
     with JobQueue(tmp_path / "queue.sqlite3", clock=make_clock(t)) as q:
+        q._conn = SlowCommits(q._conn, lambda: time.sleep(0.002))
+
         def worker():
-            for i in range(25):
+            for i in range(8):
                 q.add({"i": i}, source="cli", title=f"T{i}", sensitive=False)
 
-        threads = [threading.Thread(target=worker) for _ in range(4)]
-        for th in threads:
-            th.start()
-        for th in threads:
-            th.join(timeout=5)
+        errors = _run_threads(worker, 8)
+        assert errors == []
         jobs = q.list()
-        assert len(jobs) == 100
-        positions = sorted(j.position for j in jobs)
-        assert positions == list(range(100))
+        assert len(jobs) == 64
+        assert len({j.id for j in jobs}) == 64
+        assert sorted(j.position for j in jobs) == list(range(64))
+
+
+def test_close_waits_for_running_access_then_rejects_clearly(tmp_path):
+    """`close()` wartet auf einen laufenden Zugriff; danach meldet jeder Zugriff `QueueClosed`
+    statt eines rohen `sqlite3.ProgrammingError` aus der geschlossenen Verbindung."""
+    q = JobQueue(tmp_path / "queue.sqlite3")
+    entered, release = threading.Event(), threading.Event()
+
+    def hold_commit():
+        entered.set()
+        assert release.wait(30)
+
+    q._conn = SlowCommits(q._conn, hold_commit)
+    results = []
+    adder = threading.Thread(target=lambda: results.append(
+        q.add({"i": 1}, source="cli", title="T", sensitive=False)), daemon=True)
+    adder.start()
+    assert entered.wait(30)
+    closer = threading.Thread(target=q.close, daemon=True)
+    closer.start()
+    closer.join(0.2)
+    assert closer.is_alive()          # wartet, bis das laufende add() fertig ist
+    release.set()
+    adder.join(30)
+    closer.join(30)
+    assert not adder.is_alive() and not closer.is_alive()
+    assert results == [1]
+    assert q.closed
+    with pytest.raises(QueueClosed):
+        q.add({"i": 2}, source="cli", title="T", sensitive=False)
+    with pytest.raises(QueueClosed):
+        q.list()
+    with pytest.raises(QueueClosed):
+        _ = q.paused
+    q.close()                         # mehrfaches Schließen ist harmlos
+    # Die Einfügung vor dem Schließen ist dauerhaft gespeichert.
+    with JobQueue(tmp_path / "queue.sqlite3") as again:
+        assert [j.id for j in again.list()] == [1]
+
+
+def test_failed_commit_rolls_back_instead_of_riding_along(tmp_path):
+    """Scheitert der Commit (Datei gesperrt, Datenträger voll), bleibt vom gescheiterten `add()`
+    nichts übrig: weder in der Datenbank (der nächste Commit schriebe es sonst mit fest) noch im
+    Speicher für sensible Inhalte."""
+    q = JobQueue(tmp_path / "queue.sqlite3")
+    failures = [sqlite3.OperationalError("database is locked")]
+
+    def maybe_fail():
+        if failures:
+            raise failures.pop()
+
+    q._conn = SlowCommits(q._conn, maybe_fail)
+    try:
+        with pytest.raises(sqlite3.OperationalError):
+            q.add({"secret": 1}, source="cli", title="gescheitert", sensitive=True)
+        second = q.add({"i": 2}, source="cli", title="zweiter", sensitive=False)
+        jobs = q.list()
+        assert [(j.id, j.title, j.position) for j in jobs] == [(second, "zweiter", 0)]
+        assert q._memory == {}
+    finally:
+        q.close()
+    with JobQueue(tmp_path / "queue.sqlite3") as again:
+        assert [j.title for j in again.list()] == ["zweiter"]
 
 
 def test_queue_states_constants():

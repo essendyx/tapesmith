@@ -1777,6 +1777,7 @@
  "Warteschlange anhalten": "Pause the queue",
  "Warteschlange braucht den Druckdienst (p12 daemon start)": "The queue needs the print service (p12 daemon start)",
  "Warteschlange fortsetzen": "Resume the queue",
+ "Warteschlange ist geschlossen": "The queue is closed",
  "Warteschlange läuft weiter": "The queue continues",
  "Warteschlange pausiert": "Queue paused",
  "Warteschlange voll (höchstens {max_queued_jobs} wartende Aufträge)": "Queue full (at most {max_queued_jobs} waiting jobs)",
