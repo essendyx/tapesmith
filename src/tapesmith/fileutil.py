@@ -3,6 +3,7 @@
 import msvcrt
 import os
 import tempfile
+import threading
 import time
 from pathlib import Path
 from tapesmith.i18n import _t
@@ -13,6 +14,18 @@ _REPLACE_RETRY_DELAY_S = 0.05
 
 class FileLockTimeout(TimeoutError):
     pass
+
+
+# Threads desselben Prozesses warten blockierend auf einen Lock pro Datei, statt den Byte-Lock
+# unfair zu pollen (sonst kann ein Thread auf einem langsamen Rechner bis zum Timeout verhungern)
+_THREAD_LOCKS: dict[str, threading.Lock] = {}
+_THREAD_LOCKS_GUARD = threading.Lock()
+
+
+def _thread_lock(path: Path) -> threading.Lock:
+    key = os.path.normcase(os.path.abspath(path))
+    with _THREAD_LOCKS_GUARD:
+        return _THREAD_LOCKS.setdefault(key, threading.Lock())
 
 
 def _atomic_write(path: Path, write) -> None:
@@ -54,11 +67,23 @@ class FileLock:
         self.timeout_s = timeout_s
         self.poll_s = poll_s
         self._fh = None
+        self._thread_lock = _thread_lock(self.path)
 
     def __enter__(self) -> "FileLock":
+        deadline = time.monotonic() + self.timeout_s
+        if not self._thread_lock.acquire(timeout=self.timeout_s):
+            raise FileLockTimeout(
+                _t("Datei gesperrt: {path}, ein anderes P12-Programm schreibt gerade", path=self.path))
+        try:
+            self._lock_file(deadline)
+        except BaseException:
+            self._thread_lock.release()
+            raise
+        return self
+
+    def _lock_file(self, deadline: float) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         fh = open(self.path, "a+b")
-        deadline = time.monotonic() + self.timeout_s
         while True:
             try:
                 fh.seek(0)
@@ -71,11 +96,11 @@ class FileLock:
                         _t("Datei gesperrt: {path}, ein anderes P12-Programm schreibt gerade", path=self.path))
                 time.sleep(self.poll_s)
         self._fh = fh
-        return self
 
     def __exit__(self, *exc) -> bool:
         self._fh.seek(0)
         msvcrt.locking(self._fh.fileno(), msvcrt.LK_UNLCK, 1)
         self._fh.close()
         self._fh = None
+        self._thread_lock.release()
         return False
