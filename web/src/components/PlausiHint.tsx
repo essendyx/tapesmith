@@ -131,6 +131,7 @@ export function usePlausi(
 const useStyles = makeStyles({
   root: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalS },
   list: { margin: 0, paddingLeft: tokens.spacingHorizontalXL },
+  toggle: { alignSelf: 'flex-start' },
 });
 
 export function PlausiHint(props: { findings: PlausiFinding[] }): JSX.Element | null {
@@ -172,7 +173,7 @@ export function PlausiHint(props: { findings: PlausiFinding[] }): JSX.Element | 
       ) : null}
       {info.length > 0 ? (
         <>
-          <Button appearance="subtle" size="small" onClick={() => setShowInfo((v) => !v)} aria-expanded={showInfo}>
+          <Button className={styles.toggle} appearance="subtle" size="small" onClick={() => setShowInfo((v) => !v)} aria-expanded={showInfo}>
             {showInfo ? t('plausi.hideNotes') : t('plausi.showNotes')}
           </Button>
           {showInfo ? (

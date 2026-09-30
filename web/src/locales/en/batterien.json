@@ -33,7 +33,9 @@
     "levelUnknown": "-",
     "levelProgressAria": "Battery level {{device}}",
     "typeAria": "Battery type {{device}}",
-    "printRow": "Print label"
+    "printRow": "Print label",
+    "selectAllAria": "Select all devices",
+    "printRowFor": "Print label: {{device}}"
   },
   "wartung": {
     "suggestions": {

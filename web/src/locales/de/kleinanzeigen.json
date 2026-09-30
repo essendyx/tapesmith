@@ -7,10 +7,11 @@
     "reserve": "Reservieren",
     "printReservedLabel": "Reserviert-Etikett drucken",
     "release": "Freigeben",
-    "markSold": "Verkauft",
+    "markSold": "Als verkauft eintragen",
     "edit": "Bearbeiten",
     "create": "Anlegen",
-    "creating": "Speichert …"
+    "creating": "Speichert …",
+    "for": "{{action}}: {{title}}"
   },
   "tabs": {
     "all": "Alle",
@@ -27,7 +28,15 @@
     "ariaLabel": "Kleinanzeigen-Artikel",
     "openAd": "Anzeige öffnen",
     "reservedUntil": "{{name}} bis {{date}}",
-    "soldOn": "{{name}} am {{date}}"
+    "soldOn": "{{name}} am {{date}}",
+    "columns": {
+      "id": "Nummer",
+      "title": "Artikel",
+      "price": "Preis",
+      "place": "Ort",
+      "status": "Status",
+      "actions": "Aktionen"
+    }
   },
   "empty": {
     "title": "Noch kein Artikel angelegt",

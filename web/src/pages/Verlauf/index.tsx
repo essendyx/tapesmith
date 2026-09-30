@@ -1,8 +1,10 @@
 /**
  * Seite „Verlauf": alle Drucke mit Miniatur, Suche, Nachdruck, Export, „PNG kopieren",
  * „Als Vorlage speichern" und „Im Editor öffnen". Sensible Einträge zeigen kein Bild; fehlende
- * sensible Felder werden vor dem Nachdruck neu abgefragt (nur für diese eine Anfrage). Ab 480 px
- * Breite steht die Liste als Fluent DataGrid, darunter als Karten.
+ * sensible Felder werden vor dem Nachdruck neu abgefragt (nur für diese eine Anfrage). Die Liste
+ * nutzt das gemeinsame Muster `DataList` (ab 900 px Tabelle, darunter Karten) mit genau einem
+ * sichtbaren Hauptknopf je Zeile („Erneut drucken“) und allen weiteren Aktionen im „Mehr“-Menü
+ * (`RowActions`). Systemtitel (Kalibrierung, Testlabel, …) erscheinen in der Oberflächensprache.
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -12,12 +14,6 @@ import {
   Body1,
   Button,
   Caption1,
-  DataGrid,
-  DataGridBody,
-  DataGridCell,
-  DataGridHeader,
-  DataGridHeaderCell,
-  DataGridRow,
   Dialog,
   DialogActions,
   DialogBody,
@@ -26,30 +22,27 @@ import {
   DialogTitle,
   Field,
   Input,
-  Menu,
-  MenuItem,
-  MenuList,
-  MenuPopover,
-  MenuTrigger,
   OverlayDrawer,
   DrawerBody,
   DrawerHeader,
   DrawerHeaderTitle,
   Switch,
   Tooltip,
-  createTableColumn,
   makeStyles,
   mergeClasses,
   tokens,
   type BadgeProps,
-  type TableColumnDefinition,
 } from '@fluentui/react-components';
 import {
+  Archive20Regular,
   ArrowClockwise20Regular,
+  ArrowExport20Regular,
   CheckmarkCircle20Regular,
+  Copy20Regular,
   DismissCircle20Regular,
+  Edit20Regular,
   LockClosed24Regular,
-  MoreHorizontal20Regular,
+  Save20Regular,
   Search20Regular,
   Warning20Regular,
 } from '@fluentui/react-icons';
@@ -58,20 +51,21 @@ import { apiGet, apiPost, authUrl } from '../../api/client';
 import { qk } from '../../api/core';
 import { exportLabel } from '../../api/labels';
 import type { HistoryEntryJson, LabelDocumentJson } from '../../api/types';
+import { DataList, LIST_NARROW_QUERY, type ListColumn } from '../../components/DataList';
 import { EmptyState } from '../../components/EmptyState';
+import { ListToolbar, useToolbarSearchStyles } from '../../components/ListToolbar';
 import { PageHeader } from '../../components/PageHeader';
+import { RowActions } from '../../components/RowActions';
 import { useNotify } from '../../components/NotifyProvider';
+import { useMediaQuery } from '../../components/useMediaQuery';
 import { usePrint } from '../../components/usePrint';
 import { copyPngToClipboard } from '../../platform';
 import { useRegisterCommands } from '../../commands/CommandProvider';
 import { formatMm } from '../../i18n/format';
+import { displayTitle } from '../../i18n/systemTitle';
 import { absoluteTime, relativeTime } from './time';
 
 const SEARCH_DEBOUNCE_MS = 250;
-/** Unterhalb dieser Breite zeigt die Liste Karten statt des DataGrid (responsiv bis 360 px;
- * die Grenze liegt bei 1023 px, damit bei 200 % Zoom keine Aktionen abgeschnitten werden). */
-const NARROW_QUERY = '(max-width: 1023px)';
-
 type Translate = (key: string, options?: Record<string, unknown>) => string;
 
 // Schlüssel sind Server-Enumwerte, keine Anzeige-Texte. // i18n-ignore (Server-Wert)
@@ -114,72 +108,39 @@ function secretLabel(t: Translate, fieldId: string): string {
   return t('secret.generic', { id: fieldId });
 }
 
-/** Wie in shell/AppShell.tsx: sicherer matchMedia-Zugriff (kann in Vorschauen/älteren Browsern fehlen). */
-function useNarrow(query: string): boolean {
-  const get = (): boolean => {
-    try {
-      return typeof window.matchMedia === 'function' && window.matchMedia(query).matches;
-    } catch {
-      return false;
-    }
-  };
-  const [matches, setMatches] = useState(get);
-  useEffect(() => {
-    if (typeof window.matchMedia !== 'function') return undefined;
-    const mql = window.matchMedia(query);
-    const onChange = (): void => setMatches(mql.matches);
-    onChange();
-    mql.addEventListener?.('change', onChange);
-    return () => mql.removeEventListener?.('change', onChange);
-  }, [query]);
-  return matches;
-}
-
 const useStyles = makeStyles({
-  toolbar: { display: 'flex', columnGap: tokens.spacingHorizontalM, marginBottom: tokens.spacingVerticalL, flexWrap: 'wrap' },
-  search: { flexGrow: 1, minWidth: '220px', maxWidth: '420px' },
-  list: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalM },
-  card: {
-    display: 'flex',
-    columnGap: tokens.spacingHorizontalL,
-    padding: tokens.spacingVerticalM,
-    borderRadius: tokens.borderRadiusXLarge,
-    backgroundColor: tokens.colorNeutralBackground1,
-    boxShadow: tokens.shadow4,
-    border: `${tokens.strokeWidthThin} solid ${tokens.colorNeutralStroke2}`,
-    '@media (max-width: 480px)': { flexDirection: 'column' },
-  },
+  /** Vorschau in lesbarer Größe: das Band ist lang und schmal, darum breit statt hoch. */
   thumbWrap: {
     flexShrink: 0,
-    width: '96px',
-    height: '64px',
-    borderRadius: tokens.borderRadiusLarge,
+    width: '168px',
+    height: '44px',
+    boxSizing: 'border-box',
+    padding: tokens.spacingVerticalXXS,
+    borderRadius: tokens.borderRadiusMedium,
     display: 'grid',
     placeItems: 'center',
     backgroundColor: tokens.colorNeutralBackground3,
     overflow: 'hidden',
     color: tokens.colorNeutralForeground3,
   },
-  thumbWrapSmall: { width: '56px', height: '40px' },
+  thumbWrapCard: { width: '112px', height: '40px' },
   thumb: { maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' },
-  body: { flexGrow: 1, minWidth: 0, display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalXS },
-  head: { display: 'flex', alignItems: 'baseline', columnGap: tokens.spacingHorizontalS, flexWrap: 'wrap' },
   titleBtn: {
     padding: 0,
     minWidth: 0,
+    minHeight: 0,
+    height: 'auto',
     fontWeight: tokens.fontWeightSemibold,
-    fontSize: tokens.fontSizeBase400,
     textAlign: 'left',
+    justifyContent: 'flex-start',
+    // höchstens zwei Zeilen, danach „…“ (voller Titel im Detailbereich)
+    display: '-webkit-box',
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+    overflowWrap: 'anywhere',
   },
-  meta: {
-    display: 'flex',
-    columnGap: tokens.spacingHorizontalS,
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    color: tokens.colorNeutralForeground3,
-  },
-  actions: { display: 'flex', columnGap: tokens.spacingHorizontalXS, flexWrap: 'wrap' },
-  grid: { marginBottom: tokens.spacingVerticalL },
+  muted: { color: tokens.colorNeutralForeground3 },
   drawerRow: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalXXS, marginBottom: tokens.spacingVerticalM },
   drawerThumb: {
     maxWidth: '100%',
@@ -224,7 +185,8 @@ export default function VerlaufPage(): JSX.Element {
   const queryClient = useQueryClient();
   const print = usePrint();
   const searchRef = useRef<HTMLInputElement>(null);
-  const narrow = useNarrow(NARROW_QUERY);
+  const toolbarStyles = useToolbarSearchStyles();
+  const narrow = useMediaQuery(LIST_NARROW_QUERY);
 
   const [inputValue, setInputValue] = useState('');
   const [query, setQuery] = useState('');
@@ -342,10 +304,12 @@ export default function VerlaufPage(): JSX.Element {
 
   const detailEntry = useMemo(() => entries.find((e) => e.id === detailId) ?? null, [entries, detailId]);
 
-  const renderThumb = (entry: HistoryEntryJson, small = false): JSX.Element => {
+  const titleOf = (entry: HistoryEntryJson): string => displayTitle(entry.title, entry.kind, entry.values);
+
+  const renderThumb = (entry: HistoryEntryJson): JSX.Element => {
     const showImage = entry.has_head && !entry.sensitive;
     return (
-      <div className={small ? mergeClasses(styles.thumbWrap, styles.thumbWrapSmall) : styles.thumbWrap}>
+      <div className={narrow ? mergeClasses(styles.thumbWrap, styles.thumbWrapCard) : styles.thumbWrap}>
         {entry.sensitive ? (
           <LockClosed24Regular aria-label={t('sensitiveNoImage')} />
         ) : showImage ? (
@@ -365,14 +329,14 @@ export default function VerlaufPage(): JSX.Element {
 
   const renderReprintButton = (entry: HistoryEntryJson): JSX.Element => {
     const visible = entry.copies > 1 ? t('actions.reprintAmount', { count: entry.copies }) : t('actions.reprint');
-    const ariaLabel = t('actions.for', { action: visible, title: entry.title });
+    const ariaLabel = t('actions.for', { action: visible, title: titleOf(entry) });
     return entry.reprintable ? (
-      <Button appearance="primary" icon={<ArrowClockwise20Regular />} aria-label={ariaLabel} onClick={() => onReprintClick(entry)}>
+      <Button icon={<ArrowClockwise20Regular />} aria-label={ariaLabel} onClick={() => onReprintClick(entry)}>
         {visible}
       </Button>
     ) : (
       <Tooltip content={t('actions.reprintDisabledHint')} relationship="description" withArrow>
-        <Button appearance="primary" icon={<ArrowClockwise20Regular />} aria-label={ariaLabel} disabled>
+        <Button icon={<ArrowClockwise20Regular />} aria-label={ariaLabel} disabledFocusable>
           {visible}
         </Button>
       </Tooltip>
@@ -380,173 +344,97 @@ export default function VerlaufPage(): JSX.Element {
   };
 
   const renderActions = (entry: HistoryEntryJson): JSX.Element => (
-    <div className={styles.actions}>
-      {renderReprintButton(entry)}
-      <Button
-        appearance="secondary"
-        aria-label={t('actions.for', { action: t('actions.editInEditor'), title: entry.title })}
-        onClick={() => onOpenInEditor(entry)}
-      >
-        {t('actions.editInEditor')}
-      </Button>
-      <Button
-        appearance="secondary"
-        aria-label={t('actions.for', { action: t('actions.saveAsTemplate'), title: entry.title })}
-        onClick={() => setTemplateDialog({ entry, name: '', description: '', category: '', busy: false })}
-      >
-        {t('actions.saveAsTemplate')}
-      </Button>
-      <Button
-        appearance="secondary"
-        disabled={!entry.has_head}
-        aria-label={t('actions.for', { action: t('actions.copyPng'), title: entry.title })}
-        onClick={() => void onCopyPng(entry)}
-      >
-        {t('actions.copyPng')}
-      </Button>
-      <Menu>
-        <MenuTrigger disableButtonEnhancement>
-          <Button
-            appearance="secondary"
-            disabled={!entry.has_head}
-            icon={<MoreHorizontal20Regular />}
-            aria-label={t('actions.for', { action: t('actions.export'), title: entry.title })}
-          >
-            {t('actions.export')}
-          </Button>
-        </MenuTrigger>
-        <MenuPopover>
-          <MenuList>
-            <MenuItem onClick={() => void onExport(entry, 'png')}>PNG</MenuItem>
-            <MenuItem onClick={() => void onExport(entry, 'pdf')}>PDF</MenuItem>
-            <MenuItem onClick={() => void onExport(entry, 'pbm')}>PBM</MenuItem>
-          </MenuList>
-        </MenuPopover>
-      </Menu>
-      <Button
-        appearance="secondary"
-        aria-label={t('actions.for', { action: t('actions.archive'), title: entry.title })}
-        onClick={() => void onArchive(entry)}
-      >
-        {t('actions.archive')}
-      </Button>
-    </div>
+    <RowActions
+      title={titleOf(entry)}
+      primary={renderReprintButton(entry)}
+      actions={[
+        { key: 'editor', label: t('actions.editInEditor'), icon: <Edit20Regular />, onClick: () => onOpenInEditor(entry) },
+        {
+          key: 'template',
+          label: t('actions.saveAsTemplate'),
+          icon: <Save20Regular />,
+          onClick: () => setTemplateDialog({ entry, name: '', description: '', category: '', busy: false }),
+        },
+        {
+          key: 'copy',
+          label: t('actions.copyPng'),
+          icon: <Copy20Regular />,
+          disabled: !entry.has_head,
+          onClick: () => void onCopyPng(entry),
+        },
+        {
+          key: 'export',
+          label: t('actions.export'),
+          icon: <ArrowExport20Regular />,
+          disabled: !entry.has_head,
+          items: [
+            { key: 'export-png', label: 'PNG', onClick: () => void onExport(entry, 'png') },
+            { key: 'export-pdf', label: 'PDF', onClick: () => void onExport(entry, 'pdf') },
+            { key: 'export-pbm', label: 'PBM', onClick: () => void onExport(entry, 'pbm') },
+          ],
+        },
+        { key: 'archive', label: t('actions.archive'), icon: <Archive20Regular />, onClick: () => void onArchive(entry) },
+      ]}
+    />
   );
 
-  const columns: TableColumnDefinition<HistoryEntryJson>[] = useMemo(
-    () => [
-      createTableColumn<HistoryEntryJson>({
-        columnId: 'thumb',
-        renderHeaderCell: () => t('columns.thumb'),
-        renderCell: (entry) => renderThumb(entry, true),
-      }),
-      createTableColumn<HistoryEntryJson>({
-        columnId: 'title',
-        renderHeaderCell: () => t('columns.title'),
-        renderCell: (entry) => (
-          <Button appearance="transparent" className={styles.titleBtn} onClick={() => setDetailId(entry.id)}>
-            {entry.title}
-          </Button>
-        ),
-      }),
-      createTableColumn<HistoryEntryJson>({
-        columnId: 'time',
-        renderHeaderCell: () => t('columns.time'),
-        renderCell: (entry) => (
-          <Tooltip content={absoluteTime(entry.created)} relationship="label">
-            <Caption1>{relativeTime(entry.created)}</Caption1>
-          </Tooltip>
-        ),
-      }),
-      createTableColumn<HistoryEntryJson>({
-        columnId: 'source',
-        renderHeaderCell: () => t('columns.source'),
-        renderCell: (entry) => <Badge appearance="outline">{sourceLabel(entry.source)}</Badge>,
-      }),
-      createTableColumn<HistoryEntryJson>({
-        columnId: 'length',
-        renderHeaderCell: () => t('columns.length'),
-        renderCell: (entry) => lengthText(t, entry),
-      }),
-      createTableColumn<HistoryEntryJson>({
-        columnId: 'status',
-        renderHeaderCell: () => t('columns.status'),
-        renderCell: (entry) => renderStatusBadge(entry),
-      }),
-      createTableColumn<HistoryEntryJson>({
-        columnId: 'actions',
-        renderHeaderCell: () => t('columns.actions'),
-        renderCell: (entry) => renderActions(entry),
-      }),
-    ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [styles, t],
-  );
+  const columns: ListColumn<HistoryEntryJson>[] = [
+    { id: 'thumb', header: t('columns.thumb'), kind: 'media', cell: (entry) => renderThumb(entry) },
+    {
+      id: 'title',
+      header: t('columns.title'),
+      kind: 'title',
+      cell: (entry) => (
+        <Button appearance="transparent" className={styles.titleBtn} onClick={() => setDetailId(entry.id)}>
+          {titleOf(entry)}
+        </Button>
+      ),
+    },
+    {
+      id: 'time',
+      header: t('columns.time'),
+      cell: (entry) => (
+        <Tooltip content={absoluteTime(entry.created)} relationship="description">
+          <span>{relativeTime(entry.created)}</span>
+        </Tooltip>
+      ),
+    },
+    { id: 'source', header: t('columns.source'), cell: (entry) => <Badge appearance="outline">{sourceLabel(entry.source)}</Badge> },
+    { id: 'length', header: t('columns.length'), kind: 'number', cell: (entry) => lengthText(t, entry) },
+    { id: 'status', header: t('columns.status'), kind: 'status', cell: (entry) => renderStatusBadge(entry) },
+    { id: 'actions', header: t('columns.actions'), kind: 'actions', cell: (entry) => renderActions(entry) },
+  ];
 
   return (
     <>
       <PageHeader title={t('title')} />
-      <div className={styles.toolbar}>
+      <ListToolbar>
         <Input
           ref={searchRef}
-          className={styles.search}
+          className={toolbarStyles.search}
           aria-label={t('search.label')}
           contentBefore={<Search20Regular />}
           placeholder={t('search.placeholder')}
           value={inputValue}
           onChange={(_e, d) => onSearchChange(d.value)}
         />
-      </div>
+      </ListToolbar>
 
-      {entries.length === 0 ? (
-        <EmptyState
-          title={query.trim() ? t('empty.titleQuery', { query: query.trim() }) : t('empty.titleNone')}
-          body={query.trim() ? t('empty.bodyQuery') : t('empty.bodyNone')}
-        />
-      ) : narrow ? (
-        <div className={styles.list}>
-          {entries.map((entry) => (
-            <article key={entry.id} className={styles.card}>
-              {renderThumb(entry)}
-              <div className={styles.body}>
-                <div className={styles.head}>
-                  <Button appearance="transparent" className={styles.titleBtn} onClick={() => setDetailId(entry.id)}>
-                    {entry.title}
-                  </Button>
-                  {renderStatusBadge(entry)}
-                </div>
-                <div className={styles.meta}>
-                  <Tooltip content={absoluteTime(entry.created)} relationship="label">
-                    <Caption1>{relativeTime(entry.created)}</Caption1>
-                  </Tooltip>
-                  <Badge appearance="outline">{sourceLabel(entry.source)}</Badge>
-                  <Body1>{lengthText(t, entry)}</Body1>
-                </div>
-                {renderActions(entry)}
-              </div>
-            </article>
-          ))}
-        </div>
-      ) : (
-        <DataGrid
-          className={styles.grid}
-          items={entries}
-          columns={columns}
-          getRowId={(entry) => String(entry.id)}
-          aria-label={t('grid.label')}
-        >
-          <DataGridHeader>
-            <DataGridRow>{({ renderHeaderCell }) => <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>}</DataGridRow>
-          </DataGridHeader>
-          <DataGridBody<HistoryEntryJson>>
-            {({ item, rowId }) => (
-              <DataGridRow<HistoryEntryJson> key={rowId}>
-                {({ renderCell }) => <DataGridCell>{renderCell(item)}</DataGridCell>}
-              </DataGridRow>
-            )}
-          </DataGridBody>
-        </DataGrid>
-      )}
+      <DataList
+        items={entries}
+        columns={columns}
+        getKey={(entry) => entry.id}
+        label={t('grid.label')}
+        loading={historyQuery.isLoading}
+        error={historyQuery.error}
+        onRetry={() => void historyQuery.refetch()}
+        empty={
+          <EmptyState
+            title={query.trim() ? t('empty.titleQuery', { query: query.trim() }) : t('empty.titleNone')}
+            body={query.trim() ? t('empty.bodyQuery') : t('empty.bodyNone')}
+          />
+        }
+      />
 
       <OverlayDrawer open={detailEntry !== null} position="end" onOpenChange={(_e, d) => !d.open && setDetailId(null)}>
         {detailEntry ? (
@@ -559,7 +447,7 @@ export default function VerlaufPage(): JSX.Element {
                   </Button>
                 }
               >
-                {detailEntry.title}
+                {titleOf(detailEntry)}
               </DrawerHeaderTitle>
             </DrawerHeader>
             <DrawerBody>

@@ -11,7 +11,7 @@ import { useNotify } from '../../../components/NotifyProvider';
 import { postBackupNow, postBackupRestore, useBackups } from '../api';
 import { formatBytes } from '../format';
 import { useFormat } from '../../../i18n/format';
-import { FieldRow, FieldRows } from '../FieldRow';
+import { FieldRow, FieldRows } from '../../../components/FieldRow';
 import { useSettingsEdit } from '../context';
 import { useSaveSection } from '../useSaveSection';
 import { SettingFieldRow } from '../fields/SettingFieldRow';

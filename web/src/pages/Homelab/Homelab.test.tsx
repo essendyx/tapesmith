@@ -3,6 +3,7 @@ import { screen, waitFor, within } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 import { LocationProbe, MockResponse, mockApi, renderWithProviders } from '../../test/utils';
 import HomelabPage from '.';
+import { routeBreadcrumb } from '../../routes';
 
 const CHECK = {
   services: [
@@ -142,21 +143,15 @@ describe('HomelabPage', () => {
     await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent('/homelab/proxmox'));
   });
 
-  it('Route /homelab/sn-scan rendert die SN-Scan-Seite mit Pfad „Homelab › Seriennummer-Scan“, Link führt zurück', async () => {
+  it('Route /homelab/sn-scan rendert die SN-Scan-Seite ohne zweiten Pfad über dem Titel (den zeigt die Kopfzeile)', async () => {
     mockApi({}, { quiet: true });
-    const { user } = renderWithProviders(
-      <>
-        <Mounted />
-        <LocationProbe />
-      </>,
-      { route: '/homelab/sn-scan' },
-    );
+    renderWithProviders(<Mounted />, { route: '/homelab/sn-scan' });
     expect(await screen.findByRole('heading', { level: 1, name: 'Seriennummer-Scan' }, { timeout: 10000 })).toBeInTheDocument();
-    const breadcrumb = screen.getByRole('navigation', { name: 'Pfad' });
-    expect(breadcrumb).toHaveTextContent('Homelab');
-    expect(breadcrumb).toHaveTextContent('Seriennummer-Scan');
-    await user.click(within(breadcrumb).getByRole('link', { name: 'Homelab' }));
-    await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent(/^\/homelab$/));
+    expect(screen.queryByRole('navigation', { name: 'Pfad' })).not.toBeInTheDocument();
+    expect(routeBreadcrumb('/homelab/sn-scan')).toEqual([
+      { label: 'Homelab', path: '/homelab' },
+      { label: 'Seriennummer-Scan', path: '/homelab/sn-scan' },
+    ]);
   });
 
   it('unbekannter Unterpfad leitet zur Übersicht zurück', async () => {

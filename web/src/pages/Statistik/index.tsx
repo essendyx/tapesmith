@@ -5,7 +5,8 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Caption1, ProgressBar, ToggleButton, Tooltip, makeStyles, tokens } from '@fluentui/react-components';
+import { Caption1, Field, Input, ProgressBar, ToggleButton, Tooltip, makeStyles, mergeClasses, tokens } from '@fluentui/react-components';
+import { useLayoutStyles } from '../../theme/layout';
 import { apiGet } from '../../api/client';
 import { qk } from '../../api/core';
 import type { RollUsageJson, StatsJson } from '../../api/types';
@@ -19,7 +20,7 @@ import { TableScroll } from '../../components/TableScroll';
 const GROUP_KEYS = ['monat', 'vorlage', 'quelle', 'art', 'rolle'] as const;
 
 const useStyles = makeStyles({
-  toolbar: { display: 'flex', flexWrap: 'wrap', columnGap: tokens.spacingHorizontalM, rowGap: tokens.spacingVerticalM, alignItems: 'flex-end', marginBottom: tokens.spacingVerticalL },
+  toolbar: { display: 'flex', flexWrap: 'wrap', columnGap: tokens.spacingHorizontalXL, rowGap: tokens.spacingVerticalM, alignItems: 'center' },
   groupRow: { display: 'flex', columnGap: tokens.spacingHorizontalXS, flexWrap: 'wrap' },
   dateField: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalXXS },
   dateInput: {
@@ -30,7 +31,7 @@ const useStyles = makeStyles({
     backgroundColor: tokens.colorNeutralBackground1,
     color: tokens.colorNeutralForeground1,
   },
-  kpis: { display: 'flex', flexWrap: 'wrap', columnGap: tokens.spacingHorizontalL, rowGap: tokens.spacingVerticalM, marginBottom: tokens.spacingVerticalL },
+  kpis: { display: 'flex', flexWrap: 'wrap', columnGap: tokens.spacingHorizontalL, rowGap: tokens.spacingVerticalM },
   kpi: {
     flex: '1 1 160px',
     padding: tokens.spacingVerticalL,
@@ -79,11 +80,13 @@ const useStyles = makeStyles({
   th: { textAlign: 'left', padding: tokens.spacingVerticalS, borderBottom: `${tokens.strokeWidthThin} solid ${tokens.colorNeutralStroke2}`, color: tokens.colorNeutralForeground3, fontWeight: tokens.fontWeightSemibold },
   td: { padding: tokens.spacingVerticalS, borderBottom: `${tokens.strokeWidthThin} solid ${tokens.colorNeutralStroke2}` },
   rollBar: { minWidth: '96px' },
+  num: { textAlign: 'right', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' },
 });
 
 export default function StatistikPage(): JSX.Element {
   const { t } = useTranslation('statistik');
   const styles = useStyles();
+  const layout = useLayoutStyles();
   const { formatNumber } = useFormat();
   const [group, setGroup] = useState<(typeof GROUP_KEYS)[number]>('monat');
   const [since, setSince] = useState('');
@@ -106,7 +109,7 @@ export default function StatistikPage(): JSX.Element {
   const maxTape = useMemo(() => Math.max(1, ...rows.map((r) => r.tape_mm)), [rows]);
 
   return (
-    <>
+    <div className={layout.stack}>
       <PageHeader title={t('title')} />
       <div className={styles.toolbar}>
         <div className={styles.groupRow} role="group" aria-label={t('a11y.groupBy')}>
@@ -116,16 +119,9 @@ export default function StatistikPage(): JSX.Element {
             </ToggleButton>
           ))}
         </div>
-        <label className={styles.dateField}>
-          <Caption1>{t('since')}</Caption1>
-          <input
-            className={styles.dateInput}
-            type="date"
-            value={since}
-            onChange={(e) => setSince(e.target.value)}
-            aria-label={t('a11y.since')}
-          />
-        </label>
+        <Field label={t('since')} orientation="horizontal">
+          <Input type="date" value={since} onChange={(_e, d) => setSince(d.value)} aria-label={t('a11y.since')} />
+        </Field>
       </div>
 
       {totals ? (
@@ -175,18 +171,18 @@ export default function StatistikPage(): JSX.Element {
               <thead>
                 <tr>
                   <th className={styles.th}>{t('table.group')}</th>
-                  <th className={styles.th}>{t('table.jobs')}</th>
-                  <th className={styles.th}>{t('table.labels')}</th>
-                  <th className={styles.th}>{t('table.tape')}</th>
+                  <th className={mergeClasses(styles.th, styles.num)}>{t('table.jobs')}</th>
+                  <th className={mergeClasses(styles.th, styles.num)}>{t('table.labels')}</th>
+                  <th className={mergeClasses(styles.th, styles.num)}>{t('table.tape')}</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.map((row) => (
                   <tr key={row.key}>
                     <td className={styles.td}>{row.key}</td>
-                    <td className={styles.td}>{formatNumber(row.jobs)}</td>
-                    <td className={styles.td}>{formatNumber(row.labels)}</td>
-                    <td className={styles.td}>{formatMeters(row.tape_mm)}</td>
+                    <td className={mergeClasses(styles.td, styles.num)}>{formatNumber(row.jobs)}</td>
+                    <td className={mergeClasses(styles.td, styles.num)}>{formatNumber(row.labels)}</td>
+                    <td className={mergeClasses(styles.td, styles.num)}>{formatMeters(row.tape_mm)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -206,11 +202,11 @@ export default function StatistikPage(): JSX.Element {
               <tr>
                 <th className={styles.th}>{t('table.roll')}</th>
                 <th className={styles.th}>{t('table.started')}</th>
-                <th className={styles.th}>{t('table.nominal')}</th>
+                <th className={mergeClasses(styles.th, styles.num)}>{t('table.nominal')}</th>
                 <th className={styles.th}>{t('table.used')}</th>
-                <th className={styles.th}>{t('table.jobs')}</th>
+                <th className={mergeClasses(styles.th, styles.num)}>{t('table.jobs')}</th>
                 <th className={styles.th}>{t('table.finished')}</th>
-                <th className={styles.th}>{t('table.factor')}</th>
+                <th className={mergeClasses(styles.th, styles.num)}>{t('table.factor')}</th>
               </tr>
             </thead>
             <tbody>
@@ -218,7 +214,7 @@ export default function StatistikPage(): JSX.Element {
                 <tr key={`${roll.tape_id}-${roll.started}-${i}`}>
                   <td className={styles.td}>{roll.tape_name}</td>
                   <td className={styles.td}>{dateOnly(roll.started)}</td>
-                  <td className={styles.td}>{formatMeters(roll.length_mm)}</td>
+                  <td className={mergeClasses(styles.td, styles.num)}>{formatMeters(roll.length_mm)}</td>
                   <td className={styles.td}>
                     <div className={styles.rollBar}>
                       <ProgressBar
@@ -228,9 +224,9 @@ export default function StatistikPage(): JSX.Element {
                       <Caption1>{formatMeters(roll.used_mm)}</Caption1>
                     </div>
                   </td>
-                  <td className={styles.td}>{formatNumber(roll.jobs)}</td>
+                  <td className={mergeClasses(styles.td, styles.num)}>{formatNumber(roll.jobs)}</td>
                   <td className={styles.td}>{roll.finished ? t('table.yes') : t('table.no')}</td>
-                  <td className={styles.td}>{roll.factor.toFixed(2)}</td>
+                  <td className={mergeClasses(styles.td, styles.num)}>{formatNumber(roll.factor, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 </tr>
               ))}
             </tbody>
@@ -238,6 +234,6 @@ export default function StatistikPage(): JSX.Element {
           </TableScroll>
         )}
       </Section>
-    </>
+    </div>
   );
 }

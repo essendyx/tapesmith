@@ -21,9 +21,11 @@ def test_shot_plan_counts_and_unique_ascii_filenames():
     plan = screenshots.shot_plan(screenshots.ALL_ROUTES, screenshots.THEMES, screenshots.SIZES,
                                  screenshots.LANGS)
 
-    main, extra, themes = len(screenshots.MAIN_ROUTES), len(screenshots.EXTRA_ROUTES), len(screenshots.THEMES)
-    expected_de = main * themes * 2 + extra * themes      # Hauptseiten Desktop und Handy, Extras nur Desktop
-    expected_en = main * themes                           # Englisch: Hauptseiten, nur Desktop
+    main, themes = len(screenshots.MAIN_ROUTES), len(screenshots.THEMES)
+    extra_sizes = sum(len(route.sizes) for route in screenshots.EXTRA_ROUTES)
+    english_extra = sum(1 for route in screenshots.EXTRA_ROUTES if route.english)
+    expected_de = main * themes * 2 + extra_sizes * themes  # Hauptseiten Desktop und Handy, Extras je Größe
+    expected_en = (main + english_extra) * themes           # Englisch: Haupt- und Modulseiten, nur Desktop
     expected_zoom = main                                  # 200 %: Hauptseiten, nur hell, Deutsch
     assert len(screenshots.MAIN_ROUTES) == 14
     assert len(plan) == expected_de + expected_en + expected_zoom
@@ -40,6 +42,7 @@ def test_shot_plan_respects_requested_sizes():
     # jede Hauptroute + jede Extra-Route je Thema einmal
     assert len(only_desktop) == (len(screenshots.MAIN_ROUTES) + len(screenshots.EXTRA_ROUTES)) * len(
         screenshots.THEMES)
+    assert {route.sizes for route in screenshots.EXTRA_ROUTES if route.english} == {screenshots.MODULE_SIZES}
 
 
 def test_page_url_builds_localhost_url_with_token_fragment():
@@ -265,7 +268,9 @@ def test_seed_demo_writes_realistic_stores(app_home):
     history = HistoryStore()
     try:
         entries = history.search(limit=50)
-        assert len(entries) >= 10
+        assert len(entries) >= 16
+        kinds = {e.kind for e in entries}
+        assert {"calibrate", "test", "image", "reprint"} <= kinds, "Systemtitel je Art werden erwartet"
         assert any(e.sensitive for e in entries), "ein sensibler WLAN-QR-Eintrag wird erwartet"
         assert any(e.status == "fehler" for e in entries), "ein Fehler-Eintrag wird erwartet"
     finally:
@@ -275,8 +280,10 @@ def test_seed_demo_writes_realistic_stores(app_home):
     try:
         boxes = {b.id for b in inventory.boxes()}
         assert "BOX-07" in boxes
+        assert len(boxes) >= 5
         loans = inventory.loans(open_only=True)
-        assert len(loans) == 1
+        assert len(loans) == 3
+        assert sum(1 for loan in loans if loan.overdue(datetime(2026, 9, 28).date())) == 1
     finally:
         inventory.close()
 
@@ -290,9 +297,9 @@ def test_seed_demo_writes_realistic_stores(app_home):
     assert info["queue_ids"]
     queue = JobQueue()
     try:
-        # Warteschlange mit genau 2 aktiven (nicht erledigten) Aufträgen.
-        assert len(queue.list(include_done=False)) == 2
-        assert queue.active_count() == 2
+        # Warteschlange mit genau 4 aktiven (nicht erledigten) Aufträgen.
+        assert len(queue.list(include_done=False)) == 4
+        assert queue.active_count() == 4
         assert sorted(j.id for j in queue.list(include_done=False)) == sorted(info["queue_ids"])
     finally:
         queue.close()
@@ -395,7 +402,9 @@ def test_zusaetzliche_routen():
     extra = {route.key: route for route in screenshots.EXTRA_ROUTES}
     assert main["homelab"].path == "/homelab"
     assert extra["homelab-proxmox"].path == "/homelab/proxmox"
-    assert extra["homelab-proxmox"].sizes == ("desktop",)
+    assert extra["homelab-proxmox"].sizes == ("desktop", "handy")
+    assert extra["homelab-proxmox"].english is True
+    assert extra["homelab-proxmox"].interact == "proxmox_load"
     assert extra["tastenkuerzel"].interact == "shortcuts"
     assert extra["editor-tabs"].interact == "second_tab"
     assert extra["wiederherstellen"].path == "/editor?wiederherstellen=1"
@@ -432,9 +441,12 @@ def test_seed_demo_schaltet_alle_module_ein_und_werkzeug_schaltet_um(app_home):
     assert modules.enabled_ids(config_mod.load_config()) == modules.MODULE_IDS
 
 
-def test_englisch_nur_hauptseiten_desktop_hell_und_dunkel():
+def test_englisch_haupt_und_modulseiten_desktop_hell_und_dunkel():
     english = [shot for shot in _plan_all() if shot.lang == "en"]
-    assert {shot.page for shot in english} == {route.key for route in screenshots.MAIN_ROUTES}
+    expected = {route.key for route in screenshots.MAIN_ROUTES} | {
+        route.key for route in screenshots.EXTRA_ROUTES if route.english}
+    assert {shot.page for shot in english} == expected
+    assert "homelab-kleinanzeigen" in expected
     assert {shot.size for shot in english} == {"desktop"}
     assert {shot.theme for shot in english} == {"hell", "dunkel"}
     assert all(screenshots.shot_filename(shot).endswith("-en.png") for shot in english)
@@ -651,3 +663,17 @@ def test_demo_daten_englisch(app_home):
         assert drafts
     finally:
         demo_data.seed_demo.__globals__["_LANG"][0] = "de"
+
+
+def test_screenshots_zeigen_nie_echte_netzwerkdaten(monkeypatch):
+    # Aufnahmen landen im öffentlichen Repo: Rechnername und LAN-Adressen des PCs, auf dem sie
+    # entstehen, werden durch Demo-Werte ersetzt.
+    import socket
+
+    from tapesmith import netinfo
+    monkeypatch.setattr(socket, "gethostname", socket.gethostname)
+    monkeypatch.setattr(netinfo, "local_ipv4_addresses", netinfo.local_ipv4_addresses)
+    screenshots._neutral_network_identity()
+    assert socket.gethostname() == screenshots.DEMO_HOSTNAME
+    assert netinfo.local_ipv4_addresses() == ["192.0.2.10"]
+    assert netinfo.lan_addresses({}, None) in ([], ["192.0.2.10"])

@@ -126,7 +126,7 @@ describe('Tokens', () => {
     await screen.findByRole('heading', { name: 'API-Tokens' });
     const row = screen.getByText('Handy').closest('tr') as HTMLElement;
 
-    await user.click(within(row).getByRole('button', { name: 'Widerrufen' }));
+    await user.click(within(row).getByRole('button', { name: /^Widerrufen: / }));
     const dialog = await findDialogByRole('alertdialog');
     await user.click(within(dialog).getByRole('button', { name: 'Abbrechen', hidden: true }));
     expect(api.calls.some((c) => c.method === 'DELETE')).toBe(false);
@@ -137,7 +137,7 @@ describe('Tokens', () => {
     await screen.findByRole('heading', { name: 'API-Tokens' });
     const row = screen.getByText('Handy').closest('tr') as HTMLElement;
 
-    await user.click(within(row).getByRole('button', { name: 'Widerrufen' }));
+    await user.click(within(row).getByRole('button', { name: /^Widerrufen: / }));
     const dialog = await findDialogByRole('alertdialog');
     await user.click(within(dialog).getByRole('button', { name: 'Widerrufen', hidden: true }));
     await waitFor(() => expect(api.calls.some((c) => c.method === 'DELETE' && c.path === '/api/v1/access/tokens/a1b2c3d4')).toBe(true));

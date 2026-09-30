@@ -112,12 +112,16 @@ export function AsnView(): JSX.Element {
                 components={{ strong: <strong /> }}
               />
             </p>
-            <MessageBar intent="warning">
-              <MessageBarBody>{next.data.hint}</MessageBarBody>
-            </MessageBar>
-            <Button onClick={() => void onExportTest()} disabled={exporting}>
-              {t('asn.exportTest')}
-            </Button>
+            {next.data.hint ? (
+              <MessageBar intent="warning">
+                <MessageBarBody>{next.data.hint}</MessageBarBody>
+              </MessageBar>
+            ) : null}
+            <div className={layout.rowWrap}>
+              <Button onClick={() => void onExportTest()} disabled={exporting}>
+                {t('asn.exportTest')}
+              </Button>
+            </div>
           </>
         ) : null}
       </Section>
@@ -141,7 +145,11 @@ export function AsnView(): JSX.Element {
                 <TableRow key={number}>
                   <TableCell>{number}</TableCell>
                   <TableCell>
-                    <Button appearance="subtle" onClick={() => setVoidTarget(number)}>
+                    <Button
+                      appearance="subtle"
+                      aria-label={t('asn.discardFor', { asn: number })}
+                      onClick={() => setVoidTarget(number)}
+                    >
                       {t('asn.discard')}
                     </Button>
                   </TableCell>
@@ -163,11 +171,11 @@ export function AsnView(): JSX.Element {
               <p className={styles.muted}>{voidTarget}</p>
             </DialogContent>
             <DialogActions>
-              <Button appearance="secondary" onClick={() => setVoidTarget(null)}>
-                {tc('actions.cancel')}
-              </Button>
               <Button appearance="primary" onClick={() => void onVoidConfirm()} disabled={!voidReason.trim()}>
                 {t('asn.discard')}
+              </Button>
+              <Button appearance="secondary" onClick={() => setVoidTarget(null)}>
+                {tc('actions.cancel')}
               </Button>
             </DialogActions>
           </DialogBody>

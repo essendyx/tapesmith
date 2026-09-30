@@ -1,6 +1,6 @@
 /** Test-Helfer für alle Seiten: mockApi (fetch-Stub), renderWithProviders, LocationProbe. */
 import type { ReactElement } from 'react';
-import { render, waitFor, type RenderResult } from '@testing-library/react';
+import { render, screen, waitFor, type RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import type { QueryClient } from '@tanstack/react-query';
@@ -302,4 +302,27 @@ export function mockNarrowScreen(matches: boolean): () => void {
       }) as unknown as MediaQueryList,
   );
   return () => spy.mockRestore();
+}
+
+/**
+ * Wählt eine Zeilenaktion aus dem „Mehr“-Menü (`RowActions`): öffnet das Menü der Zeile `rowTitle`
+ * (zugänglicher Name „Weitere Aktionen für …“ bzw. „More actions for …“) und klickt den Eintrag
+ * `action` (Text oder Muster). Untermenüs: `action` als Liste, z. B. `['Exportieren', 'PDF']`.
+ */
+export async function chooseRowAction(
+  user: UserEvent,
+  rowTitle: string,
+  action: string | RegExp | (string | RegExp)[],
+): Promise<void> {
+  const trigger = screen.getByRole('button', { name: new RegExp(`^(Weitere Aktionen für|More actions for) ${escapeRegExp(rowTitle)}$`) });
+  await user.click(trigger);
+  const steps = Array.isArray(action) ? action : [action];
+  for (const step of steps) {
+    const item = await screen.findByRole('menuitem', { name: step }, { timeout: SLOW_UI_MS });
+    await user.click(item);
+  }
+}
+
+function escapeRegExp(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

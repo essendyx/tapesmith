@@ -48,7 +48,8 @@
     "printLabel": "Label drucken",
     "createVaultNote": "Vault-Notiz anlegen",
     "copyShortlink": "Kurz-Link kopieren",
-    "void": "Verwerfen"
+    "void": "Verwerfen",
+    "for": "{{action}}: {{title}}"
   },
   "empty": {
     "title": "Noch kein Asset angelegt",

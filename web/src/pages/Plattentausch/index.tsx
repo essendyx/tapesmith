@@ -23,6 +23,7 @@ import {
   makeStyles,
   tokens,
 } from '@fluentui/react-components';
+import { Copy20Regular, Print20Regular } from '@fluentui/react-icons';
 import { useTranslation } from 'react-i18next';
 import type { Role } from '../../api/types';
 import { EmptyState } from '../../components/EmptyState';
@@ -47,6 +48,10 @@ const useStyles = makeStyles({
   form: { display: 'flex', flexWrap: 'wrap', columnGap: tokens.spacingHorizontalL, rowGap: tokens.spacingVerticalM },
   code: { display: 'block', padding: tokens.spacingVerticalM, borderRadius: tokens.borderRadiusMedium, backgroundColor: tokens.colorNeutralBackground3, fontFamily: 'monospace', overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' },
   radios: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalXS },
+  mono: { fontFamily: tokens.fontFamilyMonospace, fontSize: tokens.fontSizeBase200, overflowWrap: 'anywhere' },
+  field: { minWidth: '200px', flex: '1 1 200px', maxWidth: '320px' },
+  previews: { display: 'flex', flexWrap: 'wrap', gap: tokens.spacingHorizontalM },
+  preview: { maxWidth: '240px', borderRadius: tokens.borderRadiusMedium, boxShadow: tokens.shadow4 },
 });
 
 function badgeRole(state: string): Role {
@@ -222,7 +227,7 @@ export default function PlattentauschPage(props: { embedded?: boolean }): JSX.El
             <EmptyState title={t('noBroken')} />
           ) : (
             <div className={styles.tableScroll}>
-              <Table aria-label={t('table.ariaLabel')}>
+              <Table aria-label={t('table.ariaLabel')} size="small">
                 <TableHeader>
                   <TableRow>
                     <TableHeaderCell>
@@ -239,9 +244,9 @@ export default function PlattentauschPage(props: { embedded?: boolean }): JSX.El
                   {problems.map((p: PoolDeviceJson) => (
                     <TableRow key={p.name}>
                       <TableCell>
-                        <input
-                          type="radio"
+                        <Radio
                           name="old-device"
+                          value={p.name}
                           aria-label={t('table.select', { name: p.name })}
                           checked={oldName === p.name}
                           onChange={() => selectOld(p.name)}
@@ -252,7 +257,7 @@ export default function PlattentauschPage(props: { embedded?: boolean }): JSX.El
                       <TableCell>
                         <Badge color={badgeRole(p.state) === 'success' ? 'success' : 'warning'}>{p.state}</Badge>
                       </TableCell>
-                      <TableCell>{p.by_id ?? p.name}</TableCell>
+                      <TableCell className={styles.mono}>{p.by_id ?? p.name}</TableCell>
                       <TableCell>{p.note}</TableCell>
                     </TableRow>
                   ))}
@@ -283,14 +288,14 @@ export default function PlattentauschPage(props: { embedded?: boolean }): JSX.El
             </RadioGroup>
           )}
           <div className={styles.form}>
-            <Field label={t('slot')}>
+            <Field label={t('slot')} className={styles.field}>
               <Input value={slot} onChange={(_e, d) => setSlot(d.value)} />
             </Field>
-            <Field label={t('reason')}>
+            <Field label={t('reason')} className={styles.field}>
               <Input value={reason} onChange={(_e, d) => setReason(d.value)} placeholder={t('reasonPlaceholder')} />
             </Field>
           </div>
-          <div className={layout.actions}>
+          <div className={layout.rowWrap}>
             <Button appearance="primary" onClick={() => void createPlan()} disabled={!canPlan || planning}>
               {planning ? t('planning') : t('createPlan')}
             </Button>
@@ -303,30 +308,38 @@ export default function PlattentauschPage(props: { embedded?: boolean }): JSX.El
         <Section title={t('steps.commandChangelog')}>
           <Body1>{t('commandLabel')}</Body1>
           <code className={styles.code}>{plan.command}</code>
-          <div className={layout.actions}>
-            <Button onClick={() => void copyText(plan.command)}>{t('copy')}</Button>
+          <div className={layout.rowWrap}>
+            <Button icon={<Copy20Regular />} onClick={() => void copyText(plan.command)}>
+              {t('copyCommand')}
+            </Button>
           </div>
           <WarningList notes={plan.hints} />
           <Field label={t('changelogDraft')}>
             <Textarea readOnly value={plan.changelog_md} rows={8} />
           </Field>
-          <div className={layout.actions}>
-            <Button onClick={() => void copyText(plan.changelog_md)}>{t('copy')}</Button>
+          <div className={layout.rowWrap}>
+            <Button icon={<Copy20Regular />} onClick={() => void copyText(plan.changelog_md)}>
+              {t('copyChangelog')}
+            </Button>
           </div>
         </Section>
       ) : null}
 
       {plan ? (
         <Section title={t('steps.printLabels')}>
-          <div className={layout.actions}>
-            {oldPreview.data?.preview ? <img src={pngSrc(oldPreview.data.preview.design_png)} alt={t('previewOldAlt')} width={160} /> : null}
-            {newPreview.data?.preview ? <img src={pngSrc(newPreview.data.preview.design_png)} alt={t('previewNewAlt')} width={160} /> : null}
+          <div className={styles.previews}>
+            {oldPreview.data?.preview ? (
+              <img className={styles.preview} src={pngSrc(oldPreview.data.preview.design_png)} alt={t('previewOldAlt')} />
+            ) : null}
+            {newPreview.data?.preview ? (
+              <img className={styles.preview} src={pngSrc(newPreview.data.preview.design_png)} alt={t('previewNewAlt')} />
+            ) : null}
           </div>
-          <div className={layout.actions}>
-            <Button appearance="primary" onClick={printLabelOld} disabled={printOld.busy}>
+          <div className={layout.rowWrap}>
+            <Button appearance="primary" icon={<Print20Regular />} onClick={printLabelOld} disabled={printOld.busy}>
               {t('printOldLabel')}
             </Button>
-            <Button appearance="primary" onClick={printLabelNew} disabled={printNew.busy}>
+            <Button icon={<Print20Regular />} onClick={printLabelNew} disabled={printNew.busy}>
               {t('printNewLabel')}
             </Button>
           </div>

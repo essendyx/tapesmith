@@ -20,7 +20,7 @@ import { useNotify } from '../../../components/NotifyProvider';
 import { qk, useAppInfo } from '../../../api/core';
 import { patchSettings } from '../api';
 import { cardWidthPxFromScreenPxPerMm, screenPxPerMmFromCardWidth } from '../format';
-import { FieldRow, FieldRows } from '../FieldRow';
+import { FieldRow, FieldRows } from '../../../components/FieldRow';
 
 const CARD_HEIGHT_MM = 53.98;
 const DEFAULT_WIDTH_PX = cardWidthPxFromScreenPxPerMm(96 / 25.4);

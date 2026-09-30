@@ -140,10 +140,12 @@ export function OpenDialog(props: {
               }}
             />
           </DialogContent>
-          <DialogActions fluid>
+          <DialogActions position="start">
             <Button icon={<ArrowUpload20Regular />} onClick={() => fileRef.current?.click()}>
               {t('open.upload')}
             </Button>
+          </DialogActions>
+          <DialogActions position="end">
             <Button appearance="primary" disabled={!chosen} onClick={() => chosen && props.onOpen(chosen)}>
               {t('open.open')}
             </Button>

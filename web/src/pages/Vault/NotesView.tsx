@@ -27,6 +27,7 @@ import type { OutcomeJson, TemplateSummary } from '../../api/types';
 import { EmptyState } from '../../components/EmptyState';
 import { ErrorMessage } from '../../components/ErrorMessage';
 import { LoadingState } from '../../components/LoadingState';
+import { NavList } from '../../components/NavList';
 import { useNotify } from '../../components/NotifyProvider';
 import { Section } from '../../components/Section';
 import { TapePreview } from '../../components/TapePreview';
@@ -53,7 +54,6 @@ const useStyles = makeStyles({
     maxHeight: '480px',
     overflowY: 'auto',
   },
-  noteButton: { justifyContent: 'flex-start', textAlign: 'left', minWidth: 0 },
   scroll: { overflowX: 'auto', maxWidth: '100%' },
   mono: { fontFamily: tokens.fontFamilyMonospace, wordBreak: 'break-all' },
 });
@@ -347,18 +347,13 @@ export function NotesView(): JSX.Element {
           {notes.isLoading ? <LoadingState variant="inline" /> : null}
           {notes.error ? <ErrorMessage error={notes.error} title={t('notes.notReachableTitle')} /> : null}
           {notes.data && visible.length === 0 ? <EmptyState title={t('notes.empty')} /> : null}
-          <div className={styles.list} role="group" aria-label={t('notes.ariaLabel')}>
-            {visible.map((path) => (
-              <Button
-                key={path}
-                className={styles.noteButton}
-                appearance={path === selected ? 'primary' : 'subtle'}
-                onClick={() => setSelected(path)}
-              >
-                {path}
-              </Button>
-            ))}
-          </div>
+          <NavList
+            className={styles.list}
+            label={t('notes.ariaLabel')}
+            items={visible.map((path) => ({ key: path, label: path }))}
+            selected={selected}
+            onSelect={setSelected}
+          />
         </Section>
       </div>
       <div className={styles.column}>

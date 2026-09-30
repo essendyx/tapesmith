@@ -135,7 +135,9 @@ Aufgenommen von `tools/screenshots.py` gegen Demo-Daten (Datei-Transport, kein e
 ### Homelab: Proxmox
 
 ![Homelab: Proxmox (hell, desktop)](homelab-proxmox-hell-desktop.png)
+![Homelab: Proxmox (hell, handy)](homelab-proxmox-hell-handy.png)
 ![Homelab: Proxmox (dunkel, desktop)](homelab-proxmox-dunkel-desktop.png)
+![Homelab: Proxmox (dunkel, handy)](homelab-proxmox-dunkel-handy.png)
 
 ### Tastenkürzel-Übersicht (Taste ?)
 
@@ -190,44 +192,60 @@ Aufgenommen von `tools/screenshots.py` gegen Demo-Daten (Datei-Transport, kein e
 ### Datenträger: Plattentausch
 
 ![Datenträger: Plattentausch (hell, desktop)](datentraeger-plattentausch-hell-desktop.png)
+![Datenträger: Plattentausch (hell, handy)](datentraeger-plattentausch-hell-handy.png)
 ![Datenträger: Plattentausch (dunkel, desktop)](datentraeger-plattentausch-dunkel-desktop.png)
+![Datenträger: Plattentausch (dunkel, handy)](datentraeger-plattentausch-dunkel-handy.png)
 
 ### Homelab: Paperless
 
 ![Homelab: Paperless (hell, desktop)](homelab-paperless-hell-desktop.png)
+![Homelab: Paperless (hell, handy)](homelab-paperless-hell-handy.png)
 ![Homelab: Paperless (dunkel, desktop)](homelab-paperless-dunkel-desktop.png)
+![Homelab: Paperless (dunkel, handy)](homelab-paperless-dunkel-handy.png)
 
 ### Homelab: Home Assistant
 
 ![Homelab: Home Assistant (hell, desktop)](homelab-batterien-hell-desktop.png)
+![Homelab: Home Assistant (hell, handy)](homelab-batterien-hell-handy.png)
 ![Homelab: Home Assistant (dunkel, desktop)](homelab-batterien-dunkel-desktop.png)
+![Homelab: Home Assistant (dunkel, handy)](homelab-batterien-dunkel-handy.png)
 
 ### Homelab: Obsidian-Vault
 
 ![Homelab: Obsidian-Vault (hell, desktop)](homelab-vault-hell-desktop.png)
+![Homelab: Obsidian-Vault (hell, handy)](homelab-vault-hell-handy.png)
 ![Homelab: Obsidian-Vault (dunkel, desktop)](homelab-vault-dunkel-desktop.png)
+![Homelab: Obsidian-Vault (dunkel, handy)](homelab-vault-dunkel-handy.png)
 
 ### Homelab: Assets
 
 ![Homelab: Assets (hell, desktop)](homelab-assets-hell-desktop.png)
+![Homelab: Assets (hell, handy)](homelab-assets-hell-handy.png)
 ![Homelab: Assets (dunkel, desktop)](homelab-assets-dunkel-desktop.png)
+![Homelab: Assets (dunkel, handy)](homelab-assets-dunkel-handy.png)
 
 ### Homelab: Kabel
 
 ![Homelab: Kabel (hell, desktop)](homelab-kabel-hell-desktop.png)
+![Homelab: Kabel (hell, handy)](homelab-kabel-hell-handy.png)
 ![Homelab: Kabel (dunkel, desktop)](homelab-kabel-dunkel-desktop.png)
+![Homelab: Kabel (dunkel, handy)](homelab-kabel-dunkel-handy.png)
 
 ### Homelab: Kleinanzeigen
 
 ![Homelab: Kleinanzeigen (hell, desktop)](homelab-kleinanzeigen-hell-desktop.png)
+![Homelab: Kleinanzeigen (hell, handy)](homelab-kleinanzeigen-hell-handy.png)
 ![Homelab: Kleinanzeigen (dunkel, desktop)](homelab-kleinanzeigen-dunkel-desktop.png)
+![Homelab: Kleinanzeigen (dunkel, handy)](homelab-kleinanzeigen-dunkel-handy.png)
 
 ### Homelab: Seriennummer-Scan
 
 ![Homelab: Seriennummer-Scan (hell, desktop)](homelab-sn-scan-hell-desktop.png)
+![Homelab: Seriennummer-Scan (hell, handy)](homelab-sn-scan-hell-handy.png)
 ![Homelab: Seriennummer-Scan (dunkel, desktop)](homelab-sn-scan-dunkel-desktop.png)
+![Homelab: Seriennummer-Scan (dunkel, handy)](homelab-sn-scan-dunkel-handy.png)
 
-## Englisch (Desktop, hell und dunkel)
+## Englisch (Hauptseiten und Modulseiten, Desktop, hell und dunkel)
 
 ### Schnelldruck
 
@@ -298,6 +316,51 @@ Aufgenommen von `tools/screenshots.py` gegen Demo-Daten (Datei-Transport, kein e
 
 ![Homelab (hell, desktop, en)](homelab-hell-desktop-en.png)
 ![Homelab (dunkel, desktop, en)](homelab-dunkel-desktop-en.png)
+
+### Homelab: Proxmox
+
+![Homelab: Proxmox (hell, desktop, en)](homelab-proxmox-hell-desktop-en.png)
+![Homelab: Proxmox (dunkel, desktop, en)](homelab-proxmox-dunkel-desktop-en.png)
+
+### Datenträger: Plattentausch
+
+![Datenträger: Plattentausch (hell, desktop, en)](datentraeger-plattentausch-hell-desktop-en.png)
+![Datenträger: Plattentausch (dunkel, desktop, en)](datentraeger-plattentausch-dunkel-desktop-en.png)
+
+### Homelab: Paperless
+
+![Homelab: Paperless (hell, desktop, en)](homelab-paperless-hell-desktop-en.png)
+![Homelab: Paperless (dunkel, desktop, en)](homelab-paperless-dunkel-desktop-en.png)
+
+### Homelab: Home Assistant
+
+![Homelab: Home Assistant (hell, desktop, en)](homelab-batterien-hell-desktop-en.png)
+![Homelab: Home Assistant (dunkel, desktop, en)](homelab-batterien-dunkel-desktop-en.png)
+
+### Homelab: Obsidian-Vault
+
+![Homelab: Obsidian-Vault (hell, desktop, en)](homelab-vault-hell-desktop-en.png)
+![Homelab: Obsidian-Vault (dunkel, desktop, en)](homelab-vault-dunkel-desktop-en.png)
+
+### Homelab: Assets
+
+![Homelab: Assets (hell, desktop, en)](homelab-assets-hell-desktop-en.png)
+![Homelab: Assets (dunkel, desktop, en)](homelab-assets-dunkel-desktop-en.png)
+
+### Homelab: Kabel
+
+![Homelab: Kabel (hell, desktop, en)](homelab-kabel-hell-desktop-en.png)
+![Homelab: Kabel (dunkel, desktop, en)](homelab-kabel-dunkel-desktop-en.png)
+
+### Homelab: Kleinanzeigen
+
+![Homelab: Kleinanzeigen (hell, desktop, en)](homelab-kleinanzeigen-hell-desktop-en.png)
+![Homelab: Kleinanzeigen (dunkel, desktop, en)](homelab-kleinanzeigen-dunkel-desktop-en.png)
+
+### Homelab: Seriennummer-Scan
+
+![Homelab: Seriennummer-Scan (hell, desktop, en)](homelab-sn-scan-hell-desktop-en.png)
+![Homelab: Seriennummer-Scan (dunkel, desktop, en)](homelab-sn-scan-dunkel-desktop-en.png)
 
 ## 200 % (720 × 450 bei doppelter Pixeldichte, hell, Deutsch)
 

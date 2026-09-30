@@ -14,7 +14,8 @@
       "body": "Plug in a drive and click \"Refresh\"."
     },
     "print": "Print",
-    "adjust": "Adjust in quick print"
+    "adjust": "Adjust in quick print",
+    "for": "{{action}}: {{drive}}"
   },
   "ssh": {
     "host": "Host",
@@ -42,6 +43,7 @@
     "cutMarks": "Cut marks",
     "preview": "Preview",
     "planning": "Planning …",
-    "print": "Print"
+    "print": "Print",
+    "selectAll": "Select all disks"
   }
 }

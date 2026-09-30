@@ -7,10 +7,11 @@
     "reserve": "Reserve",
     "printReservedLabel": "Print reserved label",
     "release": "Release",
-    "markSold": "Mark sold",
+    "markSold": "Mark as sold",
     "edit": "Edit",
     "create": "Create",
-    "creating": "Saving …"
+    "creating": "Saving …",
+    "for": "{{action}}: {{title}}"
   },
   "tabs": {
     "all": "All",
@@ -27,7 +28,15 @@
     "ariaLabel": "Classifieds items",
     "openAd": "Open listing",
     "reservedUntil": "{{name}} until {{date}}",
-    "soldOn": "{{name}} on {{date}}"
+    "soldOn": "{{name}} on {{date}}",
+    "columns": {
+      "id": "Number",
+      "title": "Item",
+      "price": "Price",
+      "place": "Location",
+      "status": "Status",
+      "actions": "Actions"
+    }
   },
   "empty": {
     "title": "No item yet",

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
-import { findDialog, MockResponse, mockApi, renderWithProviders, type MockHandler } from '../../test/utils';
+import { chooseRowAction, findDialog, MockResponse, mockApi, renderWithProviders, type MockHandler } from '../../test/utils';
 import KleinanzeigenPage from './index';
 import type { ArtikelJson } from './types';
 
@@ -48,7 +48,7 @@ describe('Kleinanzeigen', () => {
     );
     renderWithProviders(<KleinanzeigenPage />, { route: '/homelab/kleinanzeigen' });
 
-    const list = await screen.findByRole('list', { name: 'Kleinanzeigen-Artikel' });
+    const list = await screen.findByRole('table', { name: 'Kleinanzeigen-Artikel' });
     expect(within(list).getByText(/KA-001/)).toBeInTheDocument();
     expect(within(list).getByText(/KA-002/)).toBeInTheDocument();
     expect(within(list).getByText('reserviert')).toBeInTheDocument();
@@ -93,7 +93,8 @@ describe('Kleinanzeigen', () => {
     );
     const { user } = renderWithProviders(<KleinanzeigenPage />, { route: '/homelab/kleinanzeigen' });
 
-    await user.click(await screen.findByRole('button', { name: 'Reservieren' }));
+    await screen.findByText('Monitorarm');
+    await chooseRowAction(user, 'KA-001 Monitorarm', 'Reservieren');
     const dialog = await findDialog('Reservieren');
     await user.type(within(dialog).getByRole('textbox', { name: 'Name', hidden: true }), 'Anna');
     await user.click(within(dialog).getByRole('button', { name: 'Reservieren', hidden: true }));
@@ -120,7 +121,8 @@ describe('Kleinanzeigen', () => {
     );
     const { user } = renderWithProviders(<KleinanzeigenPage />, { route: '/homelab/kleinanzeigen' });
 
-    await user.click(await screen.findByRole('button', { name: 'Reserviert-Etikett drucken' }));
+    await screen.findByText('Monitorarm');
+    await chooseRowAction(user, 'KA-001 Monitorarm', 'Reserviert-Etikett drucken');
 
     await waitFor(() => expect(sent).not.toBeNull());
     expect((sent as { source: { template: string } }).source.template).toBe('reserviert');

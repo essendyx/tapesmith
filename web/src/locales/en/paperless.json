@@ -24,7 +24,8 @@
     "voidDialog": {
       "title": "Discard ASN",
       "reason": "Reason"
-    }
+    },
+    "discardFor": "Discard: {{asn}}"
   },
   "garantie": {
     "searchTitle": "Search invoice",

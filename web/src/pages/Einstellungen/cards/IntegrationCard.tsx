@@ -13,7 +13,7 @@ import { useNotify } from '../../../components/NotifyProvider';
 import { translateOr } from '../../../i18n';
 import { postIntegrationInstall, postIntegrationUninstall, useIntegration, type IntegrationPayload } from '../api';
 import type { IntegrationJson } from '../../../api/types';
-import { FieldRow, FieldRows, ToggleControl } from '../FieldRow';
+import { FieldRow, FieldRows, ToggleControl } from '../../../components/FieldRow';
 
 type PartStatus = 'installiert' | 'teilweise' | 'veraltet' | 'nicht installiert';  // i18n-ignore (Server-Wert)
 export type PartKey = 'context' | 'uri' | 'autostart';

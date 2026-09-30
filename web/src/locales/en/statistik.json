@@ -46,8 +46,10 @@
   "rolls": {
     "title": "Rolls",
     "usedAria": "Usage of the {{tape}} roll",
-    "description": "Tape usage per roll (/stats/rolls)",
+    "description": "Tape usage per roll",
     "empty": "No roll recorded yet"
   },
-  "unit": { "meter": "{{value}} m" }
+  "unit": {
+    "meter": "{{value}} m"
+  }
 }

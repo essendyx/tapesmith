@@ -1,14 +1,15 @@
 /**
  * Seite Homelab: Übersicht der eingeschalteten Integrationsmodule (Hub) und ihre Seiten als
- * Unterseiten unter /homelab/<unterseite>. Ausgeschaltete Module zeigen nur einen Hinweis.
+ * Unterseiten unter /homelab/<unterseite>. Ausgeschaltete Module zeigen nur einen Hinweis. Den Pfad
+ * „Homelab › Modul“ zeigt allein die Kopfzeile (`TopBar`, mit Link zurück zur Übersicht); die
+ * Unterseite wiederholt ihn nicht über ihrem Titel.
  * Frühere Adressen leiten weiter: /homelab/einstellungen zu Einstellungen > Module,
  * /homelab/plattentausch zum Reiter Plattentausch der Seite Datenträger.
  */
 import { Suspense, lazy, type ComponentType, type LazyExoticComponent, type ReactNode } from 'react';
-import { Link, Navigate, Route, Routes } from 'react-router-dom';
-import { Spinner, makeStyles, tokens } from '@fluentui/react-components';
-import { useTranslation } from 'react-i18next';
-import { HOMELAB_MODULES, moduleTexts } from '../../modules';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { Spinner, makeStyles } from '@fluentui/react-components';
+import { HOMELAB_MODULES } from '../../modules';
 import { MODULES_SETTINGS_PATH, ModuleGate } from '../../modules/ModuleGate';
 import { ModuleSetupGate } from '../../modules/ModuleSetupGate';
 import { HomelabHub } from './HomelabHub';
@@ -25,19 +26,6 @@ const SUBPAGES: Record<string, LazyExoticComponent<ComponentType>> = {
 };
 
 const useStyles = makeStyles({
-  // Nachbildung des Pfads aus PageHeader: eigener, kleiner Rahmen, weil die
-  // Unterseiten hier nur eingehängt werden und ihre eigene PageHeader-Instanz unberührt bleibt.
-  breadcrumb: {
-    display: 'block',
-    marginBottom: tokens.spacingVerticalM,
-    color: tokens.colorNeutralForeground3,
-    fontSize: tokens.fontSizeBase200,
-    lineHeight: tokens.lineHeightBase200,
-  },
-  breadcrumbLink: {
-    color: 'inherit',
-    ':hover': { color: tokens.colorBrandForegroundLinkHover },
-  },
   loading: { display: 'grid', placeItems: 'center', height: '100%', minHeight: '200px' },
 });
 
@@ -57,26 +45,15 @@ function Lazy(props: { children: ReactNode }): JSX.Element {
 }
 
 function Subpage(props: { page: LazyExoticComponent<ComponentType>; module: string }): JSX.Element {
-  const styles = useStyles();
-  const { t } = useTranslation('homelab');
   const Page = props.page;
   return (
-    <>
-      <nav aria-label={t('breadcrumbAriaLabel')} className={styles.breadcrumb}>
-        <Link to="/homelab" className={styles.breadcrumbLink}>
-          {t('title')}
-        </Link>
-        {' › '}
-        {moduleTexts(props.module).name}
-      </nav>
-      <ModuleGate module={props.module}>
-        <ModuleSetupGate module={props.module}>
-          <Lazy>
-            <Page />
-          </Lazy>
-        </ModuleSetupGate>
-      </ModuleGate>
-    </>
+    <ModuleGate module={props.module}>
+      <ModuleSetupGate module={props.module}>
+        <Lazy>
+          <Page />
+        </Lazy>
+      </ModuleSetupGate>
+    </ModuleGate>
   );
 }
 

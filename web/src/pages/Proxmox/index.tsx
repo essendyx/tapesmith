@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import {
   Badge,
   Button,
-  Checkbox,
   Dropdown,
   Field,
   Input,
@@ -12,12 +11,6 @@ import {
   MessageBarTitle,
   Option,
   Switch,
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableHeaderCell,
-  TableRow,
   Text,
   makeStyles,
   tokens,
@@ -26,6 +19,7 @@ import { ArrowDownload20Regular, Print20Regular } from '@fluentui/react-icons';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ApiError } from '../../api/client';
+import { DataList, type ListColumn } from '../../components/DataList';
 import { EmptyState } from '../../components/EmptyState';
 import { LoadingState } from '../../components/LoadingState';
 import { PageHeader } from '../../components/PageHeader';
@@ -45,9 +39,14 @@ const useStyles = makeStyles({
     columnGap: tokens.spacingHorizontalM,
     rowGap: tokens.spacingVerticalS,
   },
-  narrowField: { minWidth: '120px', maxWidth: '100%' },
-  /** Eigener Scroll-Container: die Tabelle scrollt seitlich, nie die ganze Seite. */
-  tableScroll: { overflowX: 'auto', maxWidth: '100%' },
+  narrowField: { flex: '1 1 160px', minWidth: '140px', maxWidth: '240px' },
+  nameCell: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalXXS, minWidth: 0 },
+  passthrough: {
+    fontFamily: tokens.fontFamilyMonospace,
+    fontSize: tokens.fontSizeBase100,
+    color: tokens.colorNeutralForeground3,
+    overflowWrap: 'anywhere',
+  },
   note: { color: tokens.colorNeutralForeground3 },
   mono: { fontFamily: tokens.fontFamilyMonospace, fontSize: tokens.fontSizeBase200, overflowWrap: 'anywhere' },
 });
@@ -158,7 +157,44 @@ export default function ProxmoxPage(): JSX.Element {
     }
   };
 
-  const allChecked = result !== null && result.guests.length > 0 && result.guests.every((g) => selected[g.vmid]);
+  const columns: ListColumn<GuestJson>[] = [
+    { id: 'vmid', header: t('guests.vmid'), kind: 'number', cell: (g) => g.vmid },
+    { id: 'type', header: t('guests.type'), cell: (g) => (g.kind === 'qemu' ? t('guests.typeVm') : t('guests.typeLxc')) },
+    {
+      id: 'name',
+      header: t('guests.name'),
+      kind: 'title',
+      cell: (g) => (
+        <div className={styles.nameCell}>
+          <span>{g.name}</span>
+          {g.passthrough.length > 0 ? (
+            <span className={styles.passthrough}>
+              {t('guests.passthrough')}: {g.passthrough.join('; ')}
+            </span>
+          ) : null}
+        </div>
+      ),
+    },
+    {
+      id: 'status',
+      header: t('guests.status'),
+      kind: 'status',
+      cell: (g) => (
+        <Badge appearance="tint" color={g.status === 'running' ? 'success' : 'informative'}>
+          {g.status === 'running' // i18n-ignore (Server-Wert)
+            ? t('guests.statusRunning')
+            : g.status === 'stopped' // i18n-ignore (Server-Wert)
+              ? t('guests.statusStopped')
+              : g.status}
+        </Badge>
+      ),
+    },
+    {
+      id: 'ip',
+      header: t('guests.ip'),
+      cell: (g) => <span className={g.ips.length > 0 ? styles.mono : styles.note}>{ipText(g, t('guests.ipUnknown'))}</span>,
+    },
+  ];
 
   return (
     <div className={layout.stack}>
@@ -214,8 +250,13 @@ export default function ProxmoxPage(): JSX.Element {
                 ))}
               </Dropdown>
             </Field>
-            <Field label={t('filters.ids')} hint={t('filters.idsHint')} className={styles.narrowField}>
-              <Input aria-label={t('filters.ids')} value={ids} onChange={(_e, d) => setIds(d.value)} />
+            <Field label={t('filters.ids')} className={styles.narrowField}>
+              <Input
+                aria-label={t('filters.ids')}
+                placeholder={t('filters.idsHint')}
+                value={ids}
+                onChange={(_e, d) => setIds(d.value)}
+              />
             </Field>
             <Field label={t('filters.name')} className={styles.narrowField}>
               <Input aria-label={t('filters.name')} value={name} onChange={(_e, d) => setName(d.value)} />
@@ -244,64 +285,20 @@ export default function ProxmoxPage(): JSX.Element {
           description={result.nodes.map((n) => `${n.node}: ${n.status}${n.ip ? `, ${n.ip}` : ''}`).join(' · ')}
         >
           <WarningList warnings={[...result.warnings, ...tableWarnings]} />
-          {result.guests.length === 0 ? (
-            <Text className={styles.note}>{t('guests.none')}</Text>
-          ) : (
-            <div className={styles.tableScroll}>
-              <Table aria-label={t('guests.ariaLabel')} size="small">
-                <TableHeader>
-                  <TableRow>
-                    <TableHeaderCell>
-                      <Checkbox
-                        aria-label={t('guests.selectAll')}
-                        checked={allChecked}
-                        onChange={(_e, d) =>
-                          setSelected(Object.fromEntries(result.guests.map((g) => [g.vmid, Boolean(d.checked)])))
-                        }
-                      />
-                    </TableHeaderCell>
-                    <TableHeaderCell>{t('guests.vmid')}</TableHeaderCell>
-                    <TableHeaderCell>{t('guests.type')}</TableHeaderCell>
-                    <TableHeaderCell>{t('guests.name')}</TableHeaderCell>
-                    <TableHeaderCell>{t('guests.status')}</TableHeaderCell>
-                    <TableHeaderCell>{t('guests.ip')}</TableHeaderCell>
-                    <TableHeaderCell>{t('guests.passthrough')}</TableHeaderCell>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {result.guests.map((g) => (
-                    <TableRow key={g.vmid}>
-                      <TableCell>
-                        <Checkbox
-                          aria-label={t('guests.select', { vmid: g.vmid, name: g.name })}
-                          checked={Boolean(selected[g.vmid])}
-                          onChange={(_e, d) => setSelected((m) => ({ ...m, [g.vmid]: Boolean(d.checked) }))}
-                        />
-                      </TableCell>
-                      <TableCell>{g.vmid}</TableCell>
-                      <TableCell>{g.kind === 'qemu' ? t('guests.typeVm') : t('guests.typeLxc')}</TableCell>
-                      <TableCell>{g.name}</TableCell>
-                      <TableCell>
-                        <Badge appearance="tint" color={g.status === 'running' ? 'success' : 'informative'}>
-                          {g.status === 'running' // i18n-ignore (Server-Wert)
-                            ? t('guests.statusRunning')
-                            : g.status === 'stopped' // i18n-ignore (Server-Wert)
-                              ? t('guests.statusStopped')
-                              : g.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <span className={g.ips.length > 0 ? styles.mono : styles.note}>{ipText(g, t('guests.ipUnknown'))}</span>
-                      </TableCell>
-                      <TableCell>
-                        <span className={styles.mono}>{g.passthrough.join('; ')}</span>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          )}
+          <DataList
+            items={result.guests}
+            columns={columns}
+            getKey={(g) => g.vmid}
+            label={t('guests.ariaLabel')}
+            empty={<Text className={styles.note}>{t('guests.none')}</Text>}
+            selection={{
+              isSelected: (g) => Boolean(selected[g.vmid]),
+              onChange: (g, on) => setSelected((m) => ({ ...m, [g.vmid]: on })),
+              onChangeAll: (on) => setSelected(Object.fromEntries(result.guests.map((g) => [g.vmid, on]))),
+              itemLabel: (g) => t('guests.select', { vmid: g.vmid, name: g.name }),
+              allLabel: t('guests.selectAll'),
+            }}
+          />
           <div className={layout.rowWrap}>
             <Switch
               label={t('actions.qrWithLink')}

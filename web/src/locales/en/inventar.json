@@ -12,7 +12,9 @@
       "body": "Create a box, label it with a QR code and later use the search to find where something is."
     },
     "items_one": "{{count}} item",
-    "items_other": "{{count}} items"
+    "items_other": "{{count}} items",
+    "count_one": "{{count}} box",
+    "count_other": "{{count}} boxes"
   },
   "detail": {
     "title": "Box {{boxId}}",
@@ -84,7 +86,8 @@
     "sinceDue": "since {{date}}, due {{due}}",
     "item": "Item",
     "person": "To whom?",
-    "due": "Return by"
+    "due": "Return by",
+    "for": "{{action}}: {{item}}"
   },
   "search": {
     "placeholder": "e.g. HDMI adapter",

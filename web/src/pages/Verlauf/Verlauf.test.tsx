@@ -1,6 +1,16 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
-import { LocationProbe, findDialog, fixtures, mockApi, renderWithProviders, restoreAllMocks } from '../../test/utils';
+import {
+  LocationProbe,
+  MockResponse,
+  chooseRowAction,
+  findDialog,
+  fixtures,
+  mockApi,
+  mockNarrowScreen,
+  renderWithProviders,
+  restoreAllMocks,
+} from '../../test/utils';
 import type { HistoryEntryJson } from '../../api/types';
 import VerlaufPage from './index';
 
@@ -141,7 +151,7 @@ describe('/verlauf', () => {
       </>,
     );
     await screen.findByText('Server 274913');
-    await user.click(screen.getByRole('button', { name: 'Im Editor öffnen: Server 274913' }));
+    await chooseRowAction(user, 'Server 274913', 'Im Editor öffnen');
     expect(screen.getByTestId('location')).toHaveTextContent('/editor?verlauf=1');
   });
 
@@ -153,7 +163,7 @@ describe('/verlauf', () => {
     });
     const { user } = renderWithProviders(<VerlaufPage />);
     await screen.findByText('Server 274913');
-    await user.click(screen.getByRole('button', { name: 'Als Vorlage speichern: Server 274913' }));
+    await chooseRowAction(user, 'Server 274913', 'Als Vorlage speichern');
     const dialog = await findDialog('Als Vorlage speichern');
     await user.type(within(dialog).getByLabelText('Name'), 'Servertyp');
     await user.click(within(dialog).getByRole('button', { name: 'Speichern', hidden: true }));
@@ -179,37 +189,95 @@ describe('/verlauf', () => {
     mockApi({ 'GET /api/v1/history': () => ({ entries: [entry({ reprintable: false })] }) });
     renderWithProviders(<VerlaufPage />);
     await screen.findByText('Server 274913');
-    expect(screen.getByRole('button', { name: /Erneut drucken/ })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /Erneut drucken/ })).toHaveAttribute('aria-disabled', 'true');
   });
 
-  it('zeigt die Liste auf breiten Bildschirmen als Fluent DataGrid', async () => {
+  it('zeigt die Liste auf breiten Bildschirmen als Tabelle', async () => {
     mockApi({ 'GET /api/v1/history': () => ({ entries: [entry()] }) });
     renderWithProviders(<VerlaufPage />);
     await screen.findByText('Server 274913');
-    expect(screen.getByRole('grid', { name: 'Verlaufseinträge' })).toBeInTheDocument();
+    expect(screen.getByRole('table', { name: 'Verlaufseinträge' })).toBeInTheDocument();
   });
 
-  it('zeigt die Liste auf schmalen Bildschirmen als Karten statt als DataGrid', async () => {
-    const original = window.matchMedia;
-    window.matchMedia = ((query: string) => ({
-      matches: query.includes('max-width'),
-      media: query,
-      onchange: null,
-      addListener: () => {},
-      removeListener: () => {},
-      addEventListener: () => {},
-      removeEventListener: () => {},
-      dispatchEvent: () => false,
-    })) as typeof window.matchMedia;
+  it('zeigt die Liste auf schmalen Bildschirmen als Karten statt als Tabelle', async () => {
+    const restore = mockNarrowScreen(true);
     try {
       mockApi({ 'GET /api/v1/history': () => ({ entries: [entry()] }) });
       renderWithProviders(<VerlaufPage />);
       await screen.findByText('Server 274913');
-      expect(screen.queryByRole('grid', { name: 'Verlaufseinträge' })).not.toBeInTheDocument();
-      expect(screen.getByText('Server 274913').closest('article')).toBeInTheDocument();
+      expect(screen.queryByRole('table', { name: 'Verlaufseinträge' })).not.toBeInTheDocument();
+      expect(screen.getByRole('list', { name: 'Verlaufseinträge' })).toBeInTheDocument();
+      expect(screen.getByText('Server 274913').closest('li')).toBeInTheDocument();
     } finally {
-      window.matchMedia = original;
+      restore();
     }
+  });
+
+  it('je Zeile genau ein sichtbarer Hauptknopf, alle weiteren Aktionen im Mehr-Menü (per Tastatur)', async () => {
+    mockApi({
+      'GET /api/v1/history': () => ({ entries: [entry(), entry({ id: 2, title: 'Zweites Label' })] }),
+    });
+    const { user } = renderWithProviders(<VerlaufPage />);
+    await screen.findByText('Server 274913');
+    expect(screen.queryByRole('button', { name: /Im Editor öffnen/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Archivieren/ })).not.toBeInTheDocument();
+    // eindeutige Namen je Zeile
+    expect(screen.getByRole('button', { name: 'Weitere Aktionen für Server 274913' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Weitere Aktionen für Zweites Label' })).toBeInTheDocument();
+    // Tastatur: Fokus auf den Menüknopf, Enter öffnet, Einträge sind Menüpunkte
+    screen.getByRole('button', { name: 'Weitere Aktionen für Server 274913' }).focus();
+    await user.keyboard('{Enter}');
+    const items = await screen.findAllByRole('menuitem');
+    expect(items.map((i) => i.textContent)).toEqual([
+      'Im Editor öffnen',
+      'Als Vorlage speichern',
+      'PNG kopieren',
+      'Exportieren',
+      'Archivieren',
+    ]);
+  });
+
+  it('Export im Untermenü des Mehr-Menüs', async () => {
+    const originalCreate = URL.createObjectURL;
+    const originalRevoke = URL.revokeObjectURL;
+    URL.createObjectURL = vi.fn(() => 'blob:mock');
+    URL.revokeObjectURL = vi.fn();
+    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+    try {
+      const api = mockApi({
+        'GET /api/v1/history': () => ({ entries: [entry()] }),
+        'POST /api/v1/labels/export': () => new MockResponse(200, 'PDF', { 'Content-Type': 'application/pdf' }),
+      });
+      const { user } = renderWithProviders(<VerlaufPage />);
+      await screen.findByText('Server 274913');
+      await chooseRowAction(user, 'Server 274913', ['Exportieren', 'PDF']);
+      await waitFor(() => expect(api.calls.some((c) => c.path === '/api/v1/labels/export')).toBe(true));
+      const call = api.calls.find((c) => c.path === '/api/v1/labels/export');
+      expect((call?.body as { format: string }).format).toBe('pdf');
+    } finally {
+      clickSpy.mockRestore();
+      URL.createObjectURL = originalCreate;
+      URL.revokeObjectURL = originalRevoke;
+    }
+  });
+
+  it('übersetzt Systemtitel (Kalibrierung, Testlabel) in die Oberflächensprache, Nutzertitel bleiben', async () => {
+    mockApi({
+      'GET /api/v1/history': () => ({
+        entries: [
+          entry({ id: 1, kind: 'calibrate', title: 'Kalibrierung Lineal' }),
+          entry({ id: 2, kind: 'test', title: 'Testlabel' }),
+          entry({ id: 3, kind: 'text', title: 'Testlabel' }),
+          entry({ id: 4, kind: 'reprint', title: 'Nachdruck #1: Kalibrierung Kantentest' }),
+        ],
+      }),
+    });
+    renderWithProviders(<VerlaufPage />, { language: 'en' });
+    expect(await screen.findByText('Calibration ruler')).toBeInTheDocument();
+    expect(screen.getByText('Test label')).toBeInTheDocument();
+    expect(screen.getByText('Testlabel')).toBeInTheDocument();
+    expect(screen.getByText('Reprint #1: Calibration edge test')).toBeInTheDocument();
+    expect(screen.queryByText('Kalibrierung Lineal')).not.toBeInTheDocument();
   });
 
   it('fehlendes Bild ohne sensiblen Eintrag zeigt „kein Bild“ statt eines Platzhalterzeichens', async () => {

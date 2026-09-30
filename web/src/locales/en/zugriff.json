@@ -26,7 +26,8 @@
     "revokeConfirmTitle": "Revoke token \"{{name}}\"?",
     "revokeConfirmMessage": "Anyone using this token loses access immediately.",
     "revokeSuccess": "Token \"{{name}}\" revoked",
-    "revokeErrorTitle": "Revoke failed"
+    "revokeErrorTitle": "Revoke failed",
+    "revokeFor": "Revoke: {{name}}"
   },
   "newToken": {
     "titleCreate": "New token",
@@ -64,7 +65,8 @@
     "publicUrlHint": "Optional, e.g. https://printer.example.com",
     "firewallHint": "The Windows Firewall rule is created once by <code>deploy\\infra\\setup-tapesmith-lan.ps1</code> as an administrator.",
     "reachableLabel": "Reachable at",
-    "saveSuccess": "LAN sharing: saved"
+    "saveSuccess": "LAN sharing: saved",
+    "firewallTitle": "Windows Firewall"
   },
   "family": {
     "title": "Family page",

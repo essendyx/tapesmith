@@ -1,20 +1,11 @@
 /** Karte „API-Tokens“: Tabelle, Widerrufen mit Rückfrage, Dialog „Neues Token“. */
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import {
-  Body1,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableHeaderCell,
-  TableRow,
-  makeStyles,
-  tokens,
-} from '@fluentui/react-components';
+import { Button, makeStyles, tokens } from '@fluentui/react-components';
 import { Add20Regular, Delete20Regular } from '@fluentui/react-icons';
 import { useTranslation } from 'react-i18next';
+import { DataList, type ListColumn } from '../../components/DataList';
+import { EmptyState } from '../../components/EmptyState';
 import { Section } from '../../components/Section';
 import { useConfirm } from '../../components/ConfirmProvider';
 import { useNotify } from '../../components/NotifyProvider';
@@ -23,12 +14,9 @@ import { absoluteTime, relativeTime } from '../Verlauf/time';
 import { ACCESS_KEY, revokeAccessToken } from './api';
 import { NewTokenDialog } from './NewTokenDialog';
 import type { TokenInfoJson } from './types';
-import { TableScroll } from '../../components/TableScroll';
 
 const useStyles = makeStyles({
-  empty: { color: tokens.colorNeutralForeground3 },
-  // Mindestbreite: auf dem Handy und bei 200 % scrollt die Tabelle, statt Spalten zu überlagern.
-  table: { minWidth: '640px' },
+  hint: { fontFamily: tokens.fontFamilyMonospace, fontSize: tokens.fontSizeBase200 },
 });
 
 export function TokensCard(props: { tokens: TokenInfoJson[] }): JSX.Element {
@@ -64,6 +52,34 @@ export function TokensCard(props: { tokens: TokenInfoJson[] }): JSX.Element {
     }
   };
 
+  const columns: ListColumn<TokenInfoJson>[] = [
+    { id: 'name', header: t('tokens.table.name'), kind: 'title', cell: (tok) => tok.name },
+    { id: 'role', header: t('tokens.table.role'), cell: (tok) => tok.role_label },
+    { id: 'created', header: t('tokens.table.created'), cell: (tok) => absoluteTime(tok.created) },
+    {
+      id: 'lastUsed',
+      header: t('tokens.table.lastUsed'),
+      cell: (tok) => (tok.last_used ? relativeTime(tok.last_used) : t('tokens.table.never')),
+    },
+    { id: 'hint', header: t('tokens.table.hint'), cell: (tok) => <span className={styles.hint}>{tok.hint}</span> },
+    {
+      id: 'actions',
+      header: t('tokens.table.actions'),
+      kind: 'actions',
+      cell: (tok) => (
+        <Button
+          appearance="subtle"
+          icon={<Delete20Regular />}
+          disabled={revoking === tok.id}
+          aria-label={t('tokens.revokeFor', { name: tok.name })}
+          onClick={() => void onRevoke(tok)}
+        >
+          {t('tokens.revoke')}
+        </Button>
+      ),
+    },
+  ];
+
   return (
     <Section
       id="tokens"
@@ -74,47 +90,13 @@ export function TokensCard(props: { tokens: TokenInfoJson[] }): JSX.Element {
         </Button>
       }
     >
-      {props.tokens.length === 0 ? (
-        <Body1 className={styles.empty}>{t('tokens.empty')}</Body1>
-      ) : (
-        <TableScroll label={t('tokens.table.scrollAria')}>
-        <Table aria-label={t('tokens.table.ariaLabel')} className={styles.table}>
-          <TableHeader>
-            <TableRow>
-              <TableHeaderCell>{t('tokens.table.name')}</TableHeaderCell>
-              <TableHeaderCell>{t('tokens.table.role')}</TableHeaderCell>
-              <TableHeaderCell>{t('tokens.table.created')}</TableHeaderCell>
-              <TableHeaderCell>{t('tokens.table.lastUsed')}</TableHeaderCell>
-              <TableHeaderCell>{t('tokens.table.hint')}</TableHeaderCell>
-              <TableHeaderCell>
-                <span className="p12-visually-hidden">{t('tokens.table.actions')}</span>
-              </TableHeaderCell>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {props.tokens.map((tok) => (
-              <TableRow key={tok.id}>
-                <TableCell>{tok.name}</TableCell>
-                <TableCell>{tok.role_label}</TableCell>
-                <TableCell>{absoluteTime(tok.created)}</TableCell>
-                <TableCell>{tok.last_used ? relativeTime(tok.last_used) : t('tokens.table.never')}</TableCell>
-                <TableCell>{tok.hint}</TableCell>
-                <TableCell>
-                  <Button
-                    appearance="subtle"
-                    icon={<Delete20Regular />}
-                    disabled={revoking === tok.id}
-                    onClick={() => void onRevoke(tok)}
-                  >
-                    {t('tokens.revoke')}
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        </TableScroll>
-      )}
+      <DataList
+        items={props.tokens}
+        columns={columns}
+        getKey={(tok) => tok.id}
+        label={t('tokens.table.ariaLabel')}
+        empty={<EmptyState compact title={t('tokens.empty')} />}
+      />
       <NewTokenDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
     </Section>
   );

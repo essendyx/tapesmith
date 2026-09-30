@@ -26,7 +26,8 @@
     "revokeConfirmTitle": "Token „{{name}}“ widerrufen?",
     "revokeConfirmMessage": "Wer dieses Token nutzt, verliert sofort den Zugriff.",
     "revokeSuccess": "Token „{{name}}“ widerrufen",
-    "revokeErrorTitle": "Widerrufen fehlgeschlagen"
+    "revokeErrorTitle": "Widerrufen fehlgeschlagen",
+    "revokeFor": "Widerrufen: {{name}}"
   },
   "newToken": {
     "titleCreate": "Neues Token",
@@ -64,7 +65,8 @@
     "publicUrlHint": "Optional, z. B. https://drucker.example.com",
     "firewallHint": "Die Windows-Firewall-Regel legt einmalig <code>deploy\\infra\\setup-tapesmith-lan.ps1</code> als Administrator an.",
     "reachableLabel": "Erreichbar unter",
-    "saveSuccess": "LAN-Freigabe: gespeichert"
+    "saveSuccess": "LAN-Freigabe: gespeichert",
+    "firewallTitle": "Windows-Firewall"
   },
   "family": {
     "title": "Familienseite",

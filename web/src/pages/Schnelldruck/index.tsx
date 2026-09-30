@@ -58,7 +58,11 @@ const useStyles = makeStyles({
     width: '100%',
     '& textarea': { fontSize: '28px', lineHeight: '1.3' },
   },
-  message: { minHeight: '20px', color: tokens.colorPaletteDarkOrangeForeground1 },
+  // Statuszeile bleibt als Live-Region im Baum, nimmt leer aber keinen Platz ein (keine Lücke unter dem Feld).
+  message: {
+    color: tokens.colorPaletteDarkOrangeForeground1,
+    ':empty': { marginTop: `calc(-1 * ${tokens.spacingVerticalL})` },
+  },
   example: { color: tokens.colorNeutralForeground3 },
   chips: { display: 'flex', flexWrap: 'wrap', columnGap: tokens.spacingHorizontalS, rowGap: tokens.spacingVerticalXS },
   fixes: { display: 'flex', flexWrap: 'wrap', columnGap: tokens.spacingHorizontalS, rowGap: tokens.spacingVerticalXS },

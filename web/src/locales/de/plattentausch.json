@@ -41,5 +41,7 @@
   "printOldLabel": "Label alte Platte drucken",
   "printNewLabel": "Label neue Platte drucken",
   "previewOldAlt": "Vorschau altes Label",
-  "previewNewAlt": "Vorschau neues Label"
+  "previewNewAlt": "Vorschau neues Label",
+  "copyCommand": "Befehl kopieren",
+  "copyChangelog": "Changelog kopieren"
 }

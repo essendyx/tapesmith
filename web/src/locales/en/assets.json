@@ -48,7 +48,8 @@
     "printLabel": "Print label",
     "createVaultNote": "Create vault note",
     "copyShortlink": "Copy short link",
-    "void": "Discard"
+    "void": "Discard",
+    "for": "{{action}}: {{title}}"
   },
   "empty": {
     "title": "No asset yet",

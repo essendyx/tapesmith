@@ -90,6 +90,7 @@ export function DrivesView(): JSX.Element {
                   icon={<Print16Regular />}
                   onClick={() => void print.run({ kind: 'text', lines: drive.suggestion })}
                   disabled={print.busy}
+                  aria-label={t('drives.for', { action: t('drives.print'), drive: drive.root })}
                 >
                   {t('drives.print')}
                 </Button>
@@ -97,6 +98,7 @@ export function DrivesView(): JSX.Element {
                   size="small"
                   icon={<TextBulletListSquare16Regular />}
                   onClick={() => navigate(`/schnelldruck?text=${encodeURIComponent(drive.suggestion.join('\n'))}`)}
+                  aria-label={t('drives.for', { action: t('drives.adjust'), drive: drive.root })}
                 >
                   {t('drives.adjust')}
                 </Button>

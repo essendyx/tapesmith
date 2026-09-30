@@ -12,7 +12,7 @@ import { useNotify } from '../../../components/NotifyProvider';
 import { qk } from '../../../api/core';
 import { MODULES, moduleTexts, useModules, type ModuleDef } from '../../../modules';
 import { putModule } from '../../../modules/api';
-import { FieldRow, FieldRows, ToggleControl } from '../FieldRow';
+import { FieldRow, FieldRows, ToggleControl } from '../../../components/FieldRow';
 import { MODULES_CARD_ID } from '../sectionIds';
 
 const useStyles = makeStyles({

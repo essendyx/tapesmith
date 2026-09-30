@@ -31,7 +31,7 @@ import { Section } from '../../../components/Section';
 import { useNotify } from '../../../components/NotifyProvider';
 import { homelabKeys, patchHomelabSettings, useHomelabCheck } from '../../HomelabEinstellungen/api';
 import type { HomelabSettings, ProxmoxHostJson, ServiceCheckJson } from '../../HomelabEinstellungen/types';
-import { FieldRow, FieldRows, ToggleControl } from '../FieldRow';
+import { FieldRow, FieldRows, ToggleControl } from '../../../components/FieldRow';
 import { UnitText } from '../fields/SettingFieldRow';
 import { formatNumberText, parseNumberText } from '../fields/numberText';
 import { HOMELAB_FIELDS, fieldI18nId, type HomelabFieldDef } from './homelabFields';
@@ -435,11 +435,11 @@ export function HomelabSettingsCard(props: {
             {saving ? <Spinner size="tiny" /> : null}
             {dirty ? (
               <>
-                <Button appearance="secondary" disabled={saving} onClick={discard}>
-                  {tSettings('generic.discard')}
-                </Button>
                 <Button appearance="primary" disabled={saving} onClick={() => void save()}>
                   {tSettings('generic.save')}
+                </Button>
+                <Button appearance="secondary" disabled={saving} onClick={discard}>
+                  {tSettings('generic.discard')}
                 </Button>
               </>
             ) : null}

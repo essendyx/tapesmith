@@ -12,9 +12,10 @@ import {
   makeStyles,
   tokens,
 } from '@fluentui/react-components';
-import { Add16Regular, Box24Regular } from '@fluentui/react-icons';
+import { Add20Regular, Box24Regular } from '@fluentui/react-icons';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '../../components/EmptyState';
+import { ListToolbar } from '../../components/ListToolbar';
 import type { BoxJson } from '../../api/types';
 import { fetchBoxes } from './api';
 import { errorText } from './errors';
@@ -22,7 +23,7 @@ import { BoxDetailDialog } from './BoxDetailDialog';
 import { NewBoxDialog } from './NewBoxDialog';
 
 const useStyles = makeStyles({
-  toolbar: { display: 'flex', justifyContent: 'flex-end', marginBottom: tokens.spacingVerticalM },
+  count: { color: tokens.colorNeutralForeground3 },
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
@@ -62,11 +63,15 @@ export function BoxesView(props: { boxIdFromUrl: string | null; onBoxHandled: ()
 
   return (
     <div>
-      <div className={styles.toolbar}>
-        <Button appearance="primary" icon={<Add16Regular />} onClick={() => setNewOpen(true)}>
-          {t('boxes.new')}
-        </Button>
-      </div>
+      <ListToolbar
+        actions={
+          <Button appearance="primary" icon={<Add20Regular />} onClick={() => setNewOpen(true)}>
+            {t('boxes.new')}
+          </Button>
+        }
+      >
+        {loaded ? <Caption1 className={styles.count}>{t('boxes.count', { count: boxes.length })}</Caption1> : null}
+      </ListToolbar>
       {loadError ? (
         <MessageBar intent="error">
           <MessageBarBody>

@@ -1,6 +1,9 @@
 {
   "title": "Warteschlange",
-  "status": { "paused": "pausiert", "active": "aktiv" },
+  "status": {
+    "paused": "pausiert",
+    "active": "aktiv"
+  },
   "autoRetry": "Automatischer Nachdruck",
   "probe": {
     "label": "Prüfung: {{value}}",
@@ -19,7 +22,9 @@
     "up": "Nach oben",
     "down": "Nach unten",
     "duplicate": "Duplizieren",
-    "retry": "Jetzt versuchen"
+    "retry": "Jetzt versuchen",
+    "for": "{{action}}: {{title}}",
+    "cancelJob": "Auftrag abbrechen"
   },
   "empty": {
     "title": "Keine wartenden Aufträge",
@@ -27,7 +32,8 @@
   },
   "job": {
     "sensitive": " (sensibel, nur im Speicher: geht beim Beenden des Dienstes verloren)",
-    "attempts": "Versuche: {{count}}"
+    "attempts": "Versuche: {{count}}",
+    "sensitiveShort": "sensibel, nur im Speicher"
   },
   "state": {
     "wartet": "wartet",
@@ -36,7 +42,12 @@
     "fehler": "Fehler",
     "abgebrochen": "abgebrochen"
   },
-  "source": { "gui": "GUI", "cli": "CLI", "hotkey": "Hotkey", "api": "API" },
+  "source": {
+    "gui": "GUI",
+    "cli": "CLI",
+    "hotkey": "Hotkey",
+    "api": "API"
+  },
   "confirm": {
     "cancelTitle": "Auftrag abbrechen?",
     "cancelMessage": "Soll der Auftrag „{{title}}\" abgebrochen werden?",
@@ -50,5 +61,15 @@
     "cancelFailed": "Abbrechen fehlgeschlagen",
     "actionFailed": "Aktion fehlgeschlagen",
     "autoRetryFailed": "Einstellung nicht übernommen"
-  }
+  },
+  "columns": {
+    "position": "Pos.",
+    "title": "Auftrag",
+    "source": "Quelle",
+    "attempts": "Versuche",
+    "nextTry": "Nächster Versuch",
+    "state": "Status",
+    "actions": "Aktionen"
+  },
+  "listLabel": "Aufträge in der Warteschlange"
 }

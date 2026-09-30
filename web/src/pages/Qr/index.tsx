@@ -56,8 +56,25 @@ const useStyles = makeStyles({
   layout: { display: 'flex', flexWrap: 'wrap', columnGap: tokens.spacingHorizontalXL, rowGap: tokens.spacingVerticalL },
   left: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalM, flex: '1 1 320px', minWidth: '280px' },
   right: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalM, flex: '1 1 320px', minWidth: '280px' },
-  fieldsRow: { display: 'flex', flexWrap: 'wrap', columnGap: tokens.spacingHorizontalM, rowGap: tokens.spacingVerticalM },
-  message: { minHeight: '20px', color: tokens.colorPaletteDarkOrangeForeground1 },
+  /** Einheitliches Feldraster: gleich breite Spalten, jedes Feld füllt seine Spalte. */
+  fieldsRow: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
+    columnGap: tokens.spacingHorizontalM,
+    rowGap: tokens.spacingVerticalM,
+    alignItems: 'end',
+    '& .fui-Input, & .fui-Dropdown, & .fui-SpinButton': { width: '100%', minWidth: 0 },
+  },
+  fieldsStack: {
+    display: 'flex',
+    flexDirection: 'column',
+    rowGap: tokens.spacingVerticalXS,
+    '& .fui-Input': { width: '100%' },
+  },
+  message: {
+    color: tokens.colorPaletteDarkOrangeForeground1,
+    ':empty': { marginTop: `calc(-1 * ${tokens.spacingVerticalM})` },
+  },
   infoCard: {
     display: 'flex',
     flexDirection: 'column',
@@ -292,7 +309,7 @@ export default function QrPage(): JSX.Element {
             </TabList>
 
             {kind === 'url' ? (
-              <div className={styles.fieldsRow}>
+              <div className={styles.fieldsStack}>
                 <Field label={tt('fields.link')}>
                   <Input value={url} onChange={(_e, d) => setUrl(d.value)} placeholder={tt('fields.linkPlaceholder')} />
                 </Field>

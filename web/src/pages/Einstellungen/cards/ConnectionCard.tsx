@@ -12,7 +12,7 @@ import { ApiError } from '../../../api/client';
 import { usePrint } from '../../../components/usePrint';
 import { postSetup, useSettingsPorts } from '../api';
 import { StatusDetailList } from './StatusDetailList';
-import { FieldRow, FieldRows, ToggleControl } from '../FieldRow';
+import { FieldRow, FieldRows, ToggleControl } from '../../../components/FieldRow';
 import type { SetupJson } from '../../../api/types';
 
 const useStyles = makeStyles({

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
-import { FakeEventSource, findDialogByRole, mockApi, renderWithProviders, restoreAllMocks } from '../../test/utils';
+import { FakeEventSource, chooseRowAction, findDialogByRole, mockApi, renderWithProviders, restoreAllMocks } from '../../test/utils';
 import type { QueueJson, QueuedJobJson } from '../../api/types';
 import WarteschlangePage from './index';
 
@@ -53,9 +53,7 @@ describe('/warteschlange', () => {
     });
     const { user } = renderWithProviders(<WarteschlangePage />);
     await screen.findByText('Server 274913');
-    const row = screen.getByText('Server 274913').closest('article');
-    if (!row) throw new Error('Zeile nicht gefunden');
-    await user.click(within(row).getByRole('button', { name: 'Nach unten' }));
+    await chooseRowAction(user, 'Server 274913', 'Nach unten');
     await waitFor(() => expect(api.calls.some((c) => c.path === '/api/v1/queue/1/move')).toBe(true));
     const call = api.calls.find((c) => c.path === '/api/v1/queue/1/move');
     expect(call?.body).toEqual({ position: 1 });
@@ -101,9 +99,7 @@ describe('/warteschlange', () => {
     });
     const { user } = renderWithProviders(<WarteschlangePage />);
     await screen.findByText('Server 274913');
-    const row = screen.getByText('Server 274913').closest('article');
-    if (!row) throw new Error('Zeile nicht gefunden');
-    await user.click(within(row).getByRole('button', { name: 'Abbrechen' }));
+    await chooseRowAction(user, 'Server 274913', 'Auftrag abbrechen');
     const dialog = await findDialogByRole('alertdialog');
     await user.click(within(dialog).getByRole('button', { name: 'Abbrechen', hidden: true }));
     expect(api.calls.some((c) => c.path === '/api/v1/queue/1/cancel')).toBe(false);
@@ -115,6 +111,28 @@ describe('/warteschlange', () => {
     await screen.findByText('Server 274913');
     const badge = screen.getByText('wartet');
     expect(badge.querySelector('svg')).toBeTruthy();
+  });
+
+  it('Zeilenaktionen: „Jetzt versuchen“ sichtbar, Umsortieren und Abbrechen im Mehr-Menü mit eindeutigem Namen', async () => {
+    const api = mockApi({
+      'GET /api/v1/queue': () => queue({ jobs: [job(), job({ id: 2, title: 'Zweiter Auftrag', position: 1 })] }),
+      'POST /api/v1/queue/:id/retry': () => ({}),
+    });
+    const { user } = renderWithProviders(<WarteschlangePage />);
+    await screen.findByText('Server 274913');
+    expect(screen.queryByRole('button', { name: 'Nach unten' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Weitere Aktionen für Zweiter Auftrag' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Jetzt versuchen: Server 274913' }));
+    await waitFor(() => expect(api.calls.some((c) => c.path === '/api/v1/queue/1/retry')).toBe(true));
+    // erster Auftrag: „Nach oben“ ist deaktiviert
+    await user.click(screen.getByRole('button', { name: 'Weitere Aktionen für Server 274913' }));
+    expect(await screen.findByRole('menuitem', { name: 'Nach oben' })).toHaveAttribute('aria-disabled', 'true');
+  });
+
+  it('Systemtitel in der Warteschlange erscheinen in der Oberflächensprache', async () => {
+    mockApi({ 'GET /api/v1/queue': () => queue({ jobs: [job({ title: 'Kalibrierung Lineal' })] }) });
+    renderWithProviders(<WarteschlangePage />, { language: 'en' });
+    expect(await screen.findByText('Calibration ruler')).toBeInTheDocument();
   });
 
   it('leere Warteschlange zeigt EmptyState', async () => {

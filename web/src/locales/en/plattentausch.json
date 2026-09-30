@@ -41,5 +41,7 @@
   "printOldLabel": "Print old drive label",
   "printNewLabel": "Print new drive label",
   "previewOldAlt": "Preview of the old label",
-  "previewNewAlt": "Preview of the new label"
+  "previewNewAlt": "Preview of the new label",
+  "copyCommand": "Copy command",
+  "copyChangelog": "Copy changelog"
 }

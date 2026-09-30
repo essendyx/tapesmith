@@ -66,7 +66,7 @@ describe('Proxmox', () => {
     expect(within(table).getByText('webapp1')).toBeInTheDocument();
     expect(within(table).getByText('192.0.2.39')).toBeInTheDocument();
     expect(within(table).getByText('IP unbekannt: gestoppt')).toBeInTheDocument();
-    expect(within(table).getByText('hostpci0: 0000:01:00.0,pcie=1')).toBeInTheDocument();
+    expect(within(table).getByText(/hostpci0: 0000:01:00.0,pcie=1/)).toBeInTheDocument();
     expect(screen.getByText('TLS-Zertifikat von pmx10 wird nicht geprüft')).toBeInTheDocument();
     expect(api.calls.find((c) => c.path === '/api/v1/homelab/proxmox/guests')?.body).toEqual({ host: 'pmx10' });
   });

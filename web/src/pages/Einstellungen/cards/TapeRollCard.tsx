@@ -22,7 +22,7 @@ import { Section } from '../../../components/Section';
 import { useNotify } from '../../../components/NotifyProvider';
 import { qk, setCurrentTape, useTapes } from '../../../api/core';
 import { postNewRoll, postRollEmpty, useRolls } from '../api';
-import { FieldRow, FieldRows } from '../FieldRow';
+import { FieldRow, FieldRows } from '../../../components/FieldRow';
 import type { TapeInfo } from '../../../api/types';
 
 const useStyles = makeStyles({

@@ -46,8 +46,10 @@
   "rolls": {
     "title": "Rollen",
     "usedAria": "Verbrauch der Rolle {{tape}}",
-    "description": "Bandverbrauch je Rolle (/stats/rolls)",
+    "description": "Bandverbrauch je Rolle",
     "empty": "Noch keine Rolle erfasst"
   },
-  "unit": { "meter": "{{value}} m" }
+  "unit": {
+    "meter": "{{value}} m"
+  }
 }

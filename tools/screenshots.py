@@ -13,13 +13,17 @@ headless Chromium jede Seite in Hell/Dunkel und Desktop/Handy-Breite auf. Gleich
 für jede Seite Konsolenfehler und fehlgeschlagene `/api/`-Aufrufe (Rauchtest): Exit 1, wenn welche
 auftraten (die Aufnahmen werden trotzdem gespeichert).
 
-Zusätzlich Englisch (alle Hauptseiten, Desktop, hell und dunkel, Dateiname mit `-en`,
-Sprache über `navigator.languages` des Browser-Kontexts) und die Größe `zoom200` (720 × 450 mit
+Zusätzlich Englisch (alle Hauptseiten und die Modulseiten, Desktop, hell und dunkel, Dateiname mit
+`-en`, Sprache über `navigator.languages` des Browser-Kontexts) und die Größe `zoom200` (720 × 450 mit
 doppelter Pixeldichte, also 1440 × 900 bei 200 % Zoom; nur hell, Deutsch, Hauptseiten). Nach jeder
 Aufnahme läuft axe-core (`web/node_modules/axe-core/axe.min.js`) im echten Chromium mit den Regeln
 WCAG 2 A, AA und 2.1 AA inklusive Farbkontrast; jede Verletzung ist ein Rauchtest-Befund. Ebenso
 ein waagrechter Überlauf (Inhalt breiter als der Inhaltsbereich `#inhalt` bzw. die Seite breiter als
 das Fenster), denn `main` schneidet ihn ab und die Seite soll bis 200 % nie waagrecht scrollen.
+
+Externe Dienste (Proxmox, Home Assistant, Paperless, Obsidian, SSH-Scan, ZFS) beantwortet der
+Browser selbst mit den Demo-Daten aus `tools.demo_services` (Playwright `page.route`), damit die
+Modulseiten realistisch volle Listen zeigen; es wird nie ein echter Dienst angefragt.
 
 Reine, seiteneffektfreie Bausteine (von `tests/test_screenshots_tool.py` geprüft, ohne Browser):
 `shot_plan`, `shot_filename`, `page_url`, `is_expected_error`, `write_index`, `axe_issues`,
@@ -48,6 +52,7 @@ if str(SRC) not in sys.path:
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from tools.demo_services import INTERCEPT_PATTERN, demo_response  # noqa: E402
 from tools.demo_data import (  # noqa: E402
     DOCUMENT_NAME,
     SECOND_DOCUMENT_NAME,
@@ -109,6 +114,7 @@ class RouteSpec:
     drafts: str | None = None       # "verwaist": vor der Aufnahme verwaiste Demo-Entwürfe anlegen
     full_page: bool = True          # False: nur der Viewport (modale Dialoge liegen über dem Viewport)
     modules: tuple[str, ...] | None = None  # eingeschaltete Module für diese Aufnahme (None: alle der Demo)
+    english: bool = False           # Extra-Route zusätzlich auf Englisch (Desktop) aufnehmen
 
 
 @dataclass(frozen=True)
@@ -132,6 +138,9 @@ def _q(text: str) -> str:
     return quote(text, safe="")
 
 
+# Modulseiten: Desktop und Handy (Deutsch), dazu Englisch auf dem Desktop.
+MODULE_SIZES: tuple[str, ...] = ("desktop", "handy")
+
 MAIN_ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("schnelldruck", f"/schnelldruck?text={_q(DEMO_TEXT_LINES)}", "Schnelldruck"),
     RouteSpec("editor", "/editor?dokument={document}", "Editor", interact="select_one"),
@@ -142,7 +151,7 @@ MAIN_ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("verlauf", "/verlauf", "Verlauf"),
     RouteSpec("warteschlange", "/warteschlange", "Warteschlange"),
     RouteSpec("inventar", "/inventar", "Inventar"),
-    RouteSpec("datentraeger", "/datentraeger?tab=ssh", "Datenträger"),
+    RouteSpec("datentraeger", "/datentraeger?tab=ssh", "Datenträger", interact="ssh_scan"),
     RouteSpec("statistik", "/statistik", "Statistik"),
     RouteSpec("einstellungen", "/einstellungen", "Einstellungen"),
     # Seite Zugriff (Demo-Tokens aus `seed_access_demo`) und Handy-Seite mit Familien-Token
@@ -168,7 +177,8 @@ EXTRA_ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("ruecksprache-drucken", "/schnelldruck", "Rückfrage: Wirklich drucken?",
              sizes=("desktop",), interact="confirm_dialog"),
     # Homelab-Unterseite, Tastenkürzel, Editor-Tabs, Wiederherstellung und Updates
-    RouteSpec("homelab-proxmox", "/homelab/proxmox", "Homelab: Proxmox", sizes=("desktop",)),
+    RouteSpec("homelab-proxmox", "/homelab/proxmox", "Homelab: Proxmox", sizes=MODULE_SIZES, english=True,
+              interact="proxmox_load"),
     RouteSpec("tastenkuerzel", "/galerie", "Tastenkürzel-Übersicht (Taste ?)",
              sizes=("desktop",), interact="shortcuts", full_page=False),
     RouteSpec("editor-tabs", "/editor?dokument={document}", "Editor mit zwei Tabs",
@@ -190,14 +200,16 @@ EXTRA_ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("modul-ausgeschaltet", "/inventar", "Ohne Module: Seite eines ausgeschalteten Moduls",
              sizes=("desktop",), modules=()),
     RouteSpec("datentraeger-plattentausch", "/datentraeger?tab=plattentausch", "Datenträger: Plattentausch",
-             sizes=("desktop",)),
-    RouteSpec("homelab-paperless", "/homelab/paperless", "Homelab: Paperless", sizes=("desktop",)),
-    RouteSpec("homelab-batterien", "/homelab/batterien", "Homelab: Home Assistant", sizes=("desktop",)),
-    RouteSpec("homelab-vault", "/homelab/vault", "Homelab: Obsidian-Vault", sizes=("desktop",)),
-    RouteSpec("homelab-assets", "/homelab/assets", "Homelab: Assets", sizes=("desktop",)),
-    RouteSpec("homelab-kabel", "/homelab/kabel", "Homelab: Kabel", sizes=("desktop",)),
-    RouteSpec("homelab-kleinanzeigen", "/homelab/kleinanzeigen", "Homelab: Kleinanzeigen", sizes=("desktop",)),
-    RouteSpec("homelab-sn-scan", "/homelab/sn-scan", "Homelab: Seriennummer-Scan", sizes=("desktop",)),
+              sizes=MODULE_SIZES, english=True, interact="zfs_scan"),
+    RouteSpec("homelab-paperless", "/homelab/paperless", "Homelab: Paperless", sizes=MODULE_SIZES, english=True),
+    RouteSpec("homelab-batterien", "/homelab/batterien", "Homelab: Home Assistant", sizes=MODULE_SIZES, english=True),
+    RouteSpec("homelab-vault", "/homelab/vault", "Homelab: Obsidian-Vault", sizes=MODULE_SIZES, english=True,
+              interact="vault_note"),
+    RouteSpec("homelab-assets", "/homelab/assets", "Homelab: Assets", sizes=MODULE_SIZES, english=True),
+    RouteSpec("homelab-kabel", "/homelab/kabel?tab=register", "Homelab: Kabel", sizes=MODULE_SIZES, english=True),
+    RouteSpec("homelab-kleinanzeigen", "/homelab/kleinanzeigen", "Homelab: Kleinanzeigen", sizes=MODULE_SIZES,
+              english=True),
+    RouteSpec("homelab-sn-scan", "/homelab/sn-scan", "Homelab: Seriennummer-Scan", sizes=MODULE_SIZES, english=True),
 )
 
 ALL_ROUTES: tuple[RouteSpec, ...] = MAIN_ROUTES + EXTRA_ROUTES
@@ -214,7 +226,7 @@ def _wanted(route: RouteSpec, lang: str, theme: str, size: str) -> bool:
     if size == "zoom200":
         return main and theme == "hell" and lang == "de"
     if lang != "de":
-        return main and size == "desktop"
+        return (main or route.english) and size == "desktop"
     return size in route.sizes
 
 
@@ -344,7 +356,7 @@ def index_shots(out_dir: Path) -> list[Shot]:
 
 INDEX_SECTIONS: tuple[tuple[str, str], ...] = (
     ("de", "Deutsch (hell und dunkel, Desktop 1440 × 900 und Handy 390 × 844)"),
-    ("en", "Englisch (Desktop, hell und dunkel)"),
+    ("en", "Englisch (Hauptseiten und Modulseiten, Desktop, hell und dunkel)"),
     ("zoom200", "200 % (720 × 450 bei doppelter Pixeldichte, hell, Deutsch)"),
 )
 
@@ -582,6 +594,43 @@ def _confirm_dialog(page: Any, info: dict) -> None:
     page.wait_for_timeout(200)
 
 
+# Beschriftungen der Knöpfe, die eine Liste laden (web/src/locales/<lng>/*.json).
+LOAD_LABELS: dict[str, dict[str, str]] = {
+    "de": {"scan": "Scannen", "load": "Laden"},
+    "en": {"scan": "Scan", "load": "Load"},
+}
+
+
+def _click_and_wait(page: Any, name: str, wait_selector: str) -> None:
+    _activate(page, page.get_by_role("button", name=name, exact=True).first)
+    page.wait_for_selector(wait_selector, timeout=10000)
+    page.wait_for_timeout(300)
+
+
+def _ssh_scan(page: Any, info: dict) -> None:
+    """Datenträger, Reiter SSH: Host scannen (Antwort aus `tools.demo_services`)."""
+    _click_and_wait(page, LOAD_LABELS[info.get("lang", "de")]["scan"], "table, ul[aria-label]")
+
+
+def _zfs_scan(page: Any, info: dict) -> None:
+    """Datenträger, Reiter Plattentausch: Host scannen, die defekte Platte auswählen."""
+    _click_and_wait(page, LOAD_LABELS[info.get("lang", "de")]["scan"], "input[name='old-device']")
+    page.locator("input[name='old-device']").first.check()
+    page.wait_for_timeout(200)
+
+
+def _proxmox_load(page: Any, info: dict) -> None:
+    """Proxmox: Gäste laden."""
+    _click_and_wait(page, LOAD_LABELS[info.get("lang", "de")]["load"], "table, ul[aria-label]")
+
+
+def _vault_note(page: Any, info: dict) -> None:
+    """Obsidian-Vault: die erste Notiz öffnen."""
+    _activate(page, page.get_by_role("button", name="Hosts/pmx10.md"))
+    page.wait_for_selector("table", timeout=10000)
+    page.wait_for_timeout(300)
+
+
 INTERACTIONS: dict[str, Callable[[Any, dict], None]] = {
     "select_one": _select_one,
     "command_palette": _command_palette,
@@ -590,7 +639,22 @@ INTERACTIONS: dict[str, Callable[[Any, dict], None]] = {
     "confirm_dialog": _confirm_dialog,
     "shortcuts": _shortcuts,
     "second_tab": _second_tab,
+    "ssh_scan": _ssh_scan,
+    "zfs_scan": _zfs_scan,
+    "proxmox_load": _proxmox_load,
+    "vault_note": _vault_note,
 }
+
+
+def _serve_demo_services(route: Any) -> None:
+    """Antwortet auf Anfragen an externe Dienste mit Demo-Daten (`tools.demo_services`)."""
+    request = route.request
+    parts = urlsplit(request.url)
+    body = demo_response(request.method, parts.path, parts.query)
+    if body is None:
+        route.continue_()
+        return
+    route.fulfill(status=200, content_type="application/json", body=json.dumps(body, ensure_ascii=False))
 
 
 @dataclass
@@ -684,6 +748,7 @@ def _capture(playwright_mod: Any, plan: Sequence[Shot], port: int, token: str, o
                 has_touch=shot.is_mobile,
             )
             page = context.new_page()
+            page.route(INTERCEPT_PATTERN, _serve_demo_services)
             shot_errors: list[str] = []
 
             def on_console(msg, _shot=shot, _errs=shot_errors):
@@ -751,6 +816,21 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+DEMO_HOSTNAME = "DEMO-PC"
+DEMO_ADDRESSES = ("192.0.2.10",)
+
+
+def _neutral_network_identity() -> None:
+    """Rechnername und LAN-Adressen des aufnehmenden PCs dürfen nie in Screenshots erscheinen:
+    für den Lauf feste Demo-Werte (Dokumentationsnetz 192.0.2.0/24) statt der echten."""
+    import socket
+
+    from tapesmith import netinfo
+
+    socket.gethostname = lambda: DEMO_HOSTNAME
+    netinfo.local_ipv4_addresses = lambda *a, **k: list(DEMO_ADDRESSES)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
     themes = args.themes.split(",") if args.themes else list(THEMES)
@@ -786,6 +866,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     os.environ["TAPESMITH_WEB_PORT"] = "0"
     os.environ["TAPESMITH_NO_DAEMON"] = "1"
     os.environ.setdefault("TAPESMITH_LOCK_NAME", f"Local\\Tapesmith.Screens.{os.getpid()}")
+    _neutral_network_identity()
 
     # Demo-Inhalte in der Sprache des Laufs: bei nur einer Sprache (z. B. `--langs en`) in dieser,
     # sonst Deutsch. Die Sprache des Dienstes folgt je Aufnahme der Sprache der Aufnahme

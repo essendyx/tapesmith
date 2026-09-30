@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { expectNoA11yViolations } from '../../test/a11y';
-import { findDialogByRole, mockApi, renderWithProviders, restoreAllMocks } from '../../test/utils';
+import { chooseRowAction, findDialogByRole, mockApi, renderWithProviders, restoreAllMocks } from '../../test/utils';
 import type { Language } from '../../i18n';
 import type { QueueJson, QueuedJobJson } from '../../api/types';
 import WarteschlangePage from './index';
@@ -33,7 +33,7 @@ function queue(o: Partial<QueueJson> = {}): QueueJson {
   return { jobs: [], paused: false, auto_retry: true, next_try: null, probe: 'auto', waiting_reason: '', ...o };
 }
 
-const CANCEL_LABEL: Record<Language, string> = { de: 'Abbrechen', en: 'Cancel' };
+const CANCEL_LABEL: Record<Language, string> = { de: 'Auftrag abbrechen', en: 'Cancel job' };
 
 describe('Warteschlange: Barrierefreiheit', () => {
   for (const language of ['de', 'en'] as const) {
@@ -55,7 +55,7 @@ describe('Warteschlange: Barrierefreiheit', () => {
       mockApi({ 'GET /api/v1/queue': () => queue({ jobs: [job()] }) });
       const { user } = renderWithProviders(<WarteschlangePage />, { language });
       await screen.findByText('Server 274913');
-      await user.click(screen.getByRole('button', { name: CANCEL_LABEL[language] }));
+      await chooseRowAction(user, 'Server 274913', CANCEL_LABEL[language]);
       await findDialogByRole('alertdialog');
       await expectNoA11yViolations(document.body);
     });
@@ -76,8 +76,7 @@ describe('Warteschlange: Barrierefreiheit', () => {
     const api = mockApi({ 'GET /api/v1/queue': () => queue({ jobs: [job()] }) });
     const { user } = renderWithProviders(<WarteschlangePage />);
     await screen.findByText('Server 274913');
-    const trigger = screen.getByRole('button', { name: 'Abbrechen' });
-    await user.click(trigger);
+    await chooseRowAction(user, 'Server 274913', 'Auftrag abbrechen');
     await findDialogByRole('alertdialog');
     await user.keyboard('{Escape}');
     await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument());

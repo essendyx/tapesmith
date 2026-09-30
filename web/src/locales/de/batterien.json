@@ -33,7 +33,9 @@
     "levelUnknown": "-",
     "levelProgressAria": "Batteriestand {{device}}",
     "typeAria": "Batterietyp {{device}}",
-    "printRow": "Etikett drucken"
+    "printRow": "Etikett drucken",
+    "selectAllAria": "Alle Geräte auswählen",
+    "printRowFor": "Etikett drucken: {{device}}"
   },
   "wartung": {
     "suggestions": {
