@@ -3,7 +3,9 @@
 name: CI
 
 on:
+  # nur Branches: Tags (v*) testet der Release-Workflow selbst
   push:
+    branches: ['**']
   pull_request:
 
 permissions:
