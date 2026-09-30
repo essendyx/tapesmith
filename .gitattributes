@@ -3,3 +3,5 @@
 *.png binary
 tests/golden/** binary
 *.ttf binary
+*.cmd text eol=crlf
+*.bat text eol=crlf
