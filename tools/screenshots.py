@@ -816,6 +816,21 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+DEMO_HOSTNAME = "DEMO-PC"
+DEMO_ADDRESSES = ("192.0.2.10",)
+
+
+def _neutral_network_identity() -> None:
+    """Rechnername und LAN-Adressen des aufnehmenden PCs dürfen nie in Screenshots erscheinen:
+    für den Lauf feste Demo-Werte (Dokumentationsnetz 192.0.2.0/24) statt der echten."""
+    import socket
+
+    from tapesmith import netinfo
+
+    socket.gethostname = lambda: DEMO_HOSTNAME
+    netinfo.local_ipv4_addresses = lambda *a, **k: list(DEMO_ADDRESSES)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
     themes = args.themes.split(",") if args.themes else list(THEMES)
@@ -851,6 +866,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     os.environ["TAPESMITH_WEB_PORT"] = "0"
     os.environ["TAPESMITH_NO_DAEMON"] = "1"
     os.environ.setdefault("TAPESMITH_LOCK_NAME", f"Local\\Tapesmith.Screens.{os.getpid()}")
+    _neutral_network_identity()
 
     # Demo-Inhalte in der Sprache des Laufs: bei nur einer Sprache (z. B. `--langs en`) in dieser,
     # sonst Deutsch. Die Sprache des Dienstes folgt je Aufnahme der Sprache der Aufnahme

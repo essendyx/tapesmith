@@ -663,3 +663,17 @@ def test_demo_daten_englisch(app_home):
         assert drafts
     finally:
         demo_data.seed_demo.__globals__["_LANG"][0] = "de"
+
+
+def test_screenshots_zeigen_nie_echte_netzwerkdaten(monkeypatch):
+    # Aufnahmen landen im öffentlichen Repo: Rechnername und LAN-Adressen des PCs, auf dem sie
+    # entstehen, werden durch Demo-Werte ersetzt.
+    import socket
+
+    from tapesmith import netinfo
+    monkeypatch.setattr(socket, "gethostname", socket.gethostname)
+    monkeypatch.setattr(netinfo, "local_ipv4_addresses", netinfo.local_ipv4_addresses)
+    screenshots._neutral_network_identity()
+    assert socket.gethostname() == screenshots.DEMO_HOSTNAME
+    assert netinfo.local_ipv4_addresses() == ["192.0.2.10"]
+    assert netinfo.lan_addresses({}, None) in ([], ["192.0.2.10"])
