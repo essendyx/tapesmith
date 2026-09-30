@@ -534,3 +534,89 @@ def test_smoke_test_with_retry_gibt_nach_versuchen_auf(bp, tmp_path):
     ok = bp.smoke_test_with_retry(tmp_path / "x.exe", tmp_path / "o.txt",
                                   test=lambda exe, out: calls.append(1) or False, sleep=lambda s: None)
     assert ok is False and len(calls) == 2
+
+
+# ---------- Versionsressource (Pflicht für die Signatur über SignPath) ----------
+
+@pytest.mark.parametrize("version, expected", [("0.3.0", (0, 3, 0, 0)), ("1.2", (1, 2, 0, 0)),
+                                               ("0.4.0b1", (0, 4, 0, 0)), ("1.2.3.4.5", (1, 2, 3, 4))])
+def test_version_tuple(bp, version, expected):
+    assert bp.version_tuple(version) == expected
+
+
+def test_version_tuple_unlesbar(bp):
+    with pytest.raises(ValueError):
+        bp.version_tuple("x.1")
+
+
+def test_version_file_text_traegt_produktname_und_version(bp):
+    import ast
+
+    text = bp.version_file_text("0.3.0")
+    tree = ast.parse(text, mode="eval")
+    assert isinstance(tree.body, ast.Call) and tree.body.func.id == "VSVersionInfo"
+    strings = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call) and getattr(node.func, "id", "") == "StringStruct":
+            key, value = (arg.value for arg in node.args)
+            strings[key] = value
+    assert strings["ProductName"] == "Tapesmith"
+    assert strings["ProductVersion"] == "0.3.0"
+    assert strings["FileVersion"] == "0.3.0"
+    assert strings["OriginalFilename"] == "Tapesmith.exe"
+    assert "filevers=(0, 3, 0, 0)" in text and "prodvers=(0, 3, 0, 0)" in text
+
+
+def test_version_passt_zur_signpath_konfiguration(bp):
+    """Produktname in der Versionsressource und in `.signpath/artifact-configuration.xml` gleich."""
+    xml = (ROOT / ".signpath" / "artifact-configuration.xml").read_text(encoding="utf-8")
+    assert f'product-name="{bp.PRODUCT_NAME}"' in xml
+    assert 'product-version="${version}"' in xml
+
+
+def test_pyinstaller_args_mit_versionsdatei(bp, tmp_path):
+    version_file = tmp_path / "version_info.txt"
+    args = bp.pyinstaller_args(dist=tmp_path / "dist", work=tmp_path / "build", version_file=version_file)
+    i = args.index("--version-file")
+    assert args[i + 1] == str(version_file)
+    assert args[-1] == str(bp.ENTRY)
+    assert "--version-file" not in bp.pyinstaller_args(dist=tmp_path / "dist", work=tmp_path / "build")
+
+
+def test_build_schreibt_versionsdatei(bp, tmp_path):
+    dist = tmp_path / "dist"
+    work = tmp_path / "build"
+    seen = []
+
+    def fake_run(args, **kwargs):
+        seen.append(args)
+        exe = dist / "Tapesmith" / "Tapesmith.exe"
+        exe.parent.mkdir(parents=True, exist_ok=True)
+        exe.write_bytes(b"exe")
+        return subprocess.CompletedProcess(args, 0)
+
+    bp.build(backend="pyinstaller", dist=dist, work=work, run=fake_run)
+    version_file = work / "version_info.txt"
+    assert seen[0][seen[0].index("--version-file") + 1] == str(version_file)
+    assert f"StringStruct('ProductVersion', '{bp._read_version()}')" in version_file.read_text(encoding="utf-8")
+
+
+# ---------- Zip aus einem fertigen (signierten) Ordner ----------
+
+def test_main_zip_from(bp, tmp_path, monkeypatch):
+    monkeypatch.setattr(bp, "build", lambda **kwargs: pytest.fail("darf nicht bauen"))
+    app_dir = tmp_path / "signed" / "Tapesmith"
+    (app_dir / "_internal").mkdir(parents=True)
+    (app_dir / "Tapesmith.exe").write_bytes(b"exe")
+    (app_dir / "_internal" / "python311.dll").write_bytes(b"dll")
+    out = tmp_path / "out"
+    assert bp.main(["--zip-from", str(app_dir), "--dist", str(out)]) == 0
+    zip_path = out / f"Tapesmith-portable-{bp._read_version()}.zip"
+    with zipfile.ZipFile(zip_path) as zf:
+        names = set(zf.namelist())
+    assert names == {"Tapesmith/Tapesmith.exe", "Tapesmith/_internal/python311.dll", "Installieren.cmd"}
+
+
+def test_main_zip_from_ohne_exe(bp, tmp_path, capsys):
+    assert bp.main(["--zip-from", str(tmp_path), "--dist", str(tmp_path / "out")]) == 1
+    assert "Tapesmith.exe fehlt" in capsys.readouterr().err

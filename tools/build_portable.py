@@ -47,6 +47,10 @@ EXCLUDED_MODULES = ("tkinter", "webview", "clr", "clr_loader", "pythonnet")
 # kann die .pyd blockieren, das Programm läuft dann ohne Rücklesen weiter.
 OPTIONAL_HIDDEN_IMPORTS = ("winrt.windows.devices.bluetooth", "zxingcpp")
 BUILD_TIMEOUT_S = 900  # 15 min
+# Versionsressource der EXE (Produktname, Version): die Code-Signatur über SignPath prüft diese
+# Angaben (`.signpath/artifact-configuration.xml`), ohne sie wird Tapesmith.exe nicht signiert.
+PRODUCT_NAME = APP_NAME
+COMPANY_NAME = "Tapesmith contributors"
 SMOKE_TIMEOUT_S = 120
 
 
@@ -76,9 +80,60 @@ def module_available(name: str) -> bool:
         return False
 
 
+def version_tuple(version: str) -> tuple[int, int, int, int]:
+    """Vier Zahlen für die feste Versionsangabe der EXE: "0.3.0" -> (0, 3, 0, 0); Zusätze wie
+    "b1" am Ende einer Stelle fallen weg ("0.4.0b1" -> (0, 4, 0, 0))."""
+    numbers: list[int] = []
+    for part in version.split(".")[:4]:
+        match = re.match(r"\d+", part)
+        if not match:
+            raise ValueError(f"Version nicht lesbar: {version!r}")
+        numbers.append(int(match.group(0)))
+    while len(numbers) < 4:
+        numbers.append(0)
+    return (numbers[0], numbers[1], numbers[2], numbers[3])
+
+
+def version_file_text(version: str, *, name: str = APP_NAME) -> str:
+    """Versionsressource im Format von PyInstaller (`--version-file`): Produktname und
+    Produktversion als Text genau wie in `__version__`, dazu Firma, Beschreibung und Dateiname."""
+    nums = version_tuple(version)
+    strings = (
+        ("CompanyName", COMPANY_NAME),
+        ("FileDescription", PRODUCT_NAME),
+        ("FileVersion", version),
+        ("InternalName", name),
+        ("LegalCopyright", "MIT License, Tapesmith contributors"),
+        ("OriginalFilename", f"{name}.exe"),
+        ("ProductName", PRODUCT_NAME),
+        ("ProductVersion", version),
+    )
+    lines = [
+        "VSVersionInfo(",
+        f"  ffi=FixedFileInfo(filevers={nums!r}, prodvers={nums!r}, mask=0x3f, flags=0x0, OS=0x40004,",
+        "                    fileType=0x1, subtype=0x0, date=(0, 0)),",
+        "  kids=[",
+        "    StringFileInfo([",
+        "      StringTable('040904B0', [",
+        *[f"          StringStruct({key!r}, {value!r})," for key, value in strings],
+        "      ])]),",
+        "    VarFileInfo([VarStruct('Translation', [1033, 1200])])",
+        "  ]",
+        ")",
+    ]
+    return "".join(line + "\n" for line in lines)
+
+
+def write_version_file(work: Path, version: str) -> Path:
+    work.mkdir(parents=True, exist_ok=True)
+    path = work / "version_info.txt"
+    path.write_text(version_file_text(version), encoding="utf-8")
+    return path
+
+
 def pyinstaller_args(*, dist: Path, work: Path, entry: Path = ENTRY, name: str = APP_NAME,
                      available: Callable[[str], bool] = module_available,
-                     pkg_dir: Path = PKG_DIR) -> list[str]:
+                     pkg_dir: Path = PKG_DIR, version_file: Path | None = None) -> list[str]:
     args = [
         "--noconfirm", "--clean", "--onedir", "--windowed",
         "--name", name,
@@ -103,6 +158,8 @@ def pyinstaller_args(*, dist: Path, work: Path, entry: Path = ENTRY, name: str =
     icon = pkg_dir / "icons" / "app.ico"
     if icon.exists():
         args += ["--icon", str(icon)]
+    if version_file is not None:
+        args += ["--version-file", str(version_file)]
     args.append(str(entry))
     return args
 
@@ -137,7 +194,8 @@ def build(*, backend: str = "pyinstaller", dist: Path = ROOT / "dist", work: Pat
           run: Callable[..., subprocess.CompletedProcess] = subprocess.run,
           timeout_s: float = BUILD_TIMEOUT_S) -> Path:
     if backend == "pyinstaller":
-        args = [sys.executable, "-m", "PyInstaller", *pyinstaller_args(dist=dist, work=work)]
+        version_file = write_version_file(work, _read_version())
+        args = [sys.executable, "-m", "PyInstaller", *pyinstaller_args(dist=dist, work=work, version_file=version_file)]
         exe = dist / APP_NAME / f"{APP_NAME}.exe"
     elif backend == "nuitka":
         args = [sys.executable, *nuitka_args(dist=dist)]
@@ -222,6 +280,9 @@ def _parser() -> argparse.ArgumentParser:
     p.add_argument("--zip", action="store_true", help="Nach dem Build ein Zip erzeugen")
     p.add_argument("--dry-run", action="store_true", help="Nur das Kommando ausgeben, nicht bauen")
     p.add_argument("--skip-smoke", action="store_true", help="Selbsttest nach dem Build auslassen")
+    p.add_argument("--zip-from", type=Path, metavar="ORDNER",
+                   help="Nicht bauen, nur einen fertigen App-Ordner (z. B. den von SignPath signierten "
+                        "Ordner Tapesmith) als Tapesmith-portable-<version>.zip nach --dist packen")
     return p
 
 
@@ -229,6 +290,16 @@ def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     args = _parser().parse_args(argv)
     work = ROOT / "build" / "pyinstaller"
+
+    if args.zip_from is not None:
+        app_dir = args.zip_from
+        if not (app_dir / f"{APP_NAME}.exe").is_file():
+            print(f"{APP_NAME}.exe fehlt in {app_dir}", file=sys.stderr)
+            return 1
+        args.dist.mkdir(parents=True, exist_ok=True)
+        zip_path = make_zip(app_dir, args.dist / f"{APP_NAME}-portable-{_read_version()}.zip")
+        print(f"Zip erstellt: {zip_path}")
+        return 0
 
     if args.dry_run:
         try:
