@@ -21,7 +21,7 @@ def register(parser: argparse.ArgumentParser) -> None:
 
 
 def stdio_command() -> str:
-    return f'claude mcp add p12 -- "{sys.executable}" -m tapesmith.cli mcp'
+    return f'claude mcp add tapesmith -- "{sys.executable}" -m tapesmith.cli mcp'
 
 
 def http_url(cfg: dict) -> str:
@@ -29,7 +29,7 @@ def http_url(cfg: dict) -> str:
 
 
 def http_command(cfg: dict) -> str:
-    return (f"claude mcp add --transport http p12-http {http_url(cfg)} "
+    return (f"claude mcp add --transport http tapesmith-http {http_url(cfg)} "
             '--header "Authorization: Bearer <TOKEN>"')
 
 

@@ -141,7 +141,7 @@ describe('MCP: Kopieren', () => {
     await screen.findByRole('heading', { name: 'MCP für Claude' });
     await user.click(within(card('mcp')).getByRole('button', { name: 'Befehl kopieren' }));
     // user-event legt eine eigene Zwischenablage an: dort nachlesen.
-    await waitFor(async () => expect(await navigator.clipboard.readText()).toBe('claude mcp add p12 -- C:/App/python.exe -m tapesmith.cli mcp'));
+    await waitFor(async () => expect(await navigator.clipboard.readText()).toBe('claude mcp add tapesmith -- C:/App/python.exe -m tapesmith.cli mcp'));
     await user.click(within(card('mcp')).getByRole('button', { name: 'Adresse kopieren' }));
     await waitFor(async () => expect(await navigator.clipboard.readText()).toBe('http://127.0.0.1:8712/mcp'));
   });

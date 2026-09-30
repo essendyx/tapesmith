@@ -25,7 +25,7 @@ export function McpCard(props: { data: AccessJson }): JSX.Element {
   const v = edit.values;
   const idBase = useId();
   const title = t('mcp.title');
-  const claudeCommand = `claude mcp add p12 -- ${v.stdio_command}`;
+  const claudeCommand = `claude mcp add tapesmith -- ${v.stdio_command}`;
 
   const onSave = async () => {
     const ok = await save(edit.changes('mcp'), t('mcp.saveSuccess'));

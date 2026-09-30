@@ -1,1 +1,0 @@
-import{j as n,B as s,a2 as i}from"./fluent-Dsmcuk6V.js";import{a as o,O as r}from"./index-CbHh0X-f.js";function c(t){const{t:a}=o("modules"),e=r();return n.jsx(s,{appearance:t.appearance??"primary",icon:n.jsx(i,{}),onClick:()=>e(`/einstellungen?abschnitt=modul-${t.module}`),children:a("settingsLink")})}export{c as M};

@@ -12,10 +12,10 @@ from tapesmith.mcpserver import server
 def test_mcp_config_zeigt_einrichtung(capsys):
     assert cli.main(["mcp", "--config"]) == 0
     out = capsys.readouterr().out
-    assert "claude mcp add p12" in out
+    assert "claude mcp add tapesmith" in out
     assert "-m tapesmith.cli mcp" in out
     assert sys.executable in out
-    assert "--transport http p12-http http://127.0.0.1:8712/mcp" in out
+    assert "--transport http tapesmith-http http://127.0.0.1:8712/mcp" in out
     assert "Bearer <TOKEN>" in out
     assert "tapesmith token add Claude --rolle drucken" in out
     assert "p12_" not in out
@@ -25,8 +25,8 @@ def test_mcp_config_ohne_http(capsys):
     config_mod.save_config({"mcp": {"http": False}, "web": {"enabled": True, "port": 9123}})
     assert cli.main(["mcp", "--config"]) == 0
     out = capsys.readouterr().out
-    assert "claude mcp add p12" in out
-    assert "p12-http" not in out
+    assert "claude mcp add tapesmith" in out
+    assert "tapesmith-http" not in out
     assert "mcp.http" in out
 
 
