@@ -62,7 +62,7 @@ export interface AccessHotfolder {
 
 export interface AccessMqtt {
   enabled: boolean;
-  host: string;
+  host: string | null;
   port: number;
   username: string | null;
   password_ref: string | null;

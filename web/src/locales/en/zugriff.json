@@ -73,8 +73,9 @@
     "templatesLabel": "Shared templates",
     "maxCopiesLabel": "Maximum copies per print",
     "copyLimitHint": "At most 5 copies per print are possible from a phone (misprint protection limit for outside access).",
-    "linkHint": "Link to the family page: shown when a family token is created.",
-    "saveSuccess": "Family page: saved"
+    "linkHint": "The link to the family page is shown when a family token is created.",
+    "saveSuccess": "Family page: saved",
+    "templatesHint": "Only these templates appear on the family page."
   },
   "mcp": {
     "title": "MCP for Claude",
@@ -83,18 +84,27 @@
     "copyAddressAria": "Copy address",
     "commandLabel": "Command for Claude Code",
     "copyCommandAria": "Copy command",
-    "claudeCodeHint": "Claude Code: <code>claude mcp add p12 -- {{command}}</code>",
-    "saveSuccess": "MCP for Claude: saved"
+    "saveSuccess": "MCP for Claude: saved",
+    "httpHint": "For MCP clients that connect over HTTP.",
+    "addressHint": "Only reachable while Streamable HTTP is on.",
+    "commandHint": "Run once in a terminal: <code>{{command}}</code>"
   },
   "hotfolder": {
     "title": "Hot folder",
     "enableLabel": "Watch hot folder",
+    "enableHint": "Files placed in the folder are printed.",
     "dirLabel": "Folder",
-    "dirHint": "Empty = default folder",
+    "dirHint": "Leave empty for the default folder.",
+    "effectiveDir": "Current: {{path}}",
+    "chooseDir": "Choose folder",
     "openDir": "Open folder",
-    "pollLabel": "Poll interval (seconds)",
-    "settleLabel": "Settle time before reading (seconds)",
-    "maxBytesLabel": "Maximum size per file (kB)",
+    "resetDir": "Reset folder",
+    "pollLabel": "Poll interval",
+    "pollHint": "How often the folder is checked (0.5 to 60 s).",
+    "settleLabel": "Settle time before reading",
+    "settleHint": "Waits until a file has been written completely.",
+    "maxBytesLabel": "Maximum size per file",
+    "maxBytesHint": "Larger files are skipped.",
     "saveSuccess": "Hot folder: saved"
   },
   "mqtt": {
@@ -107,35 +117,42 @@
     "discoveryLabel": "Discovery prefix",
     "tlsLabel": "TLS",
     "templatesLabel": "Allowed templates",
-    "templatesHint": "Empty = all templates",
+    "templatesHint": "These templates can be printed over MQTT. Without a selection, all are allowed.",
     "passwordLabel": "Password",
-    "passwordSet": "set",
-    "passwordMissing": "missing",
+    "passwordSet": "Set",
+    "passwordMissing": "Missing",
     "setPassword": "Set password",
     "secretDialogTitle": "Set MQTT password",
     "secretFieldLabel": "Password",
-    "saveSuccess": "Home Assistant (MQTT): saved"
+    "saveSuccess": "Home Assistant (MQTT): saved",
+    "enableHint": "Reports the printer and templates to Home Assistant.",
+    "hostHint": "Host name or IP address of the broker.",
+    "portHint": "Default 1883, usually 8883 with TLS.",
+    "tlsHint": "Encrypted connection to the broker.",
+    "userHint": "Leave empty to connect without login.",
+    "baseTopicHint": "Prefix of all Tapesmith topics.",
+    "discoveryHint": "Home Assistant usually expects homeassistant.",
+    "templatesAll": "None selected, all allowed"
   },
   "telegram": {
     "title": "Telegram",
     "enableLabel": "Send notifications",
     "chatIdLabel": "Chat ID",
     "quietHoursTitle": "Quiet hours",
-    "quietHoursActive": "Active",
     "quietStartAria": "Quiet hours start",
     "quietEndAria": "Quiet hours end",
-    "quietHoursNone": "none",
-    "offlineMinLabel": "Offline notice after (minutes)",
-    "queueStuckMinLabel": "Queue stuck after (minutes)",
-    "rollLowLabel": "Tape low below (m)",
+    "quietHoursNone": "Off: notifications arrive around the clock.",
+    "offlineMinLabel": "Offline notice after",
+    "queueStuckMinLabel": "Queue counts as stuck after",
+    "rollLowLabel": "Tape low below",
     "notifyTypesTitle": "Notification types",
     "notifyQueue": "Queue stuck",
     "notifyOffline": "Printer offline",
     "notifyError": "Print error",
     "notifyRoll": "Tape low",
     "tokenLabel": "Bot token",
-    "tokenSet": "set",
-    "tokenMissing": "missing",
+    "tokenSet": "Set",
+    "tokenMissing": "Missing",
     "setToken": "Set token",
     "tokenFromSource": "Token comes from {{source}}",
     "secretDialogTitle": "Set Telegram token",
@@ -143,7 +160,21 @@
     "sendTest": "Send test message",
     "testSuccess": "Test message sent",
     "testErrorTitle": "Test message failed",
-    "saveSuccess": "Telegram: saved"
+    "saveSuccess": "Telegram: saved",
+    "enableHint": "Sends notifications to a Telegram chat.",
+    "chatIdHint": "Where notifications go (chat or group).",
+    "quietHoursHint": "No notifications during this period.",
+    "quietPeriodLabel": "Period",
+    "quietPeriodHint": "Start and end, may span midnight.",
+    "offlineMinHint": "How long the printer must be disconnected.",
+    "queueStuckMinHint": "How long without progress.",
+    "rollLowHint": "Notice as soon as less tape is left.",
+    "notifyTypesHint": "Which events send a message.",
+    "notifyErrorHint": "A print job failed.",
+    "notifyOfflineHint": "The printer can no longer be reached.",
+    "notifyQueueHint": "Jobs are not making progress.",
+    "notifyRollHint": "The tape roll is running out.",
+    "tokenNoSource": "No source configured (setting telegram.token_ref)."
   },
   "secretDialog": {
     "saved": "{{title}}: saved"
@@ -156,6 +187,30 @@
     "update": "Update",
     "running": "running",
     "stopped": "off",
-    "error": "Error: {{message}}"
+    "error": "Error: {{message}}",
+    "empty": "No additional services started yet."
+  },
+  "card": {
+    "discard": "Discard",
+    "saveAria": "Save: {{title}}",
+    "discardAria": "Discard: {{title}}"
+  },
+  "units": {
+    "seconds": "s",
+    "minutes": "min",
+    "kilobytes": "kB",
+    "meters": "m",
+    "copies": "copies"
+  },
+  "picker": {
+    "searchPlaceholder": "Search templates",
+    "searchAria": "Search in {{label}}",
+    "count": "{{selected}} of {{total}} selected",
+    "clear": "Clear all",
+    "clearAria": "Clear all: {{label}}",
+    "noMatch": "No template matches “{{query}}”"
+  },
+  "secret": {
+    "storage": "Stored in: {{source}}"
   }
 }

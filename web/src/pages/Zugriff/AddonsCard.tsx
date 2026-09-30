@@ -1,12 +1,21 @@
 /** Karte „Zusatzdienste“: Status der Addons (Hotfolder, MQTT, Telegram, Update). */
-import { Body1, makeStyles, tokens } from '@fluentui/react-components';
+import { Body1, makeStyles, mergeClasses, tokens } from '@fluentui/react-components';
 import { useTranslation } from 'react-i18next';
+import { EmptyState } from '../../components/EmptyState';
+import { FieldRow, FieldRows } from '../../components/FieldRow';
 import { Section } from '../../components/Section';
 import type { AddonStatus } from './types';
 
 const useStyles = makeStyles({
-  list: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalS },
-  row: { display: 'flex', alignItems: 'center', columnGap: tokens.spacingHorizontalS },
+  status: {
+    display: 'flex',
+    alignItems: 'center',
+    columnGap: tokens.spacingHorizontalS,
+    minWidth: 0,
+    color: tokens.colorNeutralForeground2,
+    overflowWrap: 'anywhere',
+    textAlign: 'right',
+  },
   dot: { width: '10px', height: '10px', borderRadius: tokens.borderRadiusCircular, flexShrink: 0 },
   dotOk: { backgroundColor: tokens.colorPaletteGreenForeground1 },
   dotOff: { backgroundColor: tokens.colorNeutralForeground4 },
@@ -24,20 +33,33 @@ export function AddonsCard(props: { addons: AddonStatus[] }): JSX.Element {
   };
   return (
     <Section id="dienste" title={t('addons.title')}>
-      <div className={styles.list}>
-        {props.addons.map((a) => (
-          <div className={styles.row} key={a.name}>
-            <span
-              className={`${styles.dot} ${a.error ? styles.dotError : a.running ? styles.dotOk : styles.dotOff}`}
-              aria-hidden="true"
-            />
-            <Body1>
-              <strong>{names[a.name]}</strong>: {a.error ? t('addons.error', { message: a.error }) : a.running ? t('addons.running') : t('addons.stopped')}
-              {a.detail ? ` (${a.detail})` : ''}
-            </Body1>
-          </div>
-        ))}
-      </div>
+      {props.addons.length === 0 ? (
+        <EmptyState compact title={t('addons.empty')} />
+      ) : (
+        <FieldRows>
+          {props.addons.map((a) => {
+            const state = a.error ? t('addons.error', { message: a.error }) : a.running ? t('addons.running') : t('addons.stopped');
+            const detail = a.detail && a.detail !== state ? a.detail : undefined;
+            return (
+              <FieldRow
+                key={a.name}
+                label={names[a.name]}
+                help={detail}
+                align="end"
+                control={
+                  <Body1 className={styles.status}>
+                    <span
+                      className={mergeClasses(styles.dot, a.error ? styles.dotError : a.running ? styles.dotOk : styles.dotOff)}
+                      aria-hidden="true"
+                    />
+                    {state}
+                  </Body1>
+                }
+              />
+            );
+          })}
+        </FieldRows>
+      )}
     </Section>
   );
 }

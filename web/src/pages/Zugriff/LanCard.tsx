@@ -1,17 +1,17 @@
 /** Karte „LAN-Freigabe“: Freigabe fürs Heimnetz, erlaubte Netze/Hostnamen, öffentliche Adresse. */
 import { useId } from 'react';
-import { Button, Input, MessageBar, MessageBarBody, makeStyles, tokens } from '@fluentui/react-components';
+import { Input, MessageBar, MessageBarBody, makeStyles, tokens } from '@fluentui/react-components';
 import { Warning20Regular } from '@fluentui/react-icons';
 import { Trans, useTranslation } from 'react-i18next';
 import { FieldRow, FieldRows, ToggleControl } from '../../components/FieldRow';
 import { Section } from '../../components/Section';
+import { CardActions } from './CardActions';
 import { ListTextarea } from './ListTextarea';
 import type { AccessJson, AccessLan } from './types';
 import { useSectionEdit } from './useSectionEdit';
 import { useAccessSave } from './useAccessSave';
 
 const useStyles = makeStyles({
-  grid: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalM },
   // Lange Befehle und Adressen in <code> umbrechen statt die Karte auf dem Handy zu sprengen.
   wrap: { overflowWrap: 'anywhere' },
   status: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalXXS },
@@ -25,6 +25,7 @@ export function LanCard(props: { data: AccessJson }): JSX.Element {
   const { save, saving, error } = useAccessSave();
   const v = edit.values;
   const idBase = useId();
+  const title = t('lan.title');
 
   const onSave = async () => {
     const ok = await save(edit.changes('lan'), t('lan.saveSuccess'));
@@ -34,17 +35,10 @@ export function LanCard(props: { data: AccessJson }): JSX.Element {
   return (
     <Section
       id="lan"
-      title={t('lan.title')}
+      title={title}
       actions={
         edit.dirty ? (
-          <>
-            <Button appearance="primary" disabled={saving} aria-busy={saving} onClick={() => void onSave()}>
-              {t('common:actions.save')}
-            </Button>
-            <Button appearance="secondary" disabled={saving} onClick={edit.discard}>
-              {t('common:actions.cancel')}
-            </Button>
-          </>
+          <CardActions title={title} dirty={edit.dirty} saving={saving} onSave={() => void onSave()} onDiscard={edit.discard} />
         ) : undefined
       }
     >

@@ -73,8 +73,9 @@
     "templatesLabel": "Freigegebene Vorlagen",
     "maxCopiesLabel": "Höchstzahl Kopien je Druck",
     "copyLimitHint": "Vom Handy sind höchstens 5 Kopien je Druck möglich (Grenze des Fehldruckschutzes für Fremdzugriffe).",
-    "linkHint": "Link zur Familienseite: beim Anlegen eines Familien-Tokens.",
-    "saveSuccess": "Familienseite: gespeichert"
+    "linkHint": "Den Link zur Familienseite gibt es beim Anlegen eines Familien-Tokens.",
+    "saveSuccess": "Familienseite: gespeichert",
+    "templatesHint": "Nur diese Vorlagen erscheinen auf der Familienseite."
   },
   "mcp": {
     "title": "MCP für Claude",
@@ -83,18 +84,27 @@
     "copyAddressAria": "Adresse kopieren",
     "commandLabel": "Befehl für Claude Code",
     "copyCommandAria": "Befehl kopieren",
-    "claudeCodeHint": "Claude Code: <code>claude mcp add p12 -- {{command}}</code>",
-    "saveSuccess": "MCP für Claude: gespeichert"
+    "saveSuccess": "MCP für Claude: gespeichert",
+    "httpHint": "Für MCP-Clients, die über HTTP verbinden.",
+    "addressHint": "Nur erreichbar, solange Streamable HTTP eingeschaltet ist.",
+    "commandHint": "Einmal im Terminal ausführen: <code>{{command}}</code>"
   },
   "hotfolder": {
     "title": "Hotfolder",
     "enableLabel": "Hotfolder überwachen",
+    "enableHint": "Dateien, die im Ordner landen, werden gedruckt.",
     "dirLabel": "Ordner",
-    "dirHint": "Leer = Standardordner",
+    "dirHint": "Leer lassen für den Standardordner.",
+    "effectiveDir": "Aktuell: {{path}}",
+    "chooseDir": "Ordner wählen",
     "openDir": "Ordner öffnen",
-    "pollLabel": "Abfrage-Intervall (Sekunden)",
-    "settleLabel": "Ruhezeit vor dem Lesen (Sekunden)",
-    "maxBytesLabel": "Höchstgröße je Datei (kB)",
+    "resetDir": "Ordner zurücksetzen",
+    "pollLabel": "Abfrage-Intervall",
+    "pollHint": "Wie oft der Ordner geprüft wird (0,5 bis 60 s).",
+    "settleLabel": "Ruhezeit vor dem Lesen",
+    "settleHint": "Wartet, bis eine Datei fertig geschrieben ist.",
+    "maxBytesLabel": "Höchstgröße je Datei",
+    "maxBytesHint": "Größere Dateien werden übersprungen.",
     "saveSuccess": "Hotfolder: gespeichert"
   },
   "mqtt": {
@@ -107,35 +117,42 @@
     "discoveryLabel": "Discovery-Präfix",
     "tlsLabel": "TLS",
     "templatesLabel": "Erlaubte Vorlagen",
-    "templatesHint": "Leer = alle Vorlagen",
+    "templatesHint": "Diese Vorlagen lassen sich über MQTT drucken. Ohne Auswahl sind alle erlaubt.",
     "passwordLabel": "Passwort",
-    "passwordSet": "hinterlegt",
-    "passwordMissing": "fehlt",
+    "passwordSet": "Hinterlegt",
+    "passwordMissing": "Fehlt",
     "setPassword": "Passwort setzen",
     "secretDialogTitle": "MQTT-Passwort setzen",
     "secretFieldLabel": "Passwort",
-    "saveSuccess": "Home Assistant (MQTT): gespeichert"
+    "saveSuccess": "Home Assistant (MQTT): gespeichert",
+    "enableHint": "Meldet Drucker und Vorlagen an Home Assistant.",
+    "hostHint": "Hostname oder IP-Adresse des Brokers.",
+    "portHint": "Standard 1883, mit TLS meist 8883.",
+    "tlsHint": "Verschlüsselte Verbindung zum Broker.",
+    "userHint": "Leer lassen für eine Verbindung ohne Anmeldung.",
+    "baseTopicHint": "Präfix aller Topics von Tapesmith.",
+    "discoveryHint": "Home Assistant erwartet meist homeassistant.",
+    "templatesAll": "Keine gewählt, alle erlaubt"
   },
   "telegram": {
     "title": "Telegram",
     "enableLabel": "Meldungen senden",
     "chatIdLabel": "Chat-ID",
     "quietHoursTitle": "Ruhezeiten",
-    "quietHoursActive": "Aktiv",
     "quietStartAria": "Ruhezeit Beginn",
     "quietEndAria": "Ruhezeit Ende",
-    "quietHoursNone": "keine",
-    "offlineMinLabel": "Offline-Meldung nach (Minuten)",
-    "queueStuckMinLabel": "Warteschlange hängt nach (Minuten)",
-    "rollLowLabel": "Restmeter niedrig ab (m)",
+    "quietHoursNone": "Aus: Meldungen kommen rund um die Uhr.",
+    "offlineMinLabel": "Offline-Meldung nach",
+    "queueStuckMinLabel": "Warteschlange gilt als hängend nach",
+    "rollLowLabel": "Restmeter niedrig ab",
     "notifyTypesTitle": "Meldungsarten",
     "notifyQueue": "Warteschlange hängt",
     "notifyOffline": "Drucker offline",
     "notifyError": "Druckfehler",
     "notifyRoll": "Restmeter niedrig",
     "tokenLabel": "Bot-Token",
-    "tokenSet": "hinterlegt",
-    "tokenMissing": "fehlt",
+    "tokenSet": "Hinterlegt",
+    "tokenMissing": "Fehlt",
     "setToken": "Token setzen",
     "tokenFromSource": "Token kommt aus {{source}}",
     "secretDialogTitle": "Telegram-Token setzen",
@@ -143,7 +160,21 @@
     "sendTest": "Testnachricht senden",
     "testSuccess": "Testnachricht gesendet",
     "testErrorTitle": "Testnachricht fehlgeschlagen",
-    "saveSuccess": "Telegram: gespeichert"
+    "saveSuccess": "Telegram: gespeichert",
+    "enableHint": "Schickt Meldungen an einen Telegram-Chat.",
+    "chatIdHint": "Ziel der Meldungen (Chat oder Gruppe).",
+    "quietHoursHint": "In diesem Zeitraum kommen keine Meldungen.",
+    "quietPeriodLabel": "Zeitraum",
+    "quietPeriodHint": "Beginn und Ende, auch über Mitternacht.",
+    "offlineMinHint": "So lange muss der Drucker getrennt sein.",
+    "queueStuckMinHint": "So lange ohne Fortschritt.",
+    "rollLowHint": "Meldung, sobald weniger Band übrig ist.",
+    "notifyTypesHint": "Welche Ereignisse eine Nachricht auslösen.",
+    "notifyErrorHint": "Ein Druckauftrag ist fehlgeschlagen.",
+    "notifyOfflineHint": "Der Drucker ist nicht mehr erreichbar.",
+    "notifyQueueHint": "Aufträge kommen nicht voran.",
+    "notifyRollHint": "Die Bandrolle geht zur Neige.",
+    "tokenNoSource": "Keine Quelle festgelegt (Einstellung telegram.token_ref)."
   },
   "secretDialog": {
     "saved": "{{title}}: gespeichert"
@@ -156,6 +187,30 @@
     "update": "Update",
     "running": "läuft",
     "stopped": "aus",
-    "error": "Fehler: {{message}}"
+    "error": "Fehler: {{message}}",
+    "empty": "Noch keine Zusatzdienste gestartet."
+  },
+  "card": {
+    "discard": "Verwerfen",
+    "saveAria": "Speichern: {{title}}",
+    "discardAria": "Verwerfen: {{title}}"
+  },
+  "units": {
+    "seconds": "s",
+    "minutes": "min",
+    "kilobytes": "kB",
+    "meters": "m",
+    "copies": "Kopien"
+  },
+  "picker": {
+    "searchPlaceholder": "Vorlagen durchsuchen",
+    "searchAria": "Suchen in {{label}}",
+    "count": "{{selected}} von {{total}} gewählt",
+    "clear": "Alle abwählen",
+    "clearAria": "Alle abwählen: {{label}}",
+    "noMatch": "Keine Vorlage passt zu „{{query}}“"
+  },
+  "secret": {
+    "storage": "Ablage: {{source}}"
   }
 }

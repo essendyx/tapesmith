@@ -155,7 +155,7 @@ describe('LAN-Freigabe', () => {
     });
     await screen.findByRole('heading', { name: 'LAN-Freigabe' });
     await user.click(screen.getByLabelText('Im Heimnetz freigeben'));
-    await user.click(screen.getByRole('button', { name: 'Speichern' }));
+    await user.click(screen.getByRole('button', { name: 'Speichern: LAN-Freigabe' }));
 
     await waitFor(() => expect(sentBody).toEqual({ changes: { 'lan.enabled': true } }));
     expect(await screen.findByText(/Neustart des Druckdienstes nötig/)).toBeInTheDocument();
@@ -174,7 +174,7 @@ describe('LAN-Freigabe', () => {
     await user.clear(textarea);
     await user.type(textarea, '192.0.2.0/24\n\n198.51.100.0/24\n');
     await user.tab();
-    await user.click(screen.getByRole('button', { name: 'Speichern' }));
+    await user.click(screen.getByRole('button', { name: 'Speichern: LAN-Freigabe' }));
 
     await waitFor(() =>
       expect(sentBody).toEqual({ changes: { 'lan.allowed_networks': ['192.0.2.0/24', '198.51.100.0/24'] } }),
@@ -190,7 +190,7 @@ describe('LAN-Freigabe', () => {
     const bindInput = screen.getByLabelText('Adresse, an die gebunden wird');
     await user.clear(bindInput);
     await user.type(bindInput, '999.999.999.999');
-    await user.click(screen.getByRole('button', { name: 'Speichern' }));
+    await user.click(screen.getByRole('button', { name: 'Speichern: LAN-Freigabe' }));
 
     expect(await screen.findByText('lan.bind ungültig')).toBeInTheDocument();
     expect(bindInput).toHaveValue('999.999.999.999');
@@ -209,7 +209,7 @@ describe('Familie', () => {
     await screen.findByRole('heading', { name: 'Familienseite' });
     const card = document.getElementById('familie') as HTMLElement;
     await user.click(within(card).getByRole('checkbox', { name: /vorratsdose/ }));
-    await user.click(within(card).getByRole('button', { name: 'Speichern' }));
+    await user.click(within(card).getByRole('button', { name: 'Speichern: Familienseite' }));
 
     await waitFor(() =>
       expect(sentBody).toEqual({ changes: { 'family.templates': ['gefriergut', 'geoeffnet-am'] } }),
