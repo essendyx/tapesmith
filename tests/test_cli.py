@@ -4,7 +4,7 @@ from pathlib import Path
 
 from tapesmith import cli, doctor, paths
 from tapesmith.lock import PrinterBusy
-from tapesmith.transport import btports
+from tapesmith.transport import btports, usb
 from tapesmith.verify import VerifyReport
 
 GOLDEN = Path(__file__).parent / "golden"
@@ -186,3 +186,65 @@ def test_verify_eof_during_ask_exits_1_and_writes_report(tmp_path, capsys, monke
     assert "Abgebrochen" in capsys.readouterr().err
     saved = json.loads(paths.capabilities_path().read_text(encoding="utf-8"))
     assert saved["complete"] is False
+
+
+# ---------- Rechner ohne Drucker, ohne Bluetooth und ohne USB (wie der CI-Rechner) ----------
+
+_REAL_BT_READ = btports._read_registry        # vor der autouse-Fixture `_no_real_devices` gemerkt
+_REAL_USB_READ = usb._read_usb_registry
+
+
+def _registry_without_device_keys(monkeypatch, error=FileNotFoundError):
+    r"""HKLM\SYSTEM\CurrentControlSet\Enum\BTHENUM und Enum\USB fehlen (oder sind gesperrt), wie
+    auf einer virtuellen Maschine ohne Bluetooth und ohne je angestecktes USB-Gerät."""
+    import winreg
+
+    real_open = winreg.OpenKey
+
+    def open_key(key, sub_key, *args, **kwargs):
+        if key == winreg.HKEY_LOCAL_MACHINE and "\\enum\\" in str(sub_key).lower():
+            raise error(2, "Das System kann die angegebene Datei nicht finden")
+        return real_open(key, sub_key, *args, **kwargs)
+
+    monkeypatch.setattr(winreg, "OpenKey", open_key)
+    monkeypatch.setattr(btports, "_read_registry", _REAL_BT_READ)
+    monkeypatch.setattr(usb, "_read_usb_registry", _REAL_USB_READ)
+
+
+def test_registry_readers_without_device_keys_find_nothing(monkeypatch):
+    _registry_without_device_keys(monkeypatch)
+    assert btports.list_bt_ports() == []
+    assert usb.find_usb_devices() == []
+    assert usb.usb_check().ok is True
+
+
+def test_ports_without_bluetooth_is_empty_not_a_crash(capsys, monkeypatch):
+    _registry_without_device_keys(monkeypatch)
+    assert cli.main(["ports"]) == 0
+    assert capsys.readouterr().out == ""
+
+
+def test_doctor_without_printer_reports_missing_port_with_exit_1(capsys, monkeypatch):
+    """Ohne gekoppelten Drucker kann nicht gedruckt werden: Exit 1 (dokumentiert: "Fehler/
+    Konfiguration"), mit verständlicher Meldung und Hinweis, ohne Absturz. USB (experimentell)
+    zählt nie als Fehler."""
+    _registry_without_device_keys(monkeypatch)
+    assert cli.main(["doctor", "--no-connect"]) == 1
+    captured = capsys.readouterr()
+    assert "[FEHLER] Bluetooth-Port: kein ausgehender COM-Port" in captured.out
+    assert "-> Drucker einschalten, in Windows unter Bluetooth-Geräte koppeln" in captured.out
+    assert "[OK]     USB (experimentell): Kein P12 per USB bekannt" in captured.out
+    assert "WinError" not in captured.out and "Traceback" not in captured.err
+    failed = [line for line in captured.out.splitlines() if line.startswith("[FEHLER]")]
+    assert len(failed) == 1
+
+
+def test_doctor_with_unreadable_device_registry_explains_and_continues(capsys, monkeypatch):
+    _registry_without_device_keys(monkeypatch, error=PermissionError)
+    assert cli.main(["doctor", "--json", "--no-connect"]) == 1
+    checks = {c["name"]: c for c in json.loads(capsys.readouterr().out)}
+    assert checks["Bluetooth-Port"]["ok"] is False
+    assert "Bluetooth-Geräte nicht lesbar" in checks["Bluetooth-Port"]["detail"]
+    assert checks["USB (experimentell)"]["ok"] is True
+    assert "USB-Geräteliste nicht lesbar" in checks["USB (experimentell)"]["detail"]
+    assert checks["Drucksperre"]["ok"] is True

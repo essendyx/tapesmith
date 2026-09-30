@@ -25,11 +25,17 @@ def parse_instance(instance_id: str, port: str) -> BtPort | None:
 
 
 def _read_registry() -> list[tuple[str, str]]:
+    """Nur lesend. Ohne Bluetooth (etwa auf Servern und virtuellen Maschinen) fehlt der Schlüssel
+    BTHENUM ganz: dann gibt es schlicht keine Ports."""
     import winreg
 
     rows = []
     root = r"SYSTEM\CurrentControlSet\Enum\BTHENUM"
-    with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, root) as bthenum:
+    try:
+        bthenum = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, root)
+    except FileNotFoundError:
+        return rows
+    with bthenum:
         for i in range(winreg.QueryInfoKey(bthenum)[0]):
             service = winreg.EnumKey(bthenum, i)
             if not service.lower().startswith(SPP_PREFIX):

@@ -35,12 +35,18 @@ class UsbDevice:
 
 
 def _read_usb_registry() -> list[dict]:
-    """Liest nur lesend HKLM\\...\\Enum\\USB\\VID_xxxx&PID_yyyy* (Muster wie btports._read_registry)."""
+    """Liest nur lesend HKLM\\...\\Enum\\USB\\VID_xxxx&PID_yyyy* (Muster wie btports._read_registry).
+    Auf Rechnern, an denen nie ein USB-Gerät hing (etwa virtuelle Maschinen), fehlt der Schlüssel
+    Enum\\USB ganz: dann ist kein Gerät bekannt."""
     import winreg
 
     rows: list[dict] = []
     root = r"SYSTEM\CurrentControlSet\Enum\USB"
-    with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, root) as usb_key:
+    try:
+        usb_key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, root)
+    except FileNotFoundError:
+        return rows
+    with usb_key:
         for i in range(winreg.QueryInfoKey(usb_key)[0]):
             vidpid = winreg.EnumKey(usb_key, i)
             if not vidpid.upper().startswith(_VIDPID):
@@ -98,7 +104,13 @@ def diagnose_usb(devices: Sequence[UsbDevice]) -> list[str]:
 
 
 def usb_check(reader: Callable[[], list[dict]] | None = None) -> Check:
-    return Check(_t("USB (experimentell)"), True, "; ".join(diagnose_usb(find_usb_devices(reader))))
+    """USB ist experimentell und nie Voraussetzung zum Drucken: deshalb immer `ok`, auch wenn die
+    Geräteliste nicht lesbar ist (dann steht der Grund im Detail)."""
+    try:
+        devices = find_usb_devices(reader)
+    except OSError as exc:
+        return Check(_t("USB (experimentell)"), True, _t("USB-Geräteliste nicht lesbar: {exc}", exc=exc))
+    return Check(_t("USB (experimentell)"), True, "; ".join(diagnose_usb(devices)))
 
 
 # ---------- SetupAPI: usbprint-Geräteschnittstellen (nur lesend, real nur am Gerät geprüft) ----------

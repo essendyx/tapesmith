@@ -31,9 +31,16 @@ def run_checks(mac: str, port_finder, connect=None, lock_factory=PrintLock,
     except Exception as exc:
         checks.append(Check(_t("Geräteprofil"), False, str(exc), _t("calibration.json prüfen: {calibration_path}", calibration_path=paths.calibration_path())))
 
-    port = port_finder(mac)
     mac_text = f"MAC {mac}" if mac else _t("ohne gespeicherte MAC")
-    if port:
+    try:
+        port, port_error = port_finder(mac), None
+    except Exception as exc:  # noqa: BLE001 (Diagnose läuft weiter, der Grund steht im Ergebnis)
+        port, port_error = None, exc
+    if port_error is not None:
+        checks.append(Check(_t("Bluetooth-Port"), False,
+                            _t("Bluetooth-Geräte nicht lesbar: {exc}", exc=port_error),
+                            _t("Drucker einschalten, in Windows unter Bluetooth-Geräte koppeln und p12 setup ausführen")))
+    elif port:
         checks.append(Check(_t("Bluetooth-Port"), True, _t("{port} (ausgehend, {mac_text})", port=port, mac_text=mac_text)))
     else:
         checks.append(Check(_t("Bluetooth-Port"), False, _t("kein ausgehender COM-Port ({mac_text})", mac_text=mac_text),

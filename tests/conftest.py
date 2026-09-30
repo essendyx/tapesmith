@@ -68,6 +68,18 @@ def app_home(tmp_path, monkeypatch):
 
 
 @pytest.fixture(autouse=True)
+def _no_real_devices(monkeypatch):
+    """Nie die Geräte des Testrechners: gekoppelte Bluetooth-COM-Ports und USB-Geräte kommen aus der
+    Registry und unterscheiden sich zwischen Entwicklerrechner (Drucker gekoppelt) und CI-Rechner
+    (weder Bluetooth noch USB). Standard ist deshalb "nichts gefunden"; Tests, die Ports oder
+    Geräte brauchen, setzen `btports._read_registry` bzw. `usb._read_usb_registry` selbst."""
+    from tapesmith.transport import btports, usb
+
+    monkeypatch.setattr(btports, "_read_registry", lambda: [])
+    monkeypatch.setattr(usb, "_read_usb_registry", lambda: [])
+
+
+@pytest.fixture(autouse=True)
 def _module_detection_all(monkeypatch):
     """Ohne `modules` in config.json gilt im Produkt die Erkennung benutzter Module (im leeren
     Testordner: keine). Die meisten Tests prüfen aber die Funktionen der Module selbst; für sie gelten
