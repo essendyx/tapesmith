@@ -84,9 +84,9 @@ def test_preview_is_scaled_with_tape_margins():
 
 def test_qr_only_too_long_for_fixed_length_raises():
     with pytest.raises(ValueError, match="passt nicht"):
-        render_label(LabelSpec(qr="HTTP://L.LAN/D7", fixed_length_mm=5), P)
+        render_label(LabelSpec(qr="HTTP://EXAMPLE.ORG/D7", fixed_length_mm=5), P)
     with pytest.raises(ValueError, match="passt nicht"):
-        render_label(LabelSpec(qr="HTTP://L.LAN/D7", max_length_mm=5), P)
+        render_label(LabelSpec(qr="HTTP://EXAMPLE.ORG/D7", max_length_mm=5), P)
 
 
 def test_align_positions_whole_content_block_at_fixed_length():

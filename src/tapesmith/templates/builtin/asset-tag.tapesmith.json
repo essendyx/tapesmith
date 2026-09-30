@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "name": "asset-tag",
-  "description": "Anlagen-Kennzeichnung mit QR (Standard-Link HTTP://L.LAN/<Nummer>), Nummer fett und Bezeichnung.",
+  "description": "Anlagen-Kennzeichnung mit QR (enthält die Asset-Nummer), Nummer fett und Bezeichnung. Für einen QR-Link die Vorlage asset-kurz nehmen.",
   "category": "Homelab",
   "tags": ["homelab", "asset", "qr"],
   "fields": [
@@ -10,7 +10,7 @@
   ],
   "document": {
     "objects": [
-      {"kind": "qr", "id": "qr1", "x": 8, "y": 0, "w": 88, "h": 88, "data": "HTTP://L.LAN/{nummer|upper}", "error": "m"},
+      {"kind": "qr", "id": "qr1", "x": 8, "y": 0, "w": 88, "h": 88, "data": "{nummer|upper}", "error": "m"},
       {"kind": "text", "id": "text1", "x": 112, "y": 2, "w": 300, "h": 42, "text": "{nummer}", "font": "sans-bold", "size": null},
       {"kind": "text", "id": "text2", "x": 112, "y": 46, "w": 400, "h": 38, "text": "{bezeichnung}", "size": null}
     ]
@@ -19,7 +19,7 @@
   "translations": {
     "en": {
       "title": "asset-tag",
-      "description": "Asset tag with QR code (default link HTTP://L.LAN/<number>), number in bold and description.",
+      "description": "Asset tag with QR code (contains the asset number), number in bold and description. For a QR link use the template asset-kurz.",
       "category": "Homelab",
       "tags": ["homelab", "asset", "qr"],
       "fields": {

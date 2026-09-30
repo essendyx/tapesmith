@@ -81,7 +81,7 @@ FAIL_LINE = N_("Selbsttest fehlgeschlagen")
 
 SELFTEST_FONTS = ("sans", "sans-bold", "mono")
 SELFTEST_TEMPLATES = ("datentraeger", "datentraeger-qr")
-SELFTEST_QR = "HTTP://L.LAN/D7"
+SELFTEST_QR = "HTTP://EXAMPLE.ORG/D7"
 SELFTEST_CONFIG = {"mac": "001122334455", "idle_timeout_s": 0, "connect_timeout_s": 1, "guard": {},
                    "daemon": {"enabled": False}}
 SELFTEST_CODE128 = "ASN01234"

@@ -12,7 +12,7 @@ from tapesmith.cli_cmds import qr as qr_cmd
 
 def test_url_qr_preview_writes_png_and_info(tmp_path, capsys):
     png = tmp_path / "u.png"
-    assert cli.main(["qr", "url", "l.lan/d7", "--line", "Doku", "--preview", str(png)]) == 0
+    assert cli.main(["qr", "url", "example.org/d7", "--line", "Doku", "--preview", str(png)]) == 0
     assert png.exists()
     with Image.open(png) as img:
         assert img.size[0] > 0

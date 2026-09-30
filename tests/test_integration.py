@@ -238,9 +238,9 @@ def test_parse_uri_text_mehrere_zeilen():
 
 
 def test_parse_uri_qr_mit_text():
-    action = intg.parse_uri("tapesmith://qr?data=HTTP://L.LAN/D7&text=Box")
+    action = intg.parse_uri("tapesmith://qr?data=HTTP://EXAMPLE.ORG/D7&text=Box")
     assert action.kind == "qr"
-    assert action.qr == "HTTP://L.LAN/D7"
+    assert action.qr == "HTTP://EXAMPLE.ORG/D7"
     assert action.lines == ("Box",)
 
 

@@ -105,7 +105,7 @@ def test_asset_tag_qr_dekodiert(tmp_path):
     box = bbox(find_object(t.document, "qr1"))
     crop = tr.result.landscape.crop(box).convert("L")
     results = zxingcpp.read_barcodes(crop, formats=zxingcpp.BarcodeFormat.QRCode)
-    assert any(r.text == "HTTP://L.LAN/HL-0042" for r in results)
+    assert any(r.text == "HL-0042" for r in results)
 
 
 def test_vorratsdose_alle_symbole_haben_ein_icon(tmp_path):
