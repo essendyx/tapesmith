@@ -26,6 +26,8 @@ export interface UpdateStatus {
   error: { code: string; message: string } | null;
   can_rollback: boolean;
   idle_ok: boolean;
+  /** Einmalige Rückfrage nach der automatischen Prüfung offen (installierte App, noch nie gefragt). */
+  consent_needed: boolean;
 }
 
 export const UPDATE_QUERY_KEY = ['update'] as const;
@@ -51,6 +53,11 @@ export function useUpdateStatus(opts?: { poll?: boolean }): UseQueryResult<Updat
       return poll || (state && UPDATE_BUSY_STATES.includes(state)) ? UPDATE_POLL_MS : false;
     },
   });
+}
+
+/** Antwort auf die Rückfrage: automatische Prüfung ein oder aus (danach fragt die Oberfläche nicht mehr). */
+export function answerUpdateConsent(enabled: boolean): Promise<UpdateStatus> {
+  return apiPost<UpdateStatus>('/api/v1/update/consent', { enabled });
 }
 
 export function checkUpdate(): Promise<UpdateStatus> {

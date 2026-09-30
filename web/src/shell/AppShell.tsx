@@ -1,6 +1,6 @@
 /**
  * App-Rahmen: Sprungmarke, Seitenleiste, Kopfzeile mit Pfad, Fortschritt, Schneidpause,
- * Hinweis auf verwaiste Entwürfe und die Seite mit sanftem Einblenden.
+ * Hinweis auf verwaiste Entwürfe, einmalige Rückfrage zur Update-Prüfung und die Seite mit sanftem Einblenden.
  */
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -19,6 +19,7 @@ import { RecoveryBanner } from './RecoveryBanner';
 import { Sidebar } from './Sidebar';
 import { CONTENT_ID, SkipLink } from './SkipLink';
 import { TopBar } from './TopBar';
+import { UpdateConsentBanner } from './UpdateConsentBanner';
 
 export const NAV_COLLAPSED_KEY = 'p12.nav.collapsed';
 
@@ -140,6 +141,7 @@ export function AppShell(): JSX.Element {
           <JobProgressBar />
           <CutPauseBar />
           <RecoveryBanner />
+          <UpdateConsentBanner />
           <main className={styles.content} id={CONTENT_ID} tabIndex={-1}>
             <ErrorBoundary resetKey={location.pathname}>
               <div className={styles.page} key={location.pathname}>

@@ -988,6 +988,10 @@ version).
 
 ### Updates
 
+- **Only with consent:** the automatic check (`update.enabled`) is off until you agree. On the
+  first start of the installed app the web interface asks once (“Check for updates automatically?”);
+  both answers are saved (`update.asked`), and the switch under Settings › Updates changes it later.
+  Without consent Tapesmith does not connect to the update source on its own; “Check now” still works.
 - **Sources** (`update.source`): `github:essendyx/tapesmith` (default, GitHub releases via the REST
   API), `file:<folder>` (folder or file share with the same three files) or an `https://…/` base
   address.
@@ -1027,7 +1031,8 @@ written in the current language.
 |---|---|---|
 | `app.language` | `"auto"` | language of the interface, tray app, service and CLI: `auto` (Windows display language), `de`, `en` |
 | `app.theme` | `"system"` | color scheme: `system`, `hell`, `dunkel` |
-| `update.enabled` | `true` | check for updates regularly |
+| `update.enabled` | `false` | check for updates regularly (off until you agree, see Updates) |
+| `update.asked` | `false` | the web interface has asked once about the automatic check |
 | `update.source` | `"github:essendyx/tapesmith"` | update source: `github:owner/repo`, `file:<folder>` or `https://…` |
 | `update.channel` | `"stable"` | `stable` or `beta` |
 | `update.check_interval_h` | `24` | check interval in hours (1 to 720) |

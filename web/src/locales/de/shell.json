@@ -77,6 +77,13 @@
     "restore": "Im Editor wiederherstellen",
     "later": "Später"
   },
+  "updateConsent": {
+    "title": "Automatisch nach Updates suchen?",
+    "body": "Tapesmith kann einmal am Tag bei GitHub (api.github.com) nachsehen, ob es eine neue Version gibt. Dabei werden nur die üblichen Verbindungsdaten übertragen (IP-Adresse, Programmversion), keine Etiketten, Einstellungen oder persönlichen Daten. Ohne Zustimmung baut Tapesmith von sich aus keine Verbindung ins Internet auf. Die Einstellung lässt sich jederzeit unter Einstellungen > Updates ändern.",
+    "enable": "Ja, automatisch suchen",
+    "disable": "Nein, nur auf Wunsch",
+    "error": "Die Antwort konnte nicht gespeichert werden."
+  },
   "progress": {
     "label": "Druckfortschritt",
     "printing": "Label wird gedruckt …",

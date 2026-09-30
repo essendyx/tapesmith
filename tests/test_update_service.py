@@ -308,8 +308,23 @@ def test_addon_create_none_bei_aus_bzw_nicht_installiert():
     assert addon_mod.create(AddonFacade(), {}, service_factory=lambda loader: not_installed) is None
     # unter pytest ohne TAPESMITH_INSTALL_ROOT: nicht installiert
     assert addon_mod.create(AddonFacade(), {}) is None
-    addon = addon_mod.create(AddonFacade(), {}, service_factory=lambda loader: FakeUpdateService())
+    # Standard: aus, bis der Benutzer der automatischen Prüfung zustimmt (keine Verbindung ohne Zustimmung)
+    assert addon_mod.create(AddonFacade(), {}, service_factory=lambda loader: FakeUpdateService()) is None
+    addon = addon_mod.create(AddonFacade(), {"update": {"enabled": True}},
+                             service_factory=lambda loader: FakeUpdateService())
     assert addon is not None and addon.name == "update"
+
+
+def test_rueckfrage_nur_installiert_unentschieden_und_aus(tmp_path):
+    feed = tmp_path / "feed"
+    svc, *_ = _service(tmp_path, cfg=_cfg(f"file:{feed}"))
+    st = svc.status()
+    assert st.enabled is False and st.consent_needed is True
+    for update in ({"asked": True}, {"enabled": True}, {"enabled": False, "asked": True}):
+        svc, *_ = _service(tmp_path / str(len(update)) / str(sorted(update.items())), cfg=_cfg(f"file:{feed}", **update))
+        assert svc.status().consent_needed is False, update
+    portable, *_ = _service(tmp_path / "portabel", installed=False, cfg=_cfg(f"file:{feed}"))
+    assert portable.status().consent_needed is False
 
 
 def test_addon_pruefung_nach_5_min_installation_erst_im_leerlauf():

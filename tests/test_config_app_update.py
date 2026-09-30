@@ -16,7 +16,7 @@ def _cfg(**sections) -> dict:
 def test_standardwerte_vorhanden():
     assert config.SECTION_DEFAULTS["app"] == {"language": "auto", "theme": "system"}
     assert config.SECTION_DEFAULTS["update"] == {
-        "enabled": True, "source": "github:essendyx/tapesmith",
+        "enabled": False, "asked": False, "source": "github:essendyx/tapesmith",
         "channel": "stable", "check_interval_h": 24, "auto_install": False, "idle_min": 10,
         "keep_versions": 2,
     }
@@ -24,6 +24,9 @@ def test_standardwerte_vorhanden():
     assert config.setting(cfg, "app.language") == "auto"
     assert config.setting(cfg, "app.theme") == "system"
     assert config.setting(cfg, "update.source") == "github:essendyx/tapesmith"
+    # Ohne Zustimmung keine automatische Verbindung zur Update-Quelle
+    assert config.setting(cfg, "update.enabled") is False
+    assert config.setting(cfg, "update.asked") is False
     config.validate_config(cfg)
 
 
@@ -45,7 +48,7 @@ def test_ungueltige_quellen(source):
     ("check_interval_h", 720, True), ("check_interval_h", 24.5, False), ("check_interval_h", True, False),
     ("idle_min", 0, False), ("idle_min", 1440, True), ("idle_min", 1441, False),
     ("keep_versions", 0, False), ("keep_versions", 5, True), ("keep_versions", 6, False),
-    ("enabled", "ja", False), ("enabled", False, True),
+    ("enabled", "ja", False), ("enabled", False, True), ("asked", True, True), ("asked", None, False),
     ("auto_install", 1, False), ("auto_install", True, True),
     ("channel", "beta", True), ("channel", "nightly", False),
 ])

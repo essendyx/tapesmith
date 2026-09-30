@@ -20,6 +20,7 @@ export function makeUpdateStatus(overrides?: Partial<UpdateStatus>): UpdateStatu
     error: null,
     can_rollback: false,
     idle_ok: false,
+    consent_needed: false,
     ...overrides,
   };
 }

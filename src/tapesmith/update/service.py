@@ -142,13 +142,15 @@ class UpdateService:
             available = None
         can_rollback = bool(installed and st is not None and st.previous and st.previous not in st.failed
                             and root is not None and layout.version_dir(st.previous, root).is_dir())
+        enabled = bool(setting(cfg, "update.enabled"))
         return state_mod.UpdateStatus(
             installed=installed, current=current, previous=st.previous if st else None,
             root=str(root) if root is not None else None,
-            enabled=bool(setting(cfg, "update.enabled")), source=str(setting(cfg, "update.source")),
+            enabled=enabled, source=str(setting(cfg, "update.source")),
             channel=str(setting(cfg, "update.channel")), auto_install=bool(setting(cfg, "update.auto_install")),
             last_check=saved.last_check, available=available, state=saved.state, error=saved.error,
-            can_rollback=can_rollback, idle_ok=self.idle_ok(service) if service is not None else False)
+            can_rollback=can_rollback, idle_ok=self.idle_ok(service) if service is not None else False,
+            consent_needed=bool(installed and not enabled and not setting(cfg, "update.asked")))
 
     def _offerable(self, version: str, current: str, st: layout.InstallState | None) -> bool:
         try:

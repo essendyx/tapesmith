@@ -42,7 +42,9 @@ def test_status_ohne_installation(env):
     data = r.json()
     assert data["installed"] is False
     assert set(data) == {"installed", "current", "previous", "root", "enabled", "source", "channel",
-                         "auto_install", "last_check", "available", "state", "error", "can_rollback", "idle_ok"}
+                         "auto_install", "last_check", "available", "state", "error", "can_rollback", "idle_ok",
+                         "consent_needed"}
+    assert data["enabled"] is False and data["consent_needed"] is False
     assert data["source"] == "github:essendyx/tapesmith"
 
 
@@ -163,9 +165,41 @@ def test_rolle_drucken_403(tmp_path):
     try:
         secret = make_token(ctx, "drucken")
         for method, path in (("get", "/api/v1/update/status"), ("post", "/api/v1/update/check"),
-                             ("post", "/api/v1/update/install"), ("post", "/api/v1/update/rollback")):
+                             ("post", "/api/v1/update/consent"), ("post", "/api/v1/update/install"), ("post", "/api/v1/update/rollback")):
             r = getattr(client, method)(path, headers={"Authorization": f"Bearer {secret}"})
             assert r.status_code == 403, path
             assert r.json()["error"]["code"] == "auth.forbidden"
     finally:
         close_ctx(ctx)
+
+
+@pytest.mark.parametrize("enabled", [True, False])
+def test_rueckfrage_speichert_entscheidung(env, enabled):
+    from tapesmith import config as config_mod
+
+    client, ctx, tmp = env
+    svc, _spawned, _root = _svc(tmp, installed=True)
+    svc.cfg_loader = config_mod.load_config
+    ctx.extras["update_service"] = svc
+    assert client.get("/api/v1/update/status").json()["consent_needed"] is True
+    r = client.post("/api/v1/update/consent", json={"enabled": enabled})
+    assert r.status_code == 200, r.text
+    assert r.json()["enabled"] is enabled and r.json()["consent_needed"] is False
+    saved = config_mod.load_config()["update"]
+    assert saved["enabled"] is enabled and saved["asked"] is True
+
+
+def test_rueckfrage_verlangt_wahrheitswert(env):
+    client, _ctx, _tmp = env
+    assert client.post("/api/v1/update/consent", json={"enabled": "ja"}).status_code == 422
+    assert client.post("/api/v1/update/consent", json={}).status_code == 422
+
+
+
+def test_schalter_in_den_einstellungen_beantwortet_die_rueckfrage(env):
+    from tapesmith import config as config_mod
+
+    client, _ctx, _tmp = env
+    r = client.patch("/api/v1/settings", json={"changes": {"update.enabled": False}})
+    assert r.status_code == 200, r.text
+    assert config_mod.load_config()["update"] == {"enabled": False, "asked": True}

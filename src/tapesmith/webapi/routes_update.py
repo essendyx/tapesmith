@@ -1,6 +1,7 @@
 """Update-Routen, nur Rolle `admin` bzw. Sitzung.
 
-`GET /update/status`, `POST /update/check`, `POST /update/install` (202, Bereitstellung und Start
+`GET /update/status`, `POST /update/consent` (Antwort auf die einmalige Rückfrage nach der
+automatischen Prüfung, setzt `update.enabled` und `update.asked`), `POST /update/check`, `POST /update/install` (202, Bereitstellung und Start
 laufen im Hintergrund, Fortschritt über `status`), `POST /update/rollback` (202). Installation und
 Rückstellung verlangen „kein Auftrag aktiv, Warteschlange leer“ (sonst 409 `update.busy`), die
 Oberfläche fragt vorher, weil der Dienst neu startet (die Oberfläche öffnet sich danach auf
@@ -15,12 +16,13 @@ from collections.abc import Callable
 
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, ConfigDict, StrictStr
+from pydantic import BaseModel, ConfigDict, StrictBool, StrictStr
 
 from tapesmith.update.errors import UpdateError
 from tapesmith.update.service import UpdateService
 from tapesmith.webapi.context import ApiContext, get_ctx
 from tapesmith.webapi.errors import error_json
+from tapesmith.webapi.settings_schema import apply_changes
 from tapesmith.i18n import _t
 
 log = logging.getLogger(__name__)
@@ -32,6 +34,11 @@ class InstallBody(BaseModel):
     model_config = ConfigDict(extra="ignore")
     version: StrictStr
     reopen_route: StrictStr | None = None
+
+
+class ConsentBody(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    enabled: StrictBool
 
 
 class RollbackBody(BaseModel):
@@ -85,6 +92,16 @@ def _check_idle(ctx: ApiContext) -> None:
 
 @router.get("/update/status")
 def update_status(ctx: ApiContext = Depends(get_ctx)):
+    return update_service(ctx).status(ctx.service).to_json()
+
+
+@router.post("/update/consent")
+def update_consent(body: ConsentBody, ctx: ApiContext = Depends(get_ctx)):
+    """Antwort auf die Rückfrage: automatische Prüfung ein oder aus; danach fragt die Oberfläche nicht
+    mehr. Ohne Zustimmung baut Tapesmith von sich aus keine Verbindung zur Update-Quelle auf."""
+    changed = apply_changes({"update.enabled": body.enabled})
+    ctx.service.request_reload()
+    ctx.publish("config", {"keys": changed})
     return update_service(ctx).status(ctx.service).to_json()
 
 

@@ -445,6 +445,13 @@ def apply_changes(changes: dict) -> list[str]:
             top_level_updates[key] = value
             candidate[key] = value
 
+    if "update.enabled" in order:
+        # Wer die automatische Update-Prüfung selbst ein- oder ausschaltet, hat entschieden: die
+        # Oberfläche fragt danach nicht mehr (`update.asked`, siehe POST /update/consent).
+        section = sections_touched.setdefault("update", dict(candidate.get("update") or {}))
+        section["asked"] = True
+        candidate["update"] = section
+
     config.validate_config(candidate)
     if any(key.startswith("hotkey.") for key in order):
         _check_hotkey_pair(candidate)

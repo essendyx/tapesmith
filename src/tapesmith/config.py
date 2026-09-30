@@ -70,7 +70,10 @@ SECTION_DEFAULTS = {
     # Auto-Update (Quelle, Kanal, Prüfabstand, Installation bei Leerlauf).
     # Das Repository ist öffentlich: GitHub-Abrufe laufen ohne Token. Ein alter Eintrag
     # `update.token_ref` in config.json wird ignoriert.
-    "update": {"enabled": True, "source": "github:essendyx/tapesmith",
+    # Die automatische Prüfung ist aus, bis der Benutzer zustimmt: Ohne Zustimmung baut Tapesmith von
+    # sich aus keine Verbindung ins Netz auf (Bedingung der SignPath Foundation, CODE_SIGNING_POLICY.md).
+    # `asked` merkt sich, dass die Web-Oberfläche einmal gefragt hat (POST /update/consent).
+    "update": {"enabled": False, "asked": False, "source": "github:essendyx/tapesmith",
                "channel": "stable", "check_interval_h": 24, "auto_install": False, "idle_min": 10,
                "keep_versions": 2},
     # Eingeschaltete Module (tapesmith.modules); Standard: keine.
@@ -754,6 +757,7 @@ def is_update_source(value) -> bool:
 
 def _check_update(section: dict) -> None:
     _check_bool_key(section, "update", "enabled")
+    _check_bool_key(section, "update", "asked")
     _check_bool_key(section, "update", "auto_install")
     if "source" in section and not is_update_source(section["source"]):
         raise ValueError(

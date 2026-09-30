@@ -981,6 +981,11 @@ Sprache. Version: **0.2.0** (erste installierbare Version).
 
 ### Updates
 
+- **Nur mit Zustimmung:** Die automatische Prüfung (`update.enabled`) ist aus, bis der Benutzer zustimmt. Beim
+  ersten Start der installierten App fragt die Web-Oberfläche einmal („Automatisch nach Updates
+  suchen?“); beide Antworten werden gespeichert (`update.asked`), später ändert der Schalter unter
+  Einstellungen › Updates die Wahl. Ohne Zustimmung baut Tapesmith von sich aus keine Verbindung zur
+  Update-Quelle auf; „Jetzt prüfen“ funktioniert trotzdem.
 - **Quellen** (`update.source`): `github:essendyx/tapesmith` (Standard, GitHub-Releases über die
   REST-API), `file:<Ordner>` (Ordner oder Dateifreigabe mit denselben drei Dateien) oder eine
   `https://…/`-Basisadresse.
@@ -1020,7 +1025,8 @@ nichts verschickt: das Zip gibt man selbst weiter.
 |---|---|---|
 | `app.language` | `"auto"` | Sprache von Oberfläche, Tray-App, Dienst und CLI: `auto` (Windows-Anzeigesprache), `de`, `en` |
 | `app.theme` | `"system"` | Farbschema: `system`, `hell`, `dunkel` |
-| `update.enabled` | `true` | regelmäßig nach Updates suchen |
+| `update.enabled` | `false` | regelmäßig nach Updates suchen (aus bis zur Zustimmung, siehe Updates) |
+| `update.asked` | `false` | die Web-Oberfläche hat einmal nach der automatischen Prüfung gefragt |
 | `update.source` | `"github:essendyx/tapesmith"` | Update-Quelle: `github:owner/repo`, `file:<Ordner>` oder `https://…` |
 | `update.channel` | `"stable"` | `stable` oder `beta` |
 | `update.check_interval_h` | `24` | Prüfabstand in Stunden (1 bis 720) |

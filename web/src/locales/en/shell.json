@@ -77,6 +77,13 @@
     "restore": "Restore in editor",
     "later": "Later"
   },
+  "updateConsent": {
+    "title": "Check for updates automatically?",
+    "body": "Tapesmith can ask GitHub (api.github.com) once a day whether a new version is available. Only the usual connection data is transferred (IP address, program version), no labels, settings or personal data. Without your consent Tapesmith does not connect to the internet on its own. You can change this at any time under Settings > Updates.",
+    "enable": "Yes, check automatically",
+    "disable": "No, only on request",
+    "error": "Your answer could not be saved."
+  },
   "progress": {
     "label": "Print progress",
     "printing": "Printing label …",

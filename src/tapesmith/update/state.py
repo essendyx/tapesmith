@@ -20,7 +20,7 @@ class UpdateStatus:
     current: str = ""
     previous: str | None = None
     root: str | None = None
-    enabled: bool = True
+    enabled: bool = False
     source: str = ""
     channel: str = "stable"
     auto_install: bool = False
@@ -30,6 +30,8 @@ class UpdateStatus:
     error: dict | None = None
     can_rollback: bool = False
     idle_ok: bool = False
+    # Die Oberfläche fragt einmal nach der automatischen Prüfung (installierte App, noch nie gefragt, aus).
+    consent_needed: bool = False
 
     def to_json(self) -> dict:
         return asdict(self)
