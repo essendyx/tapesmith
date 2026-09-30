@@ -206,7 +206,8 @@ class SecurityMiddleware:
         if not loopback and limiter is not None:
             remaining = limiter.blocked(client)
             if remaining > 0:
-                seconds = str(max(1, math.ceil(remaining))).encode("ascii")
+                # Toleranz gegen Rundung: (t + 900) - t kann knapp über 900 liegen
+                seconds = str(max(1, math.ceil(remaining - 1e-6))).encode("ascii")
                 raise _reject(429, _t(TEXT_LOCKED), headers=[(b"retry-after", seconds)])
         port = int(self._port_getter())
         host = self._check_host(scope, port, loopback, lan)
