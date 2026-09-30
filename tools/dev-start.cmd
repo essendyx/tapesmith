@@ -1,7 +1,8 @@
 @echo off
 rem Tapesmith aus dem Quellordner starten (Entwicklungsversion).
-rem   tools\dev-start.cmd        beendet laufendes Tapesmith, startet das Tray aus .venv
-rem   tools\dev-build-start.cmd  baut vorher die Weboberflaeche neu (web\ nach webui\static)
+rem   tools\dev-start.cmd        beendet laufendes Tapesmith, startet das Tray aus .venv; baut die
+rem                              Weboberflaeche vorher neu, wenn unter web\ etwas geaendert wurde
+rem   tools\dev-build-start.cmd  baut die Weboberflaeche immer neu (web\ nach webui\static)
 rem   tools\installed-start.cmd  beendet laufendes Tapesmith, startet die installierte Version
 setlocal
 set "REPO=%~dp0.."
@@ -30,9 +31,19 @@ if /i "%~1"=="installed" (
     goto :status
 )
 
-if /i "%~1"=="build" (
+set "NEEDBUILD="
+if /i "%~1"=="build" set "NEEDBUILD=1"
+rem Automatisch bauen, wenn unter web\ etwas neuer ist als der letzte Build
+if not defined NEEDBUILD (
+    powershell -NoProfile -Command "$b = Get-Item '%REPO%\src\tapesmith\webui\static\index.html' -ErrorAction SilentlyContinue; if (-not $b) { exit 1 }; $n = Get-ChildItem '%REPO%\web' -Recurse -File -Exclude *.test.ts,*.test.tsx | Where-Object { $_.FullName -notmatch '\\(node_modules|dist|coverage)\\' -and $_.LastWriteTime -gt $b.LastWriteTime } | Select-Object -First 1; if ($n) { exit 1 } else { exit 0 }"
+    if errorlevel 1 set "NEEDBUILD=1"
+)
+if defined NEEDBUILD (
     echo Baue die Weboberflaeche ...
-    "%PY%" "%REPO%\tools\build_web.py" || exit /b 1
+    rem --skip-check: schneller Build ohne Tests (die laufen in der CI und mit npm run check)
+    "%PY%" "%REPO%\tools\build_web.py" --skip-check || (echo Build fehlgeschlagen. & if not defined TAPESMITH_NO_PAUSE pause & exit /b 1)
+) else (
+    echo Weboberflaeche ist aktuell, kein Build noetig.
 )
 
 pushd "%REPO%"
