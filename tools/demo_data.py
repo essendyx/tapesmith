@@ -400,6 +400,27 @@ def seed_orphaned_drafts(home: Path, *, now: datetime | None = None) -> list[str
     return [entry[0] for entry in entries]
 
 
+def _seed_logs(*, now: datetime) -> None:
+    """Demo-Protokoll des Druckdienstes (Format wie `daemon.instance`), für die Seite Protokoll."""
+    from datetime import timedelta
+
+    from tapesmith import paths
+
+    entries = (
+        (-3600, "INFO", "tapesmith.daemon", "Druckdienst gestartet (Version demo)"),
+        (-3590, "INFO", "tapesmith.transport", "Verbunden mit P12 über COM4"),
+        (-3000, "INFO", "tapesmith.jobs", "Auftrag 12 gedruckt: 1 Etikett, 42 mm"),
+        (-2400, "WARNING", "tapesmith.transport", "Keine Antwort vom Drucker, neuer Versuch"),
+        (-2390, "INFO", "tapesmith.transport", "Verbunden mit P12 über COM4"),
+        (-1200, "ERROR", "tapesmith.integrations", "Paperless nicht erreichbar: Zeitüberschreitung"),
+        (-600, "INFO", "tapesmith.jobs", "Auftrag 13 gedruckt: 3 Etiketten, 126 mm"),
+        (-60, "DEBUG", "tapesmith.queue", "Warteschlange leer"),
+    )
+    lines = [f"{(now + timedelta(seconds=dt)).strftime('%Y-%m-%d %H:%M:%S')},000 {level} {name}: {msg}"
+             for dt, level, name, msg in entries]
+    (paths.log_dir() / "daemon.log").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def seed_demo(home: Path, *, now: datetime, lang: str = "de") -> dict:
     """Füllt `home` (setzt `TAPESMITH_HOME` selbst nicht) mit Demo-Daten in der Sprache `lang`.
 
@@ -421,6 +442,7 @@ def seed_demo(home: Path, *, now: datetime, lang: str = "de") -> dict:
     inventory_info = _seed_inventory(now=now)
     _seed_rolls(now=now)
     _seed_document()
+    _seed_logs(now=now)
 
     return {
         "tape_id": TAPE_ID,

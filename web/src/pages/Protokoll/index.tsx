@@ -46,7 +46,7 @@ const useStyles = makeStyles({
   },
   line: { display: 'block', minHeight: tokens.lineHeightBase300 },
   debug: { color: tokens.colorNeutralForeground3 },
-  warning: { color: tokens.colorPaletteDarkOrangeForeground1 },
+  warning: { color: tokens.colorStatusWarningForeground3 },
   error: { color: tokens.colorPaletteRedForeground1 },
   empty: { color: tokens.colorNeutralForeground3 },
 });

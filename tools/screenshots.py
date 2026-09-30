@@ -154,6 +154,7 @@ MAIN_ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("datentraeger", "/datentraeger?tab=ssh", "Datenträger", interact="ssh_scan"),
     RouteSpec("statistik", "/statistik", "Statistik"),
     RouteSpec("einstellungen", "/einstellungen", "Einstellungen"),
+    RouteSpec("protokoll", "/protokoll", "Protokoll"),
     # Seite Zugriff (Demo-Tokens aus `seed_access_demo`) und Handy-Seite mit Familien-Token
     RouteSpec("zugriff", "/zugriff", "Zugriff"),
     RouteSpec("familie", "/familie", "Familie (Handy-Seite)", token_key="family_token"),
@@ -189,6 +190,10 @@ EXTRA_ROUTES: tuple[RouteSpec, ...] = (
              sizes=("desktop",)),
     # Module: Schalter, Einstellungskarten, Abschnitt „Erweitert“ und die Oberfläche ohne Module
     RouteSpec("einstellungen-module", "/einstellungen?abschnitt=module", "Einstellungen: Module",
+             sizes=("desktop",)),
+    RouteSpec("einstellungen-paperless", "/einstellungen?abschnitt=modul-paperless", "Einstellungen: Paperless mit Token-Feld",
+             sizes=("desktop",)),
+    RouteSpec("einstellungen-proxmox", "/einstellungen?abschnitt=modul-proxmox", "Einstellungen: Proxmox-Hosts mit Tokens",
              sizes=("desktop",)),
     RouteSpec("einstellungen-erweitert", "/einstellungen?abschnitt=erweitert", "Einstellungen: Erweitert",
              sizes=("desktop",)),

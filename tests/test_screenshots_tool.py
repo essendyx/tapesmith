@@ -27,7 +27,7 @@ def test_shot_plan_counts_and_unique_ascii_filenames():
     expected_de = main * themes * 2 + extra_sizes * themes  # Hauptseiten Desktop und Handy, Extras je Größe
     expected_en = (main + english_extra) * themes           # Englisch: Haupt- und Modulseiten, nur Desktop
     expected_zoom = main                                  # 200 %: Hauptseiten, nur hell, Deutsch
-    assert len(screenshots.MAIN_ROUTES) == 14
+    assert len(screenshots.MAIN_ROUTES) == 15
     assert len(plan) == expected_de + expected_en + expected_zoom
 
     names = [screenshots.shot_filename(shot) for shot in plan]
