@@ -54,6 +54,10 @@ and [deploy/](deploy/).
 
 ## Installation
 
+Signed release builds are published on the releases page once code signing through the SignPath
+Foundation is set up (see [Code signing policy](#code-signing-policy)). Until then, build Tapesmith
+from source as described under [Development](#development).
+
 1. Download `Tapesmith-portable-<version>.zip` from the
    [releases page](https://github.com/essendyx/tapesmith/releases) and unpack it.
 2. Either run `Tapesmith.exe` directly (portable) or double click `Installieren.cmd` to install it
@@ -80,8 +84,24 @@ still work as a fallback for `TAPESMITH_*`.
   `keyring:tapesmith/mqtt` (Windows Credential Manager), `file:<path>` or `env:<NAME>`.
 - Updates are only installed if the manifest carries a valid Ed25519 signature from a key listed
   in `src/tapesmith/update/trusted_keys.json`.
+- The automatic update check is off until you agree: the web interface asks once on the first start
+  of the installed app (Settings > Updates changes it later).
 
 Please report vulnerabilities as described in [SECURITY.md](SECURITY.md).
+
+## Code signing policy
+
+Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by
+[SignPath Foundation](https://signpath.org/).
+
+- Committers and reviewers: the project maintainer (owner of
+  [github.com/essendyx/tapesmith](https://github.com/essendyx/tapesmith))
+- Approvers: the project maintainer (owner of
+  [github.com/essendyx/tapesmith](https://github.com/essendyx/tapesmith))
+
+Privacy: This program will not transfer any information to other networked systems unless
+specifically requested by the user or the person installing or operating it. Which connections
+Tapesmith makes, what is signed and how releases are built: [CODE_SIGNING_POLICY.md](CODE_SIGNING_POLICY.md).
 
 ## Development
 
