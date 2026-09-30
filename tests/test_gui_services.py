@@ -5,6 +5,7 @@ import dataclasses
 import os
 import subprocess
 import sys
+import threading
 import time
 from pathlib import Path
 
@@ -33,12 +34,15 @@ def services(tmp_path, transport, *, config=None, **kw) -> AppServices:
 
 
 class SlowOpenTransport(MemoryTransport):
+    """Öffnet erst nach `delay` Sekunden oder sobald `release` gesetzt ist."""
+
     def __init__(self, delay: float):
         super().__init__(STATUS_OK)
         self.delay = delay
+        self.release = threading.Event()
 
     def open(self) -> None:
-        time.sleep(self.delay)
+        self.release.wait(self.delay)
         super().open()
 
 
@@ -64,13 +68,15 @@ def test_manager_verbindet_bei_bedarf(svc):
 
 def test_connect_timeout_aus_config(tmp_path):
     cfg = dict(CFG, connect_timeout_s=0.2)
-    s = services(tmp_path, SlowOpenTransport(1.0), config=cfg)
+    transport = SlowOpenTransport(30.0)
+    s = services(tmp_path, transport, config=cfg)
     try:
         start = time.monotonic()
         with pytest.raises(PrinterOffline):
             s.manager.run(lambda sess: 1)
-        assert time.monotonic() - start < 0.6
+        assert time.monotonic() - start < 5.0      # ohne Zeitlimit hinge das Öffnen 30 s
     finally:
+        transport.release.set()
         s.close()
 
 

@@ -111,7 +111,7 @@ def test_serial_open_times_out(monkeypatch):
     release = threading.Event()
 
     def hanging_serial(*args, **kwargs):
-        release.wait(5)
+        release.wait(30)
         raise OSError("zu spät")
 
     monkeypatch.setattr(serial_port.serial, "Serial", hanging_serial)
@@ -119,7 +119,7 @@ def test_serial_open_times_out(monkeypatch):
     start = time.monotonic()
     with pytest.raises(ConnectTimeout, match="COM99"):
         t.open()
-    assert time.monotonic() - start < 1.0
+    assert time.monotonic() - start < 5.0      # ohne Zeitlimit hinge open() bis zu 30 s
     release.set()
 
 

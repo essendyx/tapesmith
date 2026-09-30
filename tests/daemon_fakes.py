@@ -154,7 +154,7 @@ def close_service(service) -> None:
             pass
 
 
-def wait_until(predicate, timeout: float = 5.0, step: float = 0.01) -> bool:
+def wait_until(predicate, timeout: float = 30.0, step: float = 0.01) -> bool:
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         if predicate():

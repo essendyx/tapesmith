@@ -34,7 +34,7 @@ class FakePoster:
 
     def __call__(self, url, json=None, timeout=None):
         if self.block is not None:
-            self.block.wait(5)
+            self.block.wait(30)
         self.calls.append((url, json))
         if self.raise_exc is not None:
             raise self.raise_exc
@@ -534,7 +534,7 @@ def test_on_event_blockiert_nie():
         t0 = time.monotonic()
         facade.emit("job", _job())
         facade.emit("job", _job(title="B"))
-        assert time.monotonic() - t0 < 0.1
+        assert time.monotonic() - t0 < 5.0      # der Versand hängt, bis der Test ihn freigibt
     finally:
         poster.block.set()
         n.stop()

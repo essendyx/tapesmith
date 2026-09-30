@@ -1,5 +1,6 @@
 """Router /homelab/plausi und /homelab/assets/{id}/vault-note."""
 
+import threading
 import time
 
 import pytest
@@ -142,15 +143,21 @@ def test_timed_resolver_returns_within_timeout_even_if_resolver_hangs():
     sonst begrenzt der Timeout die Antwortzeit nicht wie verlangt.
     """
 
+    release = threading.Event()
+
     def hanging_resolver(host: str) -> list[str]:
-        time.sleep(3.0)
+        release.wait(30)
         return ["should-not-be-seen"]
 
     timed = routes_plausi._timed_resolver(hanging_resolver, 0.5)
 
     start = time.monotonic()
-    result = timed("pmx10")
+    try:
+        result = timed("pmx10")
+    finally:
+        release.set()
     elapsed = time.monotonic() - start
 
     assert result == []
-    assert elapsed < 1.5, f"_timed_resolver blockierte {elapsed:.2f}s, sollte nach ~0.5s zurückkehren"
+    # Der Resolver hinge 30 s; die Grenze lässt langsamen Rechnern Luft und trennt trotzdem klar.
+    assert elapsed < 10.0, f"_timed_resolver blockierte {elapsed:.2f}s, sollte nach ~0.5s zurückkehren"

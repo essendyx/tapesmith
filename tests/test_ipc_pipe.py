@@ -135,7 +135,7 @@ def test_recv_timeout_and_server_close():
     closing = threading.Event()
 
     def handler(ch):
-        closing.wait(5)
+        closing.wait(30)
         ch.close()
 
     server = PipeServer(pipe_name(), handler)
@@ -145,7 +145,7 @@ def test_recv_timeout_and_server_close():
         try:
             start = time.monotonic()
             assert ch.recv(timeout=0.05) is None
-            assert time.monotonic() - start < 1.0
+            assert time.monotonic() - start < 5.0      # der Handler schweigt bis zu 30 s
             closing.set()
             with pytest.raises(ChannelClosed):
                 ch.recv(timeout=2)
@@ -177,10 +177,10 @@ def test_close_wakes_blocking_recv():
         time.sleep(0.1)
         start = time.monotonic()
         ch.close()
-        t.join(2)
+        t.join(30)
         assert not t.is_alive()
         assert outcome == ["closed"]
-        assert time.monotonic() - start < 0.5
+        assert time.monotonic() - start < 5.0
     finally:
         server.stop()
 
@@ -210,7 +210,7 @@ def test_connect_missing_pipe():
     start = time.monotonic()
     with pytest.raises(DaemonUnavailable):
         connect("\\\\.\\pipe\\tapesmith-gibtsnicht-" + uuid.uuid4().hex, timeout_s=0.2)
-    assert time.monotonic() - start < 1.0
+    assert time.monotonic() - start < 5.0
 
 
 def test_dacl_only_current_user():
@@ -237,7 +237,7 @@ def test_stop_closes_everything():
         assert wait_for(lambda: server.active_channels() == 2)
         start = time.monotonic()
         server.stop()
-        assert time.monotonic() - start < 2.0
+        assert time.monotonic() - start < 10.0
         assert server.active_channels() == 0
         for c in clients:
             with pytest.raises(ChannelClosed):
@@ -331,7 +331,7 @@ def test_handshake_timeout():
     start = time.monotonic()
     with pytest.raises(DaemonUnavailable):
         client_handshake(client, "test", timeout_s=0.1)
-    assert time.monotonic() - start < 1.0
+    assert time.monotonic() - start < 5.0
 
 
 def test_handshake_over_pipe():

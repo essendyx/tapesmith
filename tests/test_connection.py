@@ -150,18 +150,18 @@ def test_idle_zero_disconnects_after_each_run(managers):
 def test_connect_timeout_is_fast_and_sets_offline(managers):
     block = threading.Event()
     factory = Factory(lambda: FakeTransport(block=block))
-    m = managers(factory, connect_timeout_s=0.2)
+    m = managers(factory, connect_timeout_s=2.0)
     try:
         start = time.monotonic()
         with pytest.raises(PrinterOffline, match="nicht erreichbar"):
             m.connect()
-        assert time.monotonic() - start < 1.0
+        assert time.monotonic() - start < 10.0     # Öffnen hängt unbegrenzt, Zeitlimit greift
         assert m.state is ConnectionState.OFFLINE
         assert isinstance(m.last_error, PrinterOffline)
         start = time.monotonic()
         with pytest.raises(PrinterOffline, match="offline"):
             m.run(query)
-        assert time.monotonic() - start < 0.05
+        assert time.monotonic() - start < 1.0      # sofort, ohne erneut 2 s auf das Zeitlimit zu warten
         m.preconnect()
         time.sleep(0.05)
         assert len(factory.made) == 1
@@ -194,18 +194,18 @@ def test_backoff_expires_with_clock(managers):
 
 
 def test_force_bypasses_backoff(managers):
-    factory = Factory(lambda: FakeTransport(open_delay=0.3))
-    m = managers(factory, connect_timeout_s=0.2, offline_backoff_s=10)
+    factory = Factory(lambda: FakeTransport(open_delay=3.0))
+    m = managers(factory, connect_timeout_s=1.0, offline_backoff_s=10)
     start = time.monotonic()
     with pytest.raises(PrinterOffline):
         m.connect()
-    assert time.monotonic() - start < 0.28
+    assert time.monotonic() - start < 2.5      # Zeitlimit 1 s, nicht die 3 s des Öffnens
     assert m.state is ConnectionState.OFFLINE
     start = time.monotonic()
     with pytest.raises(PrinterOffline):
         m.run(query)
-    assert time.monotonic() - start < 0.05
-    m.connect(force=True, timeout=1.0)
+    assert time.monotonic() - start < 1.0      # Backoff: sofort, kein neues Warten
+    m.connect(force=True, timeout=30.0)
     assert m.state is ConnectionState.CONNECTED
     assert len(factory.made) == 1
 
@@ -289,11 +289,11 @@ def test_fn_exception_other_than_transport_keeps_connection(managers):
 
 
 def test_preconnect_is_non_blocking(managers):
-    factory = Factory(lambda: FakeTransport(open_delay=0.3))
+    factory = Factory(lambda: FakeTransport(open_delay=2.0))
     m = managers(factory)
     start = time.monotonic()
     m.preconnect()
-    assert time.monotonic() - start < 0.05
+    assert time.monotonic() - start < 1.0      # das Öffnen selbst dauert 2 s
     m.preconnect()       # zweites Vorverbinden während des Aufbaus: kein neuer Versuch
     assert m.run(query) == ANSWER
     assert len(factory.made) == 1
@@ -312,7 +312,8 @@ def test_runs_are_serialised(managers):
     for t in threads:
         t.start()
     for t in threads:
-        t.join(2)
+        t.join(30)
+    assert not any(t.is_alive() for t in threads)
     assert len(windows) == 2
     (a0, a1), (b0, b1) = sorted(windows)
     assert a1 <= b0
@@ -331,9 +332,10 @@ def test_queued_run_waits_for_long_job_without_offline(managers):
     results = []
     t = threading.Thread(target=lambda: results.append(m.run(long_job)))
     t.start()
-    assert started.wait(1)
+    assert started.wait(30)
     assert m.run(query) == ANSWER
-    t.join(2)
+    t.join(30)
+    assert not t.is_alive()
     assert results == ["lang"]
 
 

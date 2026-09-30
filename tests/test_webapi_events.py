@@ -75,7 +75,7 @@ def test_sse_stream(tmp_path):
     client, ctx = make_client(tmp_path)
 
     def feeder():
-        if not wait_until(lambda: ctx.broker.subscriber_count() >= 1, timeout=5):
+        if not wait_until(lambda: ctx.broker.subscriber_count() >= 1, timeout=30):
             ctx.broker.close_all()          # Test scheitert, statt zu hängen
             return
         ctx.publish("queue", {})

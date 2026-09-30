@@ -178,7 +178,7 @@ def test_connection_manager_set_profile_applies_to_next_session():
 
 # ---------- Schneidpause ----------
 
-def _wait_until(cond, timeout=5.0):
+def _wait_until(cond, timeout=30.0):
     deadline = time.monotonic() + timeout
     while not cond():
         if time.monotonic() > deadline:

@@ -96,7 +96,7 @@ def _connect(bridge, created):
     return client
 
 
-def _wait(predicate, timeout: float = 5.0) -> None:
+def _wait(predicate, timeout: float = 30.0) -> None:
     deadline = time.monotonic() + timeout
     while not predicate() and time.monotonic() < deadline:
         time.sleep(0.01)

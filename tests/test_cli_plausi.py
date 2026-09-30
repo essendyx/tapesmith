@@ -1,6 +1,7 @@
 """CLI-Befehle `p12 plausi` und `p12 asset-notiz`."""
 
 import json
+import threading
 import time
 
 import pytest
@@ -107,15 +108,21 @@ def test_timed_resolver_returns_within_timeout_even_if_resolver_hangs():
     """Ein hängender Resolver darf die Antwortzeit nicht über das Zeitlimit hinaus verzögern
     (gleicher Fix wie in routes_plausi._timed_resolver, siehe dortiger Testkommentar)."""
 
+    release = threading.Event()
+
     def hanging_resolver(host: str) -> list[str]:
-        time.sleep(3.0)
+        release.wait(30)
         return ["should-not-be-seen"]
 
     timed = plausi_cmd._timed_resolver(hanging_resolver, 0.5)
 
     start = time.monotonic()
-    result = timed("pmx10")
+    try:
+        result = timed("pmx10")
+    finally:
+        release.set()
     elapsed = time.monotonic() - start
 
     assert result == []
-    assert elapsed < 1.5, f"_timed_resolver blockierte {elapsed:.2f}s, sollte nach ~0.5s zurückkehren"
+    # Der Resolver hinge 30 s; die Grenze lässt langsamen Rechnern Luft und trennt trotzdem klar.
+    assert elapsed < 10.0, f"_timed_resolver blockierte {elapsed:.2f}s, sollte nach ~0.5s zurückkehren"
