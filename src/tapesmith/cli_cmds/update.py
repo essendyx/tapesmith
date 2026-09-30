@@ -1,7 +1,7 @@
 """`p12 update`: Update-Status, Prüfen, Installieren und Rückstellung (Deutsch).
 
 Exit-Codes: 0 ok, 1 Fehler, 5 Update-Quelle nicht erreichbar. Installation und Rückstellung starten
-`Tapesmith.exe --update-apply …` losgelöst; das geht nur in der installierten App."""
+`pythonw -m tapesmith.update.apply …` losgelöst; das geht nur in der installierten App."""
 
 from __future__ import annotations
 
@@ -59,7 +59,7 @@ def _confirm(ctx, question: str) -> bool:
 
 
 def _print_status(ctx, status) -> None:
-    ctx.out(_t("Version: {current}", current=status.current) + (_t(" (installiert)") if status.installed else _t(" (portabel bzw. Entwicklung)")))
+    ctx.out(_t("Version: {current}", current=status.current) + (_t(" (installiert)") if status.installed else _t(" (Entwicklung bzw. nicht installiert)")))
     if status.installed:
         ctx.out(_t("Ordner: {root}", root=status.root))
         if status.previous:

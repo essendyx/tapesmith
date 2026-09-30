@@ -1,11 +1,11 @@
 """Startbefehle für Oberfläche, Druckdienst und Tray.
 
-Einzige Stelle, die Kommandozeilen für die Prozessarten baut: portabler Build
-(`Tapesmith.exe --daemon|--tray|--app`) und Entwicklung (`pythonw.exe -m tapesmith.<modul>`).
+Einzige Stelle, die Kommandozeilen für die Prozessarten baut: installierte App und Entwicklung
+(`pythonw.exe -m tapesmith.<modul>`); der Zweig für einen eingefrorenen Build (`--daemon|--tray|--app`
+der früheren PyInstaller-EXE) bleibt nur für Altinstallationen.
 Genutzt von den Registry-Befehlen in `integration.py`, vom Dienststart und von der Tray-App.
 
-Die Arten `gui` und `app` öffnen die Web-Oberfläche im Standardbrowser (`tapesmith.webui.browser`,
-im portablen Build die EXE ohne Argument bzw. mit `--app`); ein eigenes lokales Fenster gibt es
+Die Arten `gui` und `app` öffnen die Web-Oberfläche im Standardbrowser (`tapesmith.webui.browser`); ein eigenes lokales Fenster gibt es
 nicht mehr. Kontextmenü- und URI-Einträge öffnen damit ebenfalls den Browser."""
 
 import os

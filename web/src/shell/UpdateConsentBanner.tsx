@@ -1,6 +1,6 @@
 /**
  * Einmalige Rückfrage nach der automatischen Update-Prüfung. Ohne Zustimmung baut Tapesmith von sich
- * aus keine Verbindung ins Internet auf (Bedingung der SignPath Foundation, CODE_SIGNING_POLICY.md).
+ * aus keine Verbindung ins Internet auf (Datenschutzzusage in CODE_SIGNING_POLICY.md).
  * Der Dienst meldet `consent_needed`, solange die installierte App noch nie gefragt hat und die Prüfung
  * aus ist. Beide Antworten speichert `POST /update/consent`; danach erscheint der Hinweis nicht mehr.
  * Fehler beim Laden bleiben still (z. B. ohne Adminrechte), Fehler beim Speichern stehen im Hinweis.

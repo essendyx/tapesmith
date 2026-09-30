@@ -1,6 +1,8 @@
 """Deinstallation ohne Adminrechte: Prozesse stoppen, Verknüpfungen und
 Registry-Einträge entfernen, Junction `current` entfernen, Restordner per losgelöstem Prozess
-löschen (die laufende EXE kann ihren eigenen Ordner nicht selbst löschen). Benutzerdaten unter
+löschen (der laufende Python-Prozess der aktiven Version kann seinen eigenen Ordner nicht
+selbst löschen). Aufruf: `pythonw -m tapesmith uninstall` (Apps und Features, Startmenü) bzw.
+`py -m tapesmith uninstall`. Benutzerdaten unter
 %APPDATA%\\Tapesmith werden nie angefasst. Kein Meldungsfenster: das Ergebnis steht in
 `<App-Verzeichnis>/logs/uninstall.log`, der Exit-Code sagt ok (0) oder Fehler (1)."""
 
@@ -77,8 +79,8 @@ def delete_command(root: Path, *, wait_s: int = DELETE_WAIT_S) -> str:
 
 
 def _default_schedule_delete(root: Path, *, spawn: Callable | None = None) -> None:
-    """Startet losgelöst `ping … & rmdir /s /q "<root>"`: wartet kurz, bis diese EXE (die
-    gerade unter `root` liegt) beendet ist, und löscht dann den ganzen Ordner."""
+    """Startet losgelöst `ping … & rmdir /s /q "<root>"`: wartet kurz, bis dieser Prozess (der
+    gerade aus `root` läuft) beendet ist, und löscht dann den ganzen Ordner."""
     command = delete_command(root)
     if spawn is not None:
         spawn(command)
@@ -99,7 +101,7 @@ def uninstall(*, root: Path | None = None, shortcuts=None, uninstall_registry=No
     check_root(root)
     lines: list[str] = []
 
-    running = processes.processes_under(root, exclude_pids=(os.getpid(),))
+    running = processes.processes_under(root, exclude_pids=processes.own_pids())
     if running:
         stop = stopper or _default_stopper
         if not stop(root):
@@ -147,10 +149,11 @@ def uninstall(*, root: Path | None = None, shortcuts=None, uninstall_registry=No
     return lines
 
 
-# ---------- EXE-Weiche `Tapesmith.exe --uninstall` ----------
+# ---------- `python -m tapesmith uninstall` ----------
 
 def _parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="Tapesmith --uninstall", add_help=False)
+    p = argparse.ArgumentParser(prog="python -m tapesmith uninstall",
+                                description=_t("Tapesmith deinstallieren (Benutzerdaten bleiben erhalten)"))
     p.add_argument("--root", type=Path, default=None)
     p.add_argument("--no-shortcuts", action="store_true")
     p.add_argument("--no-registry", action="store_true")
@@ -181,15 +184,15 @@ def main(argv: list[str] | None = None, *, schedule_delete: Callable[[Path], Non
     uninstall_registry = None
     registry = None
     if not args.no_shortcuts:
-        from tapesmith.install.shortcuts import WScriptShortcuts
-        shortcuts = WScriptShortcuts()
+        from tapesmith.install.shortcuts import PowerShellShortcuts
+        shortcuts = PowerShellShortcuts()
     if not args.no_registry:
         from tapesmith.install.registry import UninstallRegistry
         from tapesmith.integration import WinRegBackend
         uninstall_registry = UninstallRegistry()
         registry = WinRegBackend()
 
-    # Das Löschen des Programmordners erst ganz am Ende starten: solange diese EXE noch aus dem
+    # Das Löschen des Programmordners erst ganz am Ende starten: solange dieser Prozess noch aus dem
     # Ordner läuft, hinterließe `rmdir /s /q` einen halb gelöschten Ordner.
     pending: list[Path] = []
     ok = True

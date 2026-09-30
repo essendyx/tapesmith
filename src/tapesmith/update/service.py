@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import logging
 import shutil
-import subprocess
 import sys
 import threading
 import time
@@ -19,12 +18,11 @@ from pathlib import Path
 
 from tapesmith import launch
 from tapesmith.config import setting
-from tapesmith.install import layout
-from tapesmith.update import stage
+from tapesmith.install import installer, layout
+from tapesmith.install import venv as venv_mod
 from tapesmith.update import state as state_mod
-from tapesmith.update.download import verify_package
 from tapesmith.update.errors import UpdateError
-from tapesmith.update.manifest import Manifest, parse_manifest
+from tapesmith.update.manifest import KIND_PYTHON, Manifest, lock_text, parse_manifest
 from tapesmith.update.signing import load_trusted_keys, verify
 from tapesmith.update.sources import parse_source
 from tapesmith.i18n import N_, _t
@@ -33,7 +31,8 @@ log = logging.getLogger("tapesmith.update")
 
 IDLE_HEARTBEAT_S = 120.0
 _PREPARE_LOCK = threading.Lock()
-NOT_INSTALLED_MESSAGE = (N_("Portable Version oder Entwicklung: Updates nur in der installierten App. Installieren mit Installieren.cmd aus dem Zip."))
+NOT_INSTALLED_MESSAGE = (N_("Entwicklung oder nicht installiert: Updates nur in der installierten App. Installieren mit: py -m tapesmith install"))
+APPLY_MODULE = "tapesmith.update.apply"
 
 
 def _app_version() -> str:
@@ -51,7 +50,7 @@ def _default_heartbeat() -> float | None:
 class UpdateService:
     def __init__(self, cfg_loader: Callable[[], dict], *, source_factory=parse_source,
                  keys_loader=load_trusted_keys, root: Path | None = None,
-                 spawn: Callable = launch.spawn_detached, run: Callable = subprocess.run,
+                 spawn: Callable = launch.spawn_detached, run: Callable = venv_mod.run_hidden,
                  now: Callable[[], datetime] = datetime.now, transport=None,
                  executable: str | None = None, clock: Callable[[], float] = time.monotonic,
                  heartbeat: Callable[[], float | None] = _default_heartbeat,
@@ -193,10 +192,12 @@ class UpdateService:
         channel = str(setting(cfg, "update.channel"))
         st = self._state() if self.installed() else None
         available = None
-        if manifest is not None and (channel == "beta" or manifest.channel == "stable") \
+        if manifest is not None and manifest.kind != KIND_PYTHON:
+            log.info("Update-Quelle bietet %s nur als portablen Build an, nicht über Python", manifest.version)
+        elif manifest is not None and (channel == "beta" or manifest.channel == "stable") \
                 and self._offerable(manifest.version, self._current(), st):
             available = {"version": manifest.version, "notes": manifest.notes, "published": manifest.published,
-                         "size": manifest.size}
+                         "size": 0, "packages": len(manifest.packages)}
             self._cache = (manifest.version, manifest, source)
         ready = bool(available and st is not None and self._prepared(available["version"]))
         self._write(state="ready" if ready else "idle", error=None, available=available,
@@ -218,7 +219,7 @@ class UpdateService:
         st = self._state()
         if root is None or st is None:
             return False
-        return version in st.versions and (layout.version_dir(version, root) / layout.APP_EXE).is_file()
+        return version in st.versions and layout.is_complete_version(layout.version_dir(version, root))
 
     def _check_newer(self, version: str, st: layout.InstallState) -> None:
         """Nur neuere Versionen (kein Downgrade bzw. Replay einer älteren, gültig signierten Version)."""
@@ -238,8 +239,20 @@ class UpdateService:
         with _PREPARE_LOCK:
             return self._prepare(version)
 
+    def _base_python(self, root: Path, st: layout.InstallState) -> tuple[Path, str]:
+        """Basis-Python der aktuellen Installation (pyvenv.cfg der aktiven Version, sonst
+        `install.json`, sonst das laufende) und seine Version (`3.11`)."""
+        current_dir = layout.version_dir(st.current, root) if st.current else None
+        python = venv_mod.python_of_env(current_dir) if current_dir is not None else None
+        if python is None and st.python and Path(st.python).is_file():
+            python = Path(st.python)
+        if python is None:
+            python = venv_mod.base_python()
+        pyver = venv_mod.python_version_of_env(current_dir) if current_dir is not None else None
+        return python, pyver or f"{sys.version_info[0]}.{sys.version_info[1]}"
+
     def _prepare(self, version: str) -> Path:
-        staging: Path | None = None
+        lock_file: Path | None = None
         try:
             root, st = self._require_installed()
             self._check_newer(version, st)
@@ -258,22 +271,42 @@ class UpdateService:
             _v, manifest, source = self._cache
             if channel != "beta" and manifest.channel != "stable":
                 raise UpdateError("update.download_failed", _t("Version {version} gehört zum Kanal {channel}, eingestellt ist {channel2}", version=version, channel=manifest.channel, channel2=channel))
+            if manifest.kind != KIND_PYTHON:
+                raise UpdateError("update.source_invalid", _t("Version {version} gibt es nur als portablen Build, nicht über Python", version=version))
+            python, pyver = self._base_python(root, st)
+            if pyver not in manifest.python:
+                raise UpdateError("update.apply_failed",
+                                  _t("Version {version} unterstützt Python {items}, installiert ist Python {pyver}", version=version, items=", ".join(manifest.python), pyver=pyver),
+                                  hint=_t("Python aktualisieren und Tapesmith neu installieren (py -m tapesmith install)."))
             downloads = root / "downloads"
-            package = source.download(manifest.file, downloads / manifest.file)
+            downloads.mkdir(parents=True, exist_ok=True)
+            lock_file = downloads / f"lock-{version}.txt"
+            lock_file.write_text(lock_text(manifest), encoding="utf-8")
+            options = source.pip_options() if hasattr(source, "pip_options") else {}
+            spec = venv_mod.PipSpec(lock_file=lock_file, **options)
             try:
-                verify_package(package, manifest)
-                staging = stage.staging_dir(version, root)
-                stage.extract(package, version, root)
-            finally:
-                package.unlink(missing_ok=True)
-            if not stage.smoke(staging, run=self.run):
-                shutil.rmtree(staging, ignore_errors=True)
-                self._mark_failed(root, version)
-                raise UpdateError("update.apply_failed", _t("Selbsttest der Version {version} fehlgeschlagen", version=version))
-            target = stage.finalize(staging, version, root)
+                venv_mod.provision(root, version, python=python, spec=spec, run=self.run)
+            except venv_mod.ProvisionError as exc:
+                log.error("Bereitstellung von %s gescheitert (%s): %s %s", version, exc.step, exc, exc.output)
+                if exc.step == "selftest":
+                    self._mark_failed(root, version)
+                    raise UpdateError("update.apply_failed", _t("Selbsttest der Version {version} fehlgeschlagen", version=version)) from exc
+                if exc.step == "pip" and "DO NOT MATCH THE HASHES" in exc.output.upper():
+                    raise UpdateError("update.checksum_mismatch",
+                                      _t("Ein Paket für {version} passt nicht zur Prüfsumme im signierten Manifest", version=version),
+                                      hint=_t("Update-Quelle prüfen; veränderte Pakete werden nie installiert.")) from exc
+                if exc.step == "pip":
+                    raise UpdateError("update.download_failed",
+                                      _t("Pakete für {version} nicht installierbar: {exc}", version=version, exc=exc),
+                                      hint=_t("Netzwerk prüfen, später erneut versuchen.")) from exc
+                raise UpdateError("update.apply_failed", _t("Bereitstellung von {version} fehlgeschlagen: {exc}", version=version, exc=exc)) from exc
+            try:
+                installer.register_version(version, root)
+            except OSError:
+                shutil.rmtree(layout.version_dir(version, root), ignore_errors=True)
+                raise
+            target = layout.version_dir(version, root)
         except (UpdateError, OSError) as exc:
-            if staging is not None:
-                shutil.rmtree(staging, ignore_errors=True)
             if isinstance(exc, UpdateError):
                 self._fail(exc)
                 raise
@@ -283,6 +316,9 @@ class UpdateService:
             log.error("Bereitstellung von %s fehlgeschlagen: %s", version, exc)
             self._fail(err)
             raise err from exc
+        finally:
+            if lock_file is not None:
+                lock_file.unlink(missing_ok=True)
         self._write(state="ready", error=None)
         return target
 
@@ -296,11 +332,15 @@ class UpdateService:
 
     # ---------- Installieren, Rückstellung ----------
 
-    def _apply_exe(self, root: Path, st: layout.InstallState) -> str:
-        return str(layout.version_dir(st.current, root) / layout.APP_EXE)
+    def _apply_argv(self, root: Path, st: layout.InstallState) -> list[str]:
+        """Updater aus dem echten Ordner der aktiven Version (nie über `current`): das Umstellen
+        der Junction berührt ihn so nicht."""
+        pythonw = layout.venv_python(layout.version_dir(st.current, root), gui=True)
+        return [str(pythonw), "-m", APPLY_MODULE]
 
     def start_install(self, version: str, reopen_route: str | None = None) -> list[str]:
-        """Startet `versions\\<aktuelle>\\Tapesmith.exe --update-apply --version V …` losgelöst."""
+        """Startet `versions\\<aktuelle>\\Scripts\\pythonw.exe -m tapesmith.update.apply --version V`
+        losgelöst."""
         try:
             root, st = self._require_installed()
             self._check_newer(version, st)
@@ -309,7 +349,7 @@ class UpdateService:
         except UpdateError as exc:
             self._fail(exc)
             raise
-        argv = [self._apply_exe(root, st), "--update-apply", "--version", version, "--root", str(root)]
+        argv = self._apply_argv(root, st) + ["--version", version, "--root", str(root)]
         if reopen_route:
             argv += ["--reopen-route", reopen_route]
         self._write(state="installing", error=None)
@@ -324,7 +364,7 @@ class UpdateService:
         except UpdateError as exc:
             self._fail(exc)
             raise
-        argv = [self._apply_exe(root, st), "--update-apply", "--rollback", "--root", str(root)]
+        argv = self._apply_argv(root, st) + ["--rollback", "--root", str(root)]
         if reopen_route:
             argv += ["--reopen-route", reopen_route]
         self._write(state="installing", error=None)

@@ -89,15 +89,20 @@ class UninstallRegistry:
 
 
 def write_uninstall_entry(reg: UninstallBackend, *, root: Path, version: str, size_kb: int) -> None:
+    """Eintrag unter Apps und Features. Deinstalliert wird mit dem Python der aktiven Version:
+    `"<Wurzel>\\current\\Scripts\\pythonw.exe" -m tapesmith uninstall` (keine eigene EXE)."""
     root_text = str(root)
-    quoted_exe = f'"{root_text}\\current\\Tapesmith.exe"'
+    pythonw = str(Path(root_text) / "current" / "Scripts" / "pythonw.exe")
+    icon = str(Path(root_text) / "current" / "Lib" / "site-packages" / "tapesmith" / "icons" / "app.ico")
+    command = f'"{pythonw}" -m tapesmith uninstall'
     reg.set_str("DisplayName", "Tapesmith")
     reg.set_str("DisplayVersion", version)
     reg.set_str("Publisher", "Tapesmith contributors")
     reg.set_str("InstallLocation", root_text)
-    reg.set_str("DisplayIcon", f"{root_text}\\current\\Tapesmith.exe")
-    reg.set_str("UninstallString", f"{quoted_exe} --uninstall")
-    reg.set_str("QuietUninstallString", f"{quoted_exe} --uninstall --quiet")
+    reg.set_str("DisplayIcon", icon)
+    reg.set_str("UninstallString", command)
+    reg.set_str("QuietUninstallString", f"{command} --quiet")
+    reg.set_str("URLInfoAbout", "https://github.com/essendyx/tapesmith")
     reg.set_dword("NoModify", 1)
     reg.set_dword("NoRepair", 1)
     reg.set_dword("EstimatedSize", int(size_kb))

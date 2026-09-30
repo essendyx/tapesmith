@@ -41,7 +41,7 @@
     "rollbackMessage": "Tapesmith restarts briefly and then opens with the previous version in a new browser tab.",
     "rollbackConfirm": "Roll back"
   },
-  "notInstalled": "Portable version or development build: updates are only available in the installed app. Install it with Installieren.cmd from the zip file.",
+  "notInstalled": "Development build or not installed: updates are only available in the installed app. Install it with: py -m tapesmith install",
   "errors": {
     "check": "Check failed",
     "install": "Installation not started",

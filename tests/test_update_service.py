@@ -1,5 +1,5 @@
-"""`UpdateService` mit `file:`-Quelle in tmp_path, Testschlüssel, Fake-Runner und Fake-Spawn,
-dazu Ende zu Ende bis zum Umschalten (Gesundheit über Fake) und der Qt-Freiheit des Pakets."""
+"""`UpdateService` mit `file:`-Quelle in tmp_path, Testschlüssel, Fake für venv/pip/Selbsttest und
+Fake-Spawn, dazu Ende zu Ende bis zum Umschalten (Gesundheit über Fake) und der Qt-Freiheit des Pakets."""
 
 from __future__ import annotations
 
@@ -16,7 +16,8 @@ from tapesmith.update import apply
 from tapesmith.update import state as state_mod
 from tapesmith.update.errors import UpdateError
 from tapesmith.update.service import UpdateService
-from update_fakes import FakeRun, install_layout, make_test_key, publish_dir
+from update_fakes import (FakeVenvRun, PYTHON, fake_hash, install_layout, legacy_manifest_bytes, make_test_key,
+                          publish_dir)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -46,6 +47,10 @@ def _cfg(source: str, **update) -> dict:
     return {"update": {"source": source, "channel": "stable", "idle_min": 10, **update}}
 
 
+def _pythonw(root: Path, version: str) -> Path:
+    return root / "versions" / version / "Scripts" / "pythonw.exe"
+
+
 def _service(tmp_path, *, installed=True, cfg=None, keys=None, run=None, clock=None, heartbeat=None,
              versions=("0.1.0",)):
     private, test_keys = make_test_key()
@@ -53,11 +58,11 @@ def _service(tmp_path, *, installed=True, cfg=None, keys=None, run=None, clock=N
     root = tmp_path / "root"
     if installed:
         install_layout(root, versions=versions)
-    exe = root / "versions" / versions[-1] / "Tapesmith.exe" if installed else Path(sys.executable)
+    exe = _pythonw(root, versions[-1]) if installed else Path(sys.executable)
     spawn = Spawn()
     config = cfg if cfg is not None else _cfg(f"file:{feed}")
     svc = UpdateService(lambda: config, keys_loader=lambda: test_keys if keys is None else keys, root=root,
-                        spawn=spawn, run=run or FakeRun(), now=lambda: datetime(2026, 10, 2, 8, 0, 0),
+                        spawn=spawn, run=run or FakeVenvRun(), now=lambda: datetime(2026, 10, 2, 8, 0, 0),
                         executable=str(exe), clock=clock or (lambda: 10_000.0),
                         heartbeat=heartbeat or (lambda: None), app_version=lambda: "0.1.0")
     return svc, private, feed, root, spawn
@@ -76,32 +81,47 @@ def test_nicht_installiert_status_und_install(tmp_path):
         with pytest.raises(UpdateError) as info:
             call()
         assert info.value.code == "update.not_installed"
+        assert "py -m tapesmith install" in str(info.value)
     assert spawn.calls == []
 
 
 def test_installiert_check_prepare_start_install(tmp_path):
-    svc, private, feed, root, spawn = _service(tmp_path)
+    run = FakeVenvRun()
+    svc, private, feed, root, spawn = _service(tmp_path, run=run)
     publish_dir(feed, "0.2.1", private, notes="Viel Neues")
     assert svc.installed()
     st = svc.check()
     assert st.installed is True and st.current == "0.1.0" and st.root == str(root)
     assert st.available == {"version": "0.2.1", "notes": "Viel Neues", "published": "2026-10-01T12:00:00Z",
-                            "size": (feed / "Tapesmith-portable-0.2.1.zip").stat().st_size}
+                            "size": 0, "packages": 3}
     assert st.last_check == "2026-10-02T08:00:00"
     assert st.source == f"file:{feed}" and st.channel == "stable"
 
     target = svc.prepare("0.2.1")
     assert target == root / "versions" / "0.2.1"
-    assert (target / "Tapesmith.exe").read_bytes() == b"neue-exe"
-    assert not (root / "versions" / "0.2.1.staging").exists()
+    assert layout.is_complete_version(target)
+    assert run.kinds() == ["venv", "pip", "selftest"]
+    venv_argv = run.calls[0][0]
+    # Neue Umgebung mit dem Basis-Python der aktiven Version (pyvenv.cfg), nie mit dem laufenden.
+    assert venv_argv == [str(PYTHON), "-m", "venv", str(target)]
+    pip_argv = run.calls[1][0]
+    assert pip_argv[0] == str(target / "Scripts" / "python.exe")
+    assert "--only-binary=:all:" in pip_argv and "--require-hashes" in pip_argv
+    assert "--no-index" not in pip_argv  # Ordner ohne Wheels: Pakete von PyPI
+    lock = run.locks[0]
+    assert "tapesmith==0.2.1 \\\n    --hash=sha256:" + fake_hash("tapesmith-0.2.1") in lock
+    assert 'backport==1.0 ; python_version == "3.11"' in lock
+    selftest_argv, selftest_env, _t = run.calls[2]
+    assert selftest_argv[:3] == [str(target / "Scripts" / "pythonw.exe"), "-m", "tapesmith.selftest"]
+    assert selftest_env["TAPESMITH_HOME"] != os.environ.get("TAPESMITH_HOME")
+    assert "PYTHONPATH" not in selftest_env
     assert list((root / "downloads").iterdir()) == []
     assert "0.2.1" in layout.read_state(root).versions
     assert svc.status().state == "ready"
 
     argv = svc.start_install("0.2.1", reopen_route="/einstellungen?abschnitt=updates")
     assert spawn.calls == [argv]
-    assert argv[:5] == [str(root / "versions" / "0.1.0" / "Tapesmith.exe"), "--update-apply", "--version",
-                        "0.2.1", "--root"]
+    assert argv[:6] == [str(_pythonw(root, "0.1.0")), "-m", "tapesmith.update.apply", "--version", "0.2.1", "--root"]
     assert argv[-2:] == ["--reopen-route", "/einstellungen?abschnitt=updates"]
     assert svc.status().state == "installing"
     # state.json liegt im App-Verzeichnis und trägt die Felder, die die Tray-App liest
@@ -111,6 +131,16 @@ def test_installiert_check_prepare_start_install(tmp_path):
     assert state_mod.state_path().parent.name == "update"
     assert saved["installed"] is True and saved["available"]["version"] == "0.2.1"
     assert saved["state"] == "installing"
+
+
+def test_ordner_mit_wheels_ist_einziger_index(tmp_path):
+    run = FakeVenvRun()
+    svc, private, feed, _root, _spawn = _service(tmp_path, run=run)
+    publish_dir(feed, "0.2.1", private, wheels=True)
+    svc.prepare("0.2.1")
+    pip_argv = run.calls[1][0]
+    assert "--no-index" in pip_argv
+    assert pip_argv[pip_argv.index("--find-links") + 1] == str(feed / "wheels")
 
 
 def test_ende_zu_ende_file_quelle_bis_umschalten(tmp_path):
@@ -126,12 +156,14 @@ def test_ende_zu_ende_file_quelle_bis_umschalten(tmp_path):
                                 health=lambda: {"version": "0.2.1"}, sleep=lambda s: None, keep=2)
     assert result == "ok"
     assert junction.read_junction(layout.current_link(root)).name == "0.2.1"
-    svc.executable = str(root / "versions" / "0.2.1" / "Tapesmith.exe")
+    pythonw = str(layout.current_pythonw(root))
+    assert started == [[pythonw, "-m", "tapesmith.daemon"], [pythonw, "-m", "tapesmith.gui.tray"]]
+    svc.executable = str(_pythonw(root, "0.2.1"))
     st = svc.status()
     assert st.current == "0.2.1" and st.previous == "0.1.0" and st.can_rollback is True
     assert st.available is None and st.state == "idle"
     rollback = svc.start_rollback()
-    assert rollback[0] == str(root / "versions" / "0.2.1" / "Tapesmith.exe")
+    assert rollback[:3] == [str(_pythonw(root, "0.2.1")), "-m", "tapesmith.update.apply"]
     assert "--rollback" in rollback
 
 
@@ -141,6 +173,16 @@ def test_kein_update_bei_gleicher_version_bzw_leerer_quelle(tmp_path):
     assert svc.check().available is None
     publish_dir(feed, "0.1.0", private)
     assert svc.check().available is None
+
+
+def test_altes_manifest_des_portablen_builds_wird_nicht_angeboten(tmp_path):
+    svc, private, feed, _root, _spawn = _service(tmp_path)
+    publish_dir(feed, "0.2.1", private, data=legacy_manifest_bytes("0.2.1"))
+    st = svc.check()
+    assert st.available is None and st.state == "idle" and st.error is None
+    with pytest.raises(UpdateError) as info:
+        svc.prepare("0.2.1")
+    assert info.value.code == "update.source_invalid"
 
 
 def test_failed_version_wird_nicht_angeboten(tmp_path):
@@ -156,10 +198,10 @@ def test_failed_version_wird_nicht_angeboten(tmp_path):
 
 def test_beta_nur_im_beta_kanal(tmp_path):
     svc, private, feed, _root, _spawn = _service(tmp_path)
-    publish_dir(feed, "0.3.0-beta.1", private, channel="beta")
+    publish_dir(feed, "0.3.0b1", private, channel="beta")
     assert svc.check().available is None
     svc.cfg_loader = lambda: _cfg(f"file:{feed}", channel="beta")
-    assert svc.check().available["version"] == "0.3.0-beta.1"
+    assert svc.check().available["version"] == "0.3.0b1"
 
 
 def test_ohne_schluessel_kein_update(tmp_path):
@@ -182,37 +224,78 @@ def test_fremde_signatur_abgelehnt(tmp_path):
     assert info.value.code == "update.signature_invalid"
 
 
-def test_veraendertes_zip_checksum_mismatch(tmp_path):
-    svc, private, feed, root, _spawn = _service(tmp_path)
-    publish_dir(feed, "0.2.1", private, tamper_zip=True)
+def test_veraenderte_lock_liste_ungueltige_signatur(tmp_path):
+    svc, private, feed, _root, _spawn = _service(tmp_path)
+    publish_dir(feed, "0.2.1", private)
+    data = (feed / "manifest.json").read_bytes().replace(fake_hash("pillow-cp311").encode(), b"b" * 64)
+    (feed / "manifest.json").write_bytes(data)
+    with pytest.raises(UpdateError) as info:
+        svc.check()
+    assert info.value.code == "update.signature_invalid"
+
+
+def test_pip_scheitert_ordner_weg_nicht_failed(tmp_path):
+    svc, private, feed, root, _spawn = _service(tmp_path, run=FakeVenvRun(pip_rc=1))
+    publish_dir(feed, "0.2.1", private)
     svc.check()
     with pytest.raises(UpdateError) as info:
         svc.prepare("0.2.1")
-    assert info.value.code == "update.checksum_mismatch"
+    assert info.value.code == "update.download_failed"
     assert not (root / "versions" / "0.2.1").exists()
-    assert svc.status().error["code"] == "update.checksum_mismatch"
+    assert "0.2.1" not in layout.read_state(root).failed
+    assert svc.status().error["code"] == "update.download_failed"
+
+
+def test_pip_meldet_falsche_pruefsumme(tmp_path):
+    run = FakeVenvRun(pip_rc=1, pip_error="ERROR: THESE PACKAGES DO NOT MATCH THE HASHES FROM THE REQUIREMENTS FILE.")
+    svc, private, feed, root, _spawn = _service(tmp_path, run=run)
+    publish_dir(feed, "0.2.1", private, wheels=True)
+    with pytest.raises(UpdateError) as info:
+        svc.prepare("0.2.1")
+    assert info.value.code == "update.checksum_mismatch" and info.value.hint
+    assert not (root / "versions" / "0.2.1").exists()
+    assert layout.read_state(root).current == "0.1.0"
 
 
 def test_selbsttest_scheitert_version_failed(tmp_path):
-    svc, private, feed, root, _spawn = _service(tmp_path, run=FakeRun("Selbsttest fehlgeschlagen"))
+    svc, private, feed, root, _spawn = _service(tmp_path, run=FakeVenvRun(selftest_ok=False))
     publish_dir(feed, "0.2.1", private)
     svc.check()
     with pytest.raises(UpdateError) as info:
         svc.prepare("0.2.1")
     assert info.value.code == "update.apply_failed"
-    assert not (root / "versions" / "0.2.1.staging").exists()
+    assert not (root / "versions" / "0.2.1").exists()
     assert "0.2.1" in layout.read_state(root).failed
+
+
+def test_falsche_version_in_der_umgebung_wird_abgelehnt(tmp_path):
+    svc, private, feed, root, _spawn = _service(tmp_path, run=FakeVenvRun(installed_version="0.2.0"))
+    publish_dir(feed, "0.2.1", private)
+    with pytest.raises(UpdateError) as info:
+        svc.prepare("0.2.1")
+    assert info.value.code == "update.apply_failed" and "0.2.0" in str(info.value)
+    assert not (root / "versions" / "0.2.1").exists()
+
+
+def test_python_version_nicht_unterstuetzt(tmp_path):
+    svc, private, feed, root, _spawn = _service(tmp_path)
+    publish_dir(feed, "0.2.1", private, python=("3.12",))
+    with pytest.raises(UpdateError) as info:
+        svc.prepare("0.2.1")
+    assert info.value.code == "update.apply_failed"
+    assert "3.11" in str(info.value) and info.value.hint
+    assert not (root / "versions" / "0.2.1").exists()
 
 
 def test_prepare_ohne_vorherigen_check_und_bereits_bereit(tmp_path):
     svc, private, feed, _root, _spawn = _service(tmp_path)
     publish_dir(feed, "0.2.1", private)
-    run = FakeRun()
+    run = FakeVenvRun()
     svc.run = run
     svc.prepare("0.2.1")
-    assert len(run.calls) == 1
+    assert len(run.calls) == 3
     svc.prepare("0.2.1")
-    assert len(run.calls) == 1
+    assert len(run.calls) == 3
     with pytest.raises(UpdateError) as info:
         svc.prepare("0.9.0")
     assert info.value.code == "update.download_failed"
@@ -251,8 +334,8 @@ def test_idle_ok_regeln(tmp_path):
 
 def test_update_paket_importiert_kein_qt():
     modules = ["tapesmith.update", "tapesmith.update.errors", "tapesmith.update.manifest",
-               "tapesmith.update.signing", "tapesmith.update.sources", "tapesmith.update.download",
-               "tapesmith.update.stage", "tapesmith.update.apply", "tapesmith.update.service",
+               "tapesmith.update.signing", "tapesmith.update.sources", "tapesmith.install.venv",
+               "tapesmith.install.installer", "tapesmith.update.apply", "tapesmith.update.service",
                "tapesmith.update.state", "tapesmith.automation.update", "tapesmith.webapi.routes_update",
                "tapesmith.cli_cmds.update"]
     code = "\n".join(f"import {m}" for m in modules) + "\nimport sys\nprint('PySide6' in sys.modules)\n"

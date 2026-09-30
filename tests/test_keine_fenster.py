@@ -15,7 +15,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCES = sorted((ROOT / "src" / "tapesmith").rglob("*.py")) + [ROOT / "tools" / "tapesmith_gui_entry.py"]
+SOURCES = sorted((ROOT / "src" / "tapesmith").rglob("*.py"))
 
 # Namen, die ein Fenster bedeuten (Qt-Fensterklassen, Win32-Meldungsfenster, Web-Fenster).
 FORBIDDEN_NAMES = {

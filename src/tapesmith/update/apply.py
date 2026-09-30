@@ -1,12 +1,15 @@
-"""Update anwenden: `Tapesmith.exe --update-apply --version V [--root D]
-[--reopen-route R] [--rollback]`.
+"""Update anwenden: `pythonw -m tapesmith.update.apply --version V [--root D]
+[--reopen-route R] [--rollback] [--no-tray]`. `--no-tray` bzw. `TAPESMITH_NO_TRAY=1` startet nach dem
+Umschalten nur den Druckdienst (Rechner ohne Anmeldung, Probeläufe).
 
-Läuft losgelöst aus dem echten Ordner der **alten** Version (nie über `current`), damit das
-Umstellen der Junction die laufende EXE nicht berührt. Ablauf: Mutex `Local\\Tapesmith.Update`,
-Druckdienst über IPC `shutdown` beenden (nicht erzwungen; belegt: bis 60 s warten, sonst Abbruch
-`busy`), übrige Prozesse unter der Wurzel beenden, `activate(V)`, Dienst und Tray aus `current`
-starten, `/health` muss binnen 60 s `version == V` melden. Sonst Rückfall auf die alte Version,
-`V` landet in `install.json` `failed`. Erfolg: `prune(keep_versions)`, Oberfläche im Browser wieder öffnen.
+Läuft losgelöst aus dem echten Ordner der **alten** Version (`versions\\<alt>\\Scripts\\pythonw.exe`,
+nie über `current`), damit das Umstellen der Junction den laufenden Updater nicht berührt. Ablauf:
+Mutex `Local\\Tapesmith.Update`, Druckdienst über IPC `shutdown` beenden (nicht erzwungen;
+belegt: bis 60 s warten, sonst Abbruch `busy`), übrige Prozesse unter der Wurzel beenden (außer
+dem eigenen und seinem Starter), `activate(V)`, Druckdienst und Tray aus `current` starten
+(`pythonw -m tapesmith.daemon` bzw. `tapesmith.gui.tray`), `/health` muss binnen 60 s
+`version == V` melden. Sonst Rückfall auf die alte Version, `V` landet in `install.json` `failed`.
+Erfolg: `prune(keep_versions)`, Oberfläche im Browser wieder öffnen.
 
 Jeder Schritt schreibt den Zustand (`installing`, `idle`, `failed`) nach `state.json`. Qt-frei."""
 
@@ -15,6 +18,7 @@ from __future__ import annotations
 import argparse
 import logging
 import os
+import sys
 import time
 from collections.abc import Callable, Sequence
 from pathlib import Path
@@ -93,28 +97,29 @@ def _save(state: str, error: UpdateError | None = None, *, version: str | None =
 # ---------- Ablauf ----------
 
 def _stop_others(root: Path, lister, killer) -> list[int]:
-    procs = processes.processes_under(root, lister=lister, exclude_pids=(os.getpid(),))
+    procs = processes.processes_under(root, lister=lister, exclude_pids=processes.own_pids())
     if not procs:
         return []
     return processes.terminate([p.pid for p in procs], killer=killer)
 
 
-def _start(root: Path, spawn: Callable[[Sequence[str]], int]) -> None:
-    exe = str(layout.current_exe(root))
-    for flag in ("--daemon", "--tray"):
+def _start(root: Path, spawn: Callable[[Sequence[str]], int], *, tray: bool = True) -> None:
+    kinds = ("daemon", "tray") if tray else ("daemon",)
+    pythonw = str(layout.current_pythonw(root))
+    for kind in kinds:
         try:
-            spawn([exe, flag])
+            spawn(launch.app_argv(kind, frozen=False, executable=pythonw))
         except Exception as exc:  # noqa: BLE001
-            log.error("Start %s fehlgeschlagen: %s", flag, exc)
+            log.error("Start %s fehlgeschlagen: %s", kind, exc)
 
 
 def _reopen(root: Path, route: str | None, spawn) -> None:
-    """Oberfläche nach dem Umschalten auf `route` im Standardbrowser öffnen (`Tapesmith.exe --app`
-    öffnet einen Browser-Tab und beendet sich; Fehler zeigt er selbst als Meldungsfenster)."""
+    """Oberfläche nach dem Umschalten auf `route` im Standardbrowser öffnen
+    (`pythonw -m tapesmith.webui.browser --route R` öffnet einen Browser-Tab und beendet sich)."""
     if not route:
         return
     try:
-        spawn([str(layout.current_exe(root)), "--app", "--route", route])
+        spawn(launch.app_argv("app", "--route", route, frozen=False, executable=str(layout.current_pythonw(root))))
     except Exception as exc:  # noqa: BLE001
         log.warning("Oberfläche nicht wieder im Browser geöffnet: %s", exc)
 
@@ -160,7 +165,8 @@ def apply_update(version: str | None, *, root: Path, reopen_route: str | None = 
                  clock: Callable[[], float] = time.monotonic,
                  sleep: Callable[[float], None] = time.sleep,
                  keep: int | None = None,
-                 pruner: Callable[..., list[str]] = installer.prune) -> str:
+                 pruner: Callable[..., list[str]] = installer.prune,
+                 tray: bool = True) -> str:
     """Stellt auf `version` um (bzw. mit `rollback` auf `previous`). Ergebnis `ok`, `rolled_back`, `busy`."""
     root = Path(root)
     st = layout.read_state(root)
@@ -199,7 +205,7 @@ def apply_update(version: str | None, *, root: Path, reopen_route: str | None = 
         left = [-1]
     if left:
         log.error("Prozesse ließen sich nicht beenden: %s", left)
-        _start(root, spawn)
+        _start(root, spawn, tray=tray)
         _save("failed", UpdateError("update.apply_failed",
                                     _t("Tapesmith ließ sich nicht vollständig beenden, Update abgebrochen")))
         _reopen(root, reopen_route, spawn)
@@ -209,7 +215,7 @@ def apply_update(version: str | None, *, root: Path, reopen_route: str | None = 
     try:
         installer.activate(version, root=root)
         switched = True
-        _start(root, spawn)
+        _start(root, spawn, tray=tray)
         healthy = _wait_healthy(version, health, clock, sleep)
     except Exception as exc:  # noqa: BLE001 (jeder Fehler führt zum Rückfall)
         log.error("Umschalten auf %s fehlgeschlagen: %s", version, exc)
@@ -236,21 +242,23 @@ def apply_update(version: str | None, *, root: Path, reopen_route: str | None = 
         _restore_previous(root, old_previous)
     else:
         _mark_failed(root, version, old_previous)
-    _start(root, spawn)
+    _start(root, spawn, tray=tray)
     _save("failed", UpdateError("update.apply_failed",
                                 _t("Version {version} startete nicht fehlerfrei, zurück auf {old}", version=version, old=old)))
     _reopen(root, reopen_route, spawn)
     return RESULT_ROLLED_BACK
 
 
-# ---------- EXE-Weiche ----------
+# ---------- `pythonw -m tapesmith.update.apply` ----------
 
 def _parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="Tapesmith --update-apply", add_help=False)
+    p = argparse.ArgumentParser(prog="python -m tapesmith.update.apply", add_help=False)
     p.add_argument("--version", default=None)
     p.add_argument("--root", type=Path, default=None)
     p.add_argument("--reopen-route", default=None)
     p.add_argument("--rollback", action="store_true")
+    # Ohne Tray (nur Druckdienst): Server ohne Anmeldung, automatisierte Prüfläufe.
+    p.add_argument("--no-tray", action="store_true")
     return p
 
 
@@ -268,7 +276,7 @@ def _setup_logging() -> None:
 
 def main(argv: list[str] | None = None, *, mutex_factory: Callable[[str], object] | None = None,
          **deps) -> int:
-    """Einstieg für `Tapesmith.exe --update-apply …`. Läuft schon ein Update (Mutex belegt): Exit 0."""
+    """Einstieg für `pythonw -m tapesmith.update.apply …`. Läuft schon ein Update (Mutex belegt): Exit 0."""
     args = _parser().parse_args(argv)
     if not args.rollback and not args.version:
         return EXIT_ERROR
@@ -284,7 +292,7 @@ def main(argv: list[str] | None = None, *, mutex_factory: Callable[[str], object
     try:
         root = args.root if args.root is not None else layout.install_root()
         result = apply_update(args.version, root=root, reopen_route=args.reopen_route, rollback=args.rollback,
-                              **deps)
+                              tray=not (args.no_tray or os.environ.get("TAPESMITH_NO_TRAY") == "1"), **deps)
     except UpdateError as exc:
         log.error("Update fehlgeschlagen: %s", exc)
         _save("failed", exc)
@@ -296,3 +304,7 @@ def main(argv: list[str] | None = None, *, mutex_factory: Callable[[str], object
     finally:
         mutex.release()
     return {RESULT_OK: EXIT_OK, RESULT_BUSY: EXIT_BUSY}.get(result, EXIT_ERROR)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,5 +1,9 @@
 """Laufende Tapesmith-Prozesse finden und beenden: Installer/Updater dürfen
-nicht in ein Verzeichnis schreiben, das eine laufende EXE gerade offen hält.
+nicht in ein Verzeichnis schreiben, das ein laufender Prozess gerade offen hält.
+
+Gefunden wird über den Pfad des ausführbaren Programms: in einer Versionsumgebung ist das der
+Starter `versions\\<v>\\Scripts\\pythonw.exe` (bzw. `python.exe`), der das Basis-Python in einem
+Job-Objekt startet; wird der Starter beendet, endet auch der Python-Prozess dahinter.
 
 `list_processes` nutzt nur `ctypes` (kein pywin32): `psapi.EnumProcesses`,
 `kernel32.OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION)`, `QueryFullProcessImageNameW`.
@@ -71,6 +75,20 @@ def list_processes() -> list[ProcessInfo]:
     return result
 
 
+def own_pids() -> tuple[int, ...]:
+    """Eigener Prozess und sein Elternprozess. Aus einer venv startet `Scripts\\pythonw.exe` als
+    kleiner Starter das Basis-Python und wartet auf es; wer den Starter beendet, beendet damit
+    auch sich selbst. Installer, Updater und Deinstallation schließen deshalb beide aus."""
+    pids = [os.getpid()]
+    try:
+        parent = os.getppid()
+    except (AttributeError, OSError):
+        parent = 0
+    if parent:
+        pids.append(parent)
+    return tuple(pids)
+
+
 def processes_under(root: Path, *, lister: Callable[[], list[ProcessInfo]] = list_processes,
                     exclude_pids: Iterable[int] = ()) -> list[ProcessInfo]:
     """Prozesse aus `lister()`, deren Pfad unter `root` oder dem aufgelösten Ziel von
@@ -92,6 +110,49 @@ def processes_under(root: Path, *, lister: Callable[[], list[ProcessInfo]] = lis
         if any(exe_norm == base or exe_norm.startswith(base + "\\") for base in roots):
             result.append(proc)
     return result
+
+
+_CIM_SCRIPT = (
+    "$ErrorActionPreference='SilentlyContinue';[Console]::OutputEncoding=[Text.Encoding]::UTF8;"
+    "Get-CimInstance Win32_Process | ForEach-Object {"
+    " '{0}`t{1}`t{2}' -f $_.ProcessId, $_.ExecutablePath, ($_.CommandLine -replace '\\s+', ' ') }"
+)
+
+
+def list_command_lines(*, runner: Callable[..., "subprocess.CompletedProcess"] | None = None) -> list[tuple[int, str, str]]:
+    """(PID, Programmpfad, Befehlszeile) aller Prozesse über CIM (`powershell.exe`, ohne
+    Fenster). Leer, wenn die Abfrage scheitert."""
+    import subprocess
+
+    run = runner or subprocess.run
+    try:
+        result = run(["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", _CIM_SCRIPT],
+                     capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=60,
+                     creationflags=0x08000000)
+    except (OSError, subprocess.SubprocessError):
+        return []
+    rows = []
+    for line in (result.stdout or "").splitlines():
+        parts = line.split(chr(9), 2)
+        if len(parts) == 3 and parts[0].strip().isdigit():
+            rows.append((int(parts[0]), parts[1], parts[2]))
+    return rows
+
+
+def tapesmith_processes_in(env_dir: Path, *, rows: Iterable[tuple[int, str, str]] | None = None,
+                           exclude_pids: Iterable[int] = ()) -> list[ProcessInfo]:
+    """Prozesse, deren Programm unter `env_dir` liegt und deren Befehlszeile `tapesmith` enthält
+    (andere Python-Sitzungen derselben Umgebung bleiben unberührt)."""
+    base = _normpath(env_dir)
+    exclude = set(exclude_pids)
+    found = []
+    for pid, exe, cmdline in (list_command_lines() if rows is None else rows):
+        if pid in exclude or not exe:
+            continue
+        norm = _normpath(exe)
+        if (norm == base or norm.startswith(base + "\\")) and "tapesmith" in cmdline.lower():
+            found.append(ProcessInfo(pid=pid, exe=exe))
+    return found
 
 
 def stop_daemon(cfg: dict, *, timeout_s: float = 15.0, connect=None) -> bool:

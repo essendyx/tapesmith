@@ -1,4 +1,4 @@
-"""`--update-apply` gegen ein Installationslayout in tmp_path (Junction nur dort), alle Prozesse,
+"""`python -m tapesmith.update.apply` gegen ein Installationslayout in tmp_path (Junction nur dort), alle Prozesse,
 Starts und Gesundheitsprüfungen über Fakes. Nie echte Prozesse dieses PCs."""
 
 from __future__ import annotations
@@ -11,7 +11,7 @@ from tapesmith.install.processes import ProcessInfo
 from tapesmith.update import apply
 from tapesmith.update import state as state_mod
 from tapesmith.update.errors import UpdateError
-from update_fakes import install_layout
+from update_fakes import install_layout, make_version
 
 
 class Clock:
@@ -68,11 +68,9 @@ class Env:
 
 
 def _root(tmp_path):
-    """0.1.0 aktiv (ohne vorige), 0.2.0 bereitgestellt wie nach `stage.finalize`."""
+    """0.1.0 aktiv (ohne vorige), 0.2.0 bereitgestellt wie nach `venv.provision` und `register_version`."""
     root = install_layout(tmp_path / "root", versions=("0.1.0",))
-    new = layout.version_dir("0.2.0", root)
-    new.mkdir(parents=True)
-    (new / "Tapesmith.exe").write_bytes(b"exe 0.2.0")
+    make_version(root, "0.2.0")
     st = layout.read_state(root)
     st.versions.append("0.2.0")
     layout.write_state(st, root)
@@ -84,13 +82,17 @@ def _current(root):
 
 
 def _exe(root):
-    return str(layout.current_exe(root))
+    return str(layout.current_pythonw(root))
+
+
+DAEMON = ["-m", "tapesmith.daemon"]
+TRAY = ["-m", "tapesmith.gui.tray"]
 
 
 def test_erfolg_schaltet_um_prunt_und_oeffnet_fenster(tmp_path):
     root = _root(tmp_path)
     env = Env(root, health_version="0.2.0",
-              procs=[ProcessInfo(pid=77, exe=str(root / "versions" / "0.1.0" / "Tapesmith.exe"))])
+              procs=[ProcessInfo(pid=77, exe=str(root / "versions" / "0.1.0" / "Scripts" / "pythonw.exe"))])
     result = apply.apply_update("0.2.0", root=root, reopen_route="/einstellungen?abschnitt=updates", **env.deps())
     assert result == "ok"
     assert _current(root) == "0.2.0"
@@ -98,8 +100,8 @@ def test_erfolg_schaltet_um_prunt_und_oeffnet_fenster(tmp_path):
     assert (st.current, st.previous, st.failed) == ("0.2.0", "0.1.0", [])
     assert env.pruned == [2]
     assert env.killed == [77]
-    assert env.spawned == [[_exe(root), "--daemon"], [_exe(root), "--tray"],
-                           [_exe(root), "--app", "--route", "/einstellungen?abschnitt=updates"]]
+    assert env.spawned == [[_exe(root), *DAEMON], [_exe(root), *TRAY],
+                           [_exe(root), "-m", "tapesmith.webui.browser", "--route", "/einstellungen?abschnitt=updates"]]
     status = state_mod.load_status()
     assert status.state == "idle" and status.error is None
 
@@ -116,8 +118,8 @@ def test_ungesund_rueckfall_auf_alt(tmp_path, health_version):
     assert "0.2.0" in st.failed
     assert st.previous is None  # vorige Angabe bleibt wie vor dem Versuch
     # neu gestartet (Dienst, Tray), dann nach dem Rückfall die alten wieder
-    assert env.spawned.count([_exe(root), "--daemon"]) == 2
-    assert env.spawned[-1] == [_exe(root), "--tray"]
+    assert env.spawned.count([_exe(root), *DAEMON]) == 2
+    assert env.spawned[-1] == [_exe(root), *TRAY]
     assert env.pruned == []
     status = state_mod.load_status()
     assert status.state == "failed"
@@ -149,7 +151,7 @@ def test_dienst_zuerst_belegt_dann_frei(tmp_path):
 def test_prozesse_lassen_sich_nicht_beenden(tmp_path):
     root = _root(tmp_path)
     env = Env(root, health_version="0.2.0", kill_ok=False,
-              procs=[ProcessInfo(pid=55, exe=str(root / "current" / "Tapesmith.exe"))])
+              procs=[ProcessInfo(pid=55, exe=str(root / "current" / "Scripts" / "pythonw.exe"))])
     assert apply.apply_update("0.2.0", root=root, **env.deps()) == "rolled_back"
     assert _current(root) == "0.1.0"
     assert layout.read_state(root).failed == []

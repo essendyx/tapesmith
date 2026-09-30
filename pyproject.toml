@@ -5,29 +5,64 @@ build-backend = "hatchling.build"
 [project]
 name = "tapesmith"
 version = "0.3.0"
-description = "Label studio for the Phomemo P12"
+description = "Label studio for the Phomemo P12 label printer: templates, QR codes, homelab labels, web UI, print service and automation for Windows"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
 authors = [{name = "Tapesmith contributors"}]
-keywords = ["phomemo", "p12", "label printer", "labels", "windows"]
+keywords = ["phomemo", "p12", "label printer", "labels", "qr code", "homelab", "windows"]
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: Microsoft :: Windows",
+    "Development Status :: 4 - Beta",
     "Environment :: Win32 (MS Windows)",
+    "Environment :: Web Environment",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: System Administrators",
+    "Natural Language :: German",
+    "Natural Language :: English",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: Microsoft :: Windows :: Windows 11",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Printing",
+    "Topic :: Utilities",
 ]
 requires-python = ">=3.11"
-dependencies = ["pillow>=10.1", "pyserial>=3.5", "segno>=1.6", "zxing-cpp>=3.0", "PySide6>=6.6", "ppf-datamatrix>=0.2", "openpyxl>=3.1", "bleak>=0.22", "fastapi>=0.115", "uvicorn>=0.30", "mcp>=2.2,<3", "paho-mqtt>=2.0", "keyring>=25", "httpx>=0.27", "cryptography>=42"]
+dependencies = [
+    "pillow>=10.1",
+    "pyserial>=3.5",
+    "segno>=1.6",
+    "zxing-cpp>=3.0",
+    "PySide6>=6.6",
+    "ppf-datamatrix>=0.2",
+    "openpyxl>=3.1",
+    "bleak>=0.22",
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    "mcp>=2.2,<3",
+    "paho-mqtt>=2.0",
+    "keyring>=25",
+    "httpx>=0.27",
+    "cryptography>=42",
+]
 
 [project.urls]
 Homepage = "https://github.com/essendyx/tapesmith"
+Documentation = "https://github.com/essendyx/tapesmith/blob/main/docs/manual.md"
+Handbuch = "https://github.com/essendyx/tapesmith/blob/main/docs/handbuch.md"
+Source = "https://github.com/essendyx/tapesmith"
+Issues = "https://github.com/essendyx/tapesmith/issues"
+Changelog = "https://github.com/essendyx/tapesmith/releases"
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "pytest-qt>=4.4", "httpx>=0.27"]
+dev = ["pytest>=8", "pytest-qt>=4.4", "httpx>=0.27", "build>=1.2"]
 golden = ["phomemo-p12-tools==0.0.5"]
-build = ["pyinstaller>=6.6"]
 screenshots = ["playwright>=1.47"]
 
+# Kommandozeile für Entwicklungsumgebungen. Die installierte App startet nie über diese von pip
+# erzeugten Starter, sondern immer mit `pythonw.exe -m tapesmith...` (siehe README).
 [project.scripts]
 tapesmith = "tapesmith.cli:main"
 p12 = "tapesmith.cli:main"
@@ -35,16 +70,22 @@ phomemo_render_label = "tapesmith.compat:main_render"
 phomemo_print_p12 = "tapesmith.compat:main_print"
 p12d = "tapesmith.daemon.instance:main"
 
-[project.gui-scripts]
-tapesmith-app = "tapesmith.webui.browser:main"
-tapesmith-tray = "tapesmith.gui.tray:main"
-
 [tool.hatch.build.targets.wheel]
 packages = ["src/tapesmith"]
+# Die gebaute Web-Oberfläche (webui/static), Schriften, Vorlagen, Icons und Kataloge liegen im
+# Paketordner und kommen so vollständig ins Wheel; `tests/test_packaging.py` prüft das.
+exclude = ["**/__pycache__", "**/*.pyc"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/tapesmith", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "pyproject.toml"]
+exclude = ["**/__pycache__", "**/*.pyc"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-markers = ["hardware: braucht den echten Drucker (nur mit --hardware)"]
+markers = [
+    "hardware: braucht den echten Drucker (nur mit --hardware)",
+    "slow: echter pip- und venv-Lauf (nur mit TAPESMITH_SLOW_TESTS=1)",
+]
 qt_api = "pyside6"
 filterwarnings = [
     "error",

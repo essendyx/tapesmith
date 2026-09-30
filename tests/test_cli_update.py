@@ -13,7 +13,7 @@ from tapesmith import cli
 from tapesmith import config as config_mod
 from tapesmith.cli_cmds import update as update_cmd
 from tapesmith.update.service import UpdateService
-from update_fakes import FakeRun, install_layout, make_test_key, publish_dir
+from update_fakes import FakeVenvRun, install_layout, make_test_key, publish_dir
 
 
 def _svc_factory(tmp_path, monkeypatch, *, installed=True):
@@ -24,13 +24,13 @@ def _svc_factory(tmp_path, monkeypatch, *, installed=True):
     exe = str(sys.executable)
     if installed:
         install_layout(root)
-        exe = str(root / "versions" / "0.1.0" / "Tapesmith.exe")
+        exe = str(root / "versions" / "0.1.0" / "Scripts" / "pythonw.exe")
     spawned = []
     config_mod.save_config({"update": {"source": f"file:{feed}"}})
 
     def factory(load_config):
         return UpdateService(load_config, keys_loader=lambda: keys, root=root, spawn=spawned.append,
-                             run=FakeRun(), now=lambda: datetime(2026, 10, 2, 8, 0), executable=exe,
+                             run=FakeVenvRun(), now=lambda: datetime(2026, 10, 2, 8, 0), executable=exe,
                              app_version=lambda: "0.1.0")
 
     monkeypatch.setattr(update_cmd, "SERVICE_FACTORY", factory)
@@ -81,8 +81,8 @@ def test_check_ohne_schluessel_exit_1(app_home, tmp_path, monkeypatch, capsys):
 def test_install_mit_yes_startet_update(app_home, tmp_path, monkeypatch, capsys):
     spawned, root = _svc_factory(tmp_path, monkeypatch)
     assert cli.main(["update", "install", "--yes"]) == 0
-    assert (root / "versions" / "0.2.1" / "Tapesmith.exe").is_file()
-    assert spawned[0][1:4] == ["--update-apply", "--version", "0.2.1"]
+    assert (root / "versions" / "0.2.1" / "Scripts" / "pythonw.exe").is_file()
+    assert spawned[0][1:5] == ["-m", "tapesmith.update.apply", "--version", "0.2.1"]
     assert "gestartet" in capsys.readouterr().out
 
 
@@ -106,7 +106,7 @@ def test_rollback(app_home, tmp_path, monkeypatch, capsys):
     assert "Keine vorige" in capsys.readouterr().err
     install_layout(root, versions=("0.1.0", "0.2.0"), current="0.2.0")
     monkeypatch.setattr(update_cmd, "SERVICE_FACTORY", lambda load: UpdateService(
-        load, root=root, spawn=spawned.append, executable=str(root / "versions" / "0.2.0" / "Tapesmith.exe")))
+        load, root=root, spawn=spawned.append, executable=str(root / "versions" / "0.2.0" / "Scripts" / "pythonw.exe")))
     monkeypatch.setattr("sys.stdin", io.StringIO("j\n"))
     assert cli.main(["update", "rollback"]) == 0
     assert "--rollback" in spawned[-1]

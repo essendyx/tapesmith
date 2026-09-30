@@ -4,7 +4,7 @@ Alles nur unter HKCU (kein Adminrecht nötig), idempotent, über ein injizierbar
 Registry-Backend. Tests nutzen ausschließlich `FakeRegistry`; `WinRegBackend` schützt sich
 selbst gegen Schreibzugriffe während `pytest` (Sicherheitsnetz „Echte Nutzerdaten sind
 tabu“). Kontextmenü/URI öffnen die Web-Oberfläche im Standardbrowser
-nur vorausgefüllt (`Tapesmith.exe --open/--uri`, siehe `webui.browser`): gedruckt wird erst
+nur vorausgefüllt (`pythonw -m tapesmith.webui.browser --open/--uri`): gedruckt wird erst
 nach Bestätigung durch den Menschen (`IntegrationAction` ist nur ein Vorschlag)."""
 
 import os
@@ -177,7 +177,7 @@ def plan_entries(parts: Iterable[str], *, command: Callable[..., str] = registry
 
     `autostart_argv`: Befehlszeile für den `Run`-Wert, Standard `app_argv("tray")` wie
     bisher. Der Installer (`tapesmith.install.installer`) übergibt hier `<Wurzel>\\current\\
-    Tapesmith.exe --tray` statt des heutigen Entwicklungsbefehls."""
+    Scripts\\pythonw.exe -m tapesmith.gui.tray`."""
     icon_value = icon if icon is not None else app_argv("gui")[0]
     entries: list[RegEntry] = []
     for part in parts:

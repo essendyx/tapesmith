@@ -26,7 +26,7 @@ siehe `gui.hotkey`). Jeder Druck läuft mit Quelle "hotkey" über das Druck-Back
 direkt). HiDPI-Symbole mit Statusabzeichen (`gui.icons`), Dunkelmodus des Menüs
 nach `app.theme`, alle Texte über `tapesmith.i18n` (Sprache aus `app.language`).
 
-Start: `python -m tapesmith.gui.tray`, `Tapesmith.exe --tray` oder `p12 tray`; eine Instanz je
+Start: `python -m tapesmith.gui.tray`, `pythonw -m tapesmith.gui.tray` (installierte App) oder `p12 tray`; eine Instanz je
 Benutzer und App-Verzeichnis (ein eigenes `TAPESMITH_HOME` gibt also eine eigene Instanz).
 """
 

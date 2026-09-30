@@ -36,6 +36,11 @@ def test_install_root_legt_nichts_an(tmp_path, monkeypatch):
     ("0.2.0", "0.2.0-beta.1"),
     ("0.2.0-beta.2", "0.2.0-beta.1"),
     ("0.2.0-beta.10", "0.2.0-beta.9"),
+    ("0.4.0", "0.4.0rc1"),
+    ("0.4.0rc1", "0.4.0b2"),
+    ("0.4.0b2", "0.4.0b1"),
+    ("0.4.0b1", "0.4.0a3"),
+    ("0.4.0a1", "0.3.9"),
 ])
 def test_parse_version_groesser(a, b):
     assert layout.parse_version(a) > layout.parse_version(b)
@@ -55,9 +60,9 @@ def test_parse_version_ungueltig_wirft():
 def test_install_state_roundtrip():
     state = layout.InstallState(current="0.2.1", previous="0.2.0", versions=["0.2.0", "0.2.1"],
                                 failed=["0.1.9"], installed_at="2026-09-28T10:00:00+00:00",
-                                channel="stable")
+                                channel="stable", python="C:/Python311/python.exe")
     data = state.to_dict()
-    assert data["schema"] == 1
+    assert data["schema"] == 2
     restored = layout.InstallState.from_dict(data)
     assert restored == state
 
@@ -69,6 +74,12 @@ def test_install_state_from_dict_fehlende_felder_haben_defaults():
     assert restored.versions == []
     assert restored.failed == []
     assert restored.channel == "stable"
+    assert restored.python is None
+
+
+def test_install_state_liest_schema_1():
+    restored = layout.InstallState.from_dict({"schema": 1, "current": "0.3.0", "versions": ["0.3.0"]})
+    assert restored.current == "0.3.0" and restored.python is None
 
 
 # ---------- read_state / write_state ----------
@@ -105,6 +116,23 @@ def test_version_dir(tmp_path):
 def test_current_link_und_exe(tmp_path):
     assert layout.current_link(tmp_path) == tmp_path / "current"
     assert layout.current_exe(tmp_path) == tmp_path / "current" / "Tapesmith.exe"
+    assert layout.current_pythonw(tmp_path) == tmp_path / "current" / "Scripts" / "pythonw.exe"
+
+
+def test_versionsarten(tmp_path):
+    venv = tmp_path / "venv"
+    (venv / "Scripts").mkdir(parents=True)
+    (venv / "pyvenv.cfg").write_text("home = C:\\Python311\n", encoding="utf-8")
+    (venv / "Scripts" / "pythonw.exe").write_bytes(b"")
+    frozen = tmp_path / "frozen"
+    frozen.mkdir()
+    (frozen / "Tapesmith.exe").write_bytes(b"exe")
+    assert layout.is_venv_version(venv) and not layout.is_frozen_version(venv)
+    assert layout.is_frozen_version(frozen) and not layout.is_venv_version(frozen)
+    assert not layout.is_complete_version(venv)
+    (venv / layout.VERSION_MARKER).write_text("{}", encoding="utf-8")
+    assert layout.is_complete_version(venv)
+    assert layout.venv_python(venv) == venv / "Scripts" / "python.exe"
 
 
 # ---------- running_installed ----------

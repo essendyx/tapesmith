@@ -1,6 +1,6 @@
 """Tests für `tapesmith.install.shortcuts` (Startmenü-Verknüpfungen).
 
-Ausschließlich `FakeShortcuts`; `WScriptShortcuts` wird nur auf den Sicherheitsnetz-Schutz
+Ausschließlich `FakeShortcuts`; `PowerShellShortcuts` wird nur auf den Sicherheitsnetz-Schutz
 gegen echte Schreibzugriffe unter pytest geprüft, nie wirklich aufgerufen."""
 
 from __future__ import annotations
@@ -42,22 +42,22 @@ def test_fake_delete_unbekannter_pfad_kein_fehler(tmp_path):
     backend.delete(tmp_path / "fehlt.lnk")  # darf nicht werfen
 
 
-# ---------- WScriptShortcuts: Sicherheitsnetz ----------
+# ---------- PowerShellShortcuts: Sicherheitsnetz ----------
 
-def test_wscript_create_unter_pytest_wirft():
-    backend = sc.WScriptShortcuts()
+def test_powershell_create_unter_pytest_wirft():
+    backend = sc.PowerShellShortcuts()
     with pytest.raises(RuntimeError, match="Test"):
         backend.create("C:/x.lnk", "C:/x.exe")
 
 
-def test_wscript_delete_unter_pytest_wirft():
-    backend = sc.WScriptShortcuts()
+def test_powershell_delete_unter_pytest_wirft():
+    backend = sc.PowerShellShortcuts()
     with pytest.raises(RuntimeError, match="Test"):
         backend.delete("C:/x.lnk")
 
 
-def test_wscript_exists_bleibt_erlaubt(tmp_path):
-    backend = sc.WScriptShortcuts()
+def test_powershell_exists_bleibt_erlaubt(tmp_path):
+    backend = sc.PowerShellShortcuts()
     assert backend.exists(tmp_path / "fehlt.lnk") is False
 
 

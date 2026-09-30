@@ -71,7 +71,7 @@ SECTION_DEFAULTS = {
     # Das Repository ist öffentlich: GitHub-Abrufe laufen ohne Token. Ein alter Eintrag
     # `update.token_ref` in config.json wird ignoriert.
     # Die automatische Prüfung ist aus, bis der Benutzer zustimmt: Ohne Zustimmung baut Tapesmith von
-    # sich aus keine Verbindung ins Netz auf (Bedingung der SignPath Foundation, CODE_SIGNING_POLICY.md).
+    # sich aus keine Verbindung ins Netz auf (Datenschutzzusage in CODE_SIGNING_POLICY.md).
     # `asked` merkt sich, dass die Web-Oberfläche einmal gefragt hat (POST /update/consent).
     "update": {"enabled": False, "asked": False, "source": "github:essendyx/tapesmith",
                "channel": "stable", "check_interval_h": 24, "auto_install": False, "idle_min": 10,

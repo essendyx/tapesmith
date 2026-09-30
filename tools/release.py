@@ -1,15 +1,20 @@
-"""Release-Werkzeug für signierte Updates.
+"""Release-Werkzeug für signierte Updates (Verteilung über Python).
 
   keygen --private PFAD --public-out trusted_keys.json [--force]
-  manifest --zip Z --version V --notes TEXT --out ORDNER [--channel stable|beta]
+  manifest --version V --wheels 3.11=ORDNER --wheels 3.12=ORDNER --out ORDNER [--notes TEXT] [--channel stable|beta]
   sign --key PFAD MANIFEST
   verify --keys trusted_keys.json MANIFEST
-  publish-dir --zip Z --version V --notes TEXT --key PFAD --out ORDNER [--channel stable|beta]
+  publish-dir --version V --wheels 3.11=ORDNER ... --key PFAD --out ORDNER [--notes TEXT] [--channel ...] [--copy-wheels]
+
+`--wheels PY=ORDNER`: Ordner mit allen Wheels, die `pip download --only-binary=:all:` für diese
+Python-Version geladen hat (Tapesmith selbst und alle Abhängigkeiten, `win_amd64` bzw. `any`).
+Daraus entsteht die Lock-Liste (Name, Version, SHA-256 je Wheel) im Manifest und als `lock.txt`.
 
 Der private Schlüssel ist ein Ed25519-PEM ohne Passwort, wird nur mit Rechten für den aktuellen
 Benutzer geschrieben und gehört nie ins Repo (eigener Ordner für Schlüssel außerhalb des Repos).
-`publish-dir` legt `manifest.json`, `manifest.json.sig` und das Zip in einen Ordner, genau wie eine
-`file:`-Quelle bzw. die Assets eines GitHub-Releases sie erwarten."""
+`publish-dir` legt `manifest.json`, `manifest.json.sig` und `lock.txt` in einen Ordner, genau wie
+die Assets eines GitHub-Releases; mit `--copy-wheels` zusätzlich alle Wheels unter `wheels/`, so
+wird der Ordner eine vollständige `file:`-Quelle ohne PyPI (Freigabe im Firmennetz, Testlauf)."""
 
 from __future__ import annotations
 
@@ -76,11 +81,31 @@ def cmd_keygen(args, out, restrict) -> int:
     return 0
 
 
-def _write_manifest(zip_path: Path, version: str, notes: str, channel: str, out_dir: Path) -> Path:
+def parse_wheel_dirs(values: list[str]) -> dict[str, Path]:
+    """`["3.11=a", "3.12=b"]` zu `{"3.11": Path("a"), ...}`."""
+    result: dict[str, Path] = {}
+    for value in values:
+        py, sep, folder = value.partition("=")
+        if not sep or not py.strip() or not folder.strip():
+            raise ValueError(f"--wheels erwartet PY=ORDNER, bekommen: {value!r}")
+        if py.strip() in result:
+            raise ValueError(f"Python {py.strip()} doppelt angegeben")
+        result[py.strip()] = Path(folder.strip())
+    if not result:
+        raise ValueError("mindestens ein --wheels PY=ORDNER nötig")
+    return result
+
+
+def _write_manifest(args, out_dir: Path) -> tuple[Path, manifest_mod.Manifest]:
+    dirs = parse_wheel_dirs(args.wheels)
+    entries = manifest_mod.entries_from_wheels(dirs)
+    data = manifest_mod.build_manifest(args.version, args.notes, entries, python=dirs.keys(), channel=args.channel)
+    parsed = manifest_mod.parse_manifest(data)
     out_dir.mkdir(parents=True, exist_ok=True)
     target = out_dir / "manifest.json"
-    target.write_bytes(manifest_mod.build_manifest(zip_path, version, notes, channel))
-    return target
+    target.write_bytes(data)
+    (out_dir / manifest_mod.LOCK_NAME).write_text(manifest_mod.lock_text(parsed), encoding="utf-8")
+    return target, parsed
 
 
 def _sign_file(manifest_path: Path, key_path: Path) -> Path:
@@ -96,22 +121,23 @@ def _verify(manifest_path: Path, keys_path: Path, out) -> int:
     try:
         kid = signing.verify(data, sig_path.read_text(encoding="ascii"), signing.load_trusted_keys(keys_path))
         manifest = manifest_mod.parse_manifest(data)
-        package = manifest_path.parent / manifest.file
-        if package.exists():
-            from tapesmith.update.download import verify_package
-
-            verify_package(package, manifest)
-            out(f"Paket {manifest.file}: Prüfsumme ok")
+        lock = manifest_path.parent / manifest_mod.LOCK_NAME
+        if manifest.kind == manifest_mod.KIND_PYTHON and lock.exists():
+            if lock.read_text(encoding="utf-8") != manifest_mod.lock_text(manifest):
+                out("Fehler: lock.txt passt nicht zum Manifest")
+                return 1
+            out("lock.txt passt zum Manifest")
     except (UpdateError, OSError) as exc:
         out(f"Fehler: {exc}")
         return 1
-    out(f"Signatur ok (Schlüssel {kid}), Version {manifest.version}, Kanal {manifest.channel}")
+    out(f"Signatur ok (Schlüssel {kid}), Version {manifest.version}, Kanal {manifest.channel}, "
+        f"{len(manifest.packages)} Pakete, Python {', '.join(manifest.python) or '-'}")
     return 0
 
 
 def cmd_manifest(args, out, _restrict) -> int:
-    target = _write_manifest(Path(args.zip), args.version, args.notes, args.channel, Path(args.out))
-    out(f"Manifest: {target}")
+    target, parsed = _write_manifest(args, Path(args.out))
+    out(f"Manifest: {target} ({len(parsed.packages)} Pakete), lock.txt daneben")
     return 0
 
 
@@ -126,15 +152,20 @@ def cmd_verify(args, out, _restrict) -> int:
 
 
 def cmd_publish_dir(args, out, _restrict) -> int:
-    zip_path = Path(args.zip)
     out_dir = Path(args.out)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    target_zip = out_dir / zip_path.name
-    if target_zip.resolve() != zip_path.resolve():
-        shutil.copyfile(zip_path, target_zip)
-    manifest_path = _write_manifest(target_zip, args.version, args.notes, args.channel, out_dir)
+    manifest_path, _parsed = _write_manifest(args, out_dir)
     _sign_file(manifest_path, Path(args.key))
-    out(f"Veröffentlicht in {out_dir}: manifest.json, manifest.json.sig, {target_zip.name}")
+    names = ["manifest.json", "manifest.json.sig", manifest_mod.LOCK_NAME]
+    if args.copy_wheels:
+        wheels = out_dir / "wheels"
+        wheels.mkdir(parents=True, exist_ok=True)
+        for folder in parse_wheel_dirs(args.wheels).values():
+            for wheel in sorted(Path(folder).glob("*.whl")):
+                target = wheels / wheel.name
+                if not target.exists():
+                    shutil.copyfile(wheel, target)
+        names.append("wheels/")
+    out(f"Veröffentlicht in {out_dir}: {', '.join(names)}")
     return 0
 
 
@@ -148,16 +179,18 @@ def build_parser() -> argparse.ArgumentParser:
     kg.add_argument("--force", action="store_true", help="vorhandenen privaten Schlüssel überschreiben")
     kg.set_defaults(func=cmd_keygen)
 
-    for name, func, help_text in (("manifest", cmd_manifest, "manifest.json erzeugen"),
-                                  ("publish-dir", cmd_publish_dir, "drei Dateien für eine file:-Quelle anlegen")):
+    for name, func, help_text in (("manifest", cmd_manifest, "manifest.json und lock.txt erzeugen"),
+                                  ("publish-dir", cmd_publish_dir, "signierte Release-Dateien in einen Ordner legen")):
         sp = sub.add_parser(name, help=help_text)
-        sp.add_argument("--zip", required=True)
         sp.add_argument("--version", required=True)
+        sp.add_argument("--wheels", action="append", default=[], required=True, metavar="PY=ORDNER",
+                        help="Wheels für eine Python-Version, z. B. 3.11=wheels/py311 (mehrfach)")
         sp.add_argument("--notes", default="")
         sp.add_argument("--channel", choices=manifest_mod.CHANNELS, default="stable")
         sp.add_argument("--out", required=True)
         if name == "publish-dir":
             sp.add_argument("--key", required=True, help="privater Schlüssel (PEM)")
+            sp.add_argument("--copy-wheels", action="store_true", help="Wheels nach <out>/wheels kopieren (file:-Quelle ohne PyPI)")
         sp.set_defaults(func=func)
 
     sg = sub.add_parser("sign", help="Manifest signieren (schreibt MANIFEST.sig)")
@@ -165,7 +198,7 @@ def build_parser() -> argparse.ArgumentParser:
     sg.add_argument("manifest")
     sg.set_defaults(func=cmd_sign)
 
-    vf = sub.add_parser("verify", help="Signatur (und Prüfsumme des Zips daneben) prüfen")
+    vf = sub.add_parser("verify", help="Signatur (und lock.txt daneben) prüfen")
     vf.add_argument("--keys", required=True, help="trusted_keys.json")
     vf.add_argument("manifest")
     vf.set_defaults(func=cmd_verify)

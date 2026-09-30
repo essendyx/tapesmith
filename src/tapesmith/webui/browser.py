@@ -242,7 +242,7 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
 
 def main(argv: list[str] | None = None, *, opener: Callable[[str], Any] | None = None,
          log: Callable[[str], None] | None = None) -> int:
-    """`p12 app` bzw. `Tapesmith.exe [--app] ...`: öffnet die Oberfläche im Browser und beendet sich.
+    """`p12 app` bzw. `pythonw -m tapesmith.webui.browser ...`: öffnet die Oberfläche im Browser und beendet sich.
     Exit 0 ok, 1 Fehler (Meldung auf stderr und ins Log `logs/app.log`, nie als Fenster)."""
     args = build_parser().parse_args(argv)
     route = build_route(route=args.route, uri=args.uri, open_action=args.open_action, path=args.path)

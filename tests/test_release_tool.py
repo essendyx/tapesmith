@@ -1,4 +1,5 @@
-"""`tools/release.py` (keygen, manifest, sign, verify, publish-dir) nur mit Testschlüsseln in tmp_path."""
+"""`tools/release.py` (keygen, manifest, sign, verify, publish-dir) nur mit Testschlüsseln und
+Platzhalter-Wheels in tmp_path."""
 
 from __future__ import annotations
 
@@ -11,7 +12,6 @@ import pytest
 from tapesmith.update import signing
 from tapesmith.update.manifest import parse_manifest
 from tapesmith.update.sources import FileSource
-from update_fakes import make_zip
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "tools" / "release.py"
@@ -79,40 +79,67 @@ def test_keygen_ergaenzt_vorhandene_schluessel(release, tmp_path):
     assert len(json.loads(public.read_text(encoding="utf-8"))["keys"]) == 2
 
 
+def _wheels(tmp_path, version="0.2.1"):
+    dirs = {}
+    for py, tag in (("3.11", "cp311"), ("3.12", "cp312")):
+        folder = tmp_path / "wheels" / tag
+        folder.mkdir(parents=True, exist_ok=True)
+        (folder / f"tapesmith-{version}-py3-none-any.whl").write_bytes(b"tapesmith")
+        (folder / f"pillow-12.3.0-{tag}-{tag}-win_amd64.whl").write_bytes(tag.encode())
+        dirs[py] = folder
+    return [arg for py, folder in dirs.items() for arg in ("--wheels", f"{py}={folder}")]
+
+
 def test_publish_dir_und_verify(release, tmp_path):
     private = tmp_path / "signing.pem"
     public = tmp_path / "trusted_keys.json"
     _run(release, ["keygen", "--private", str(private), "--public-out", str(public)])
-    zip_path = make_zip(tmp_path / "dist" / "Tapesmith-portable-0.2.1.zip")
     out_dir = tmp_path / "feed"
-    rc, out, _r = _run(release, ["publish-dir", "--zip", str(zip_path), "--version", "0.2.1", "--notes",
-                                 "Neu", "--key", str(private), "--out", str(out_dir)])
+    rc, out, _r = _run(release, ["publish-dir", "--version", "0.2.1", "--notes", "Neu", *_wheels(tmp_path),
+                                 "--key", str(private), "--out", str(out_dir), "--copy-wheels"])
     assert rc == 0, out.text
-    assert sorted(p.name for p in out_dir.iterdir()) == ["Tapesmith-portable-0.2.1.zip", "manifest.json",
-                                                         "manifest.json.sig"]
+    assert sorted(p.name for p in out_dir.iterdir()) == ["lock.txt", "manifest.json", "manifest.json.sig", "wheels"]
+    assert sorted(p.name for p in (out_dir / "wheels").iterdir()) == [
+        "pillow-12.3.0-cp311-cp311-win_amd64.whl", "pillow-12.3.0-cp312-cp312-win_amd64.whl",
+        "tapesmith-0.2.1-py3-none-any.whl"]
     rc, out, _r = _run(release, ["verify", "--keys", str(public), str(out_dir / "manifest.json")])
     assert rc == 0, out.text
-    assert "Signatur ok" in out.text and "Prüfsumme ok" in out.text
-    # die file:-Quelle liest genau diese drei Dateien
-    data, sig = FileSource(out_dir).fetch_manifest()
+    assert "Signatur ok" in out.text and "lock.txt passt" in out.text and "2 Pakete" in out.text
+    # die file:-Quelle liest genau diese Dateien und nimmt die Wheels als einzigen Index
+    source = FileSource(out_dir)
+    data, sig = source.fetch_manifest()
     signing.verify(data, sig, signing.load_trusted_keys(public))
-    assert parse_manifest(data).version == "0.2.1"
+    parsed = parse_manifest(data)
+    assert parsed.version == "0.2.1" and parsed.python == ("3.11", "3.12")
+    assert source.pip_options() == {"find_links": [str(out_dir / "wheels")], "no_index": True}
 
 
 def test_manifest_sign_verify_einzeln_und_manipulation(release, tmp_path):
     private = tmp_path / "signing.pem"
     public = tmp_path / "trusted_keys.json"
     _run(release, ["keygen", "--private", str(private), "--public-out", str(public)])
-    zip_path = make_zip(tmp_path / "feed" / "Tapesmith-portable-0.3.0-beta.1.zip")
-    rc, _o, _r = _run(release, ["manifest", "--zip", str(zip_path), "--version", "0.3.0-beta.1", "--channel",
+    rc, _o, _r = _run(release, ["manifest", *_wheels(tmp_path, "0.3.0b1"), "--version", "0.3.0b1", "--channel",
                                 "beta", "--out", str(tmp_path / "feed")])
     assert rc == 0
     manifest = tmp_path / "feed" / "manifest.json"
+    assert (tmp_path / "feed" / "lock.txt").is_file()
     assert _run(release, ["sign", "--key", str(private), str(manifest)])[0] == 0
     assert _run(release, ["verify", "--keys", str(public), str(manifest)])[0] == 0
+    lock = tmp_path / "feed" / "lock.txt"
+    lock.write_text(lock.read_text(encoding="utf-8") + "boese==1.0\n", encoding="utf-8")
+    rc, out, _r = _run(release, ["verify", "--keys", str(public), str(manifest)])
+    assert rc == 1 and "lock.txt passt nicht" in out.text
     manifest.write_bytes(manifest.read_bytes().replace(b"beta", b"stable", 1))
     rc, out, _r = _run(release, ["verify", "--keys", str(public), str(manifest)])
     assert rc == 1 and "Signatur" in out.text
+
+
+def test_manifest_verlangt_passende_wheels(release, tmp_path):
+    rc, out, _r = _run(release, ["manifest", *_wheels(tmp_path, "0.2.1"), "--version", "0.2.2",
+                                 "--out", str(tmp_path / "feed")])
+    assert rc == 1 and "tapesmith 0.2.2" in out.text
+    rc, out, _r = _run(release, ["manifest", "--wheels", "kaputt", "--version", "0.2.1", "--out", str(tmp_path / "x")])
+    assert rc == 1 and "PY=ORDNER" in out.text
 
 
 def test_verify_ohne_schluessel_und_fehlende_datei(release, tmp_path):

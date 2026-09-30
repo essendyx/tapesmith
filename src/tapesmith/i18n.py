@@ -20,8 +20,8 @@ Anfrage gesetzt) oder sonst `default_language()`: `TAPESMITH_LANG` (erzwingt), s
 `app.language` (`de`/`en`), sonst die Windows-Anzeigesprache (`system_language`). Unterstützt sind
 Deutsch und Englisch; jede andere Systemsprache ergibt Englisch.
 
-Die Kataloge liegen als Paketdaten neben dem Code, so dass sie auch im PyInstaller-Build unter
-`tapesmith/locales/...` gefunden werden.
+Die Kataloge liegen als Paketdaten neben dem Code, so dass sie auch in einer per pip installierten
+Umgebung unter `tapesmith/locales/...` gefunden werden.
 """
 
 from __future__ import annotations

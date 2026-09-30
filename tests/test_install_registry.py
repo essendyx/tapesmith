@@ -23,11 +23,13 @@ def test_write_uninstall_entry_setzt_alle_werte():
     assert backend.values["Publisher"] == "Tapesmith contributors"
     assert backend.values["InstallLocation"] == r"C:\Users\x\AppData\Local\Programs\Tapesmith"
     assert backend.values["DisplayIcon"] == \
-        r"C:\Users\x\AppData\Local\Programs\Tapesmith\current\Tapesmith.exe"
+        r"C:\Users\x\AppData\Local\Programs\Tapesmith\current\Lib\site-packages\tapesmith\icons\app.ico"
+    # Keine eigene EXE: deinstalliert wird mit dem signierten pythonw.exe der aktiven Version.
     assert backend.values["UninstallString"] == \
-        r'"C:\Users\x\AppData\Local\Programs\Tapesmith\current\Tapesmith.exe" --uninstall'
+        r'"C:\Users\x\AppData\Local\Programs\Tapesmith\current\Scripts\pythonw.exe" -m tapesmith uninstall'
     assert backend.values["QuietUninstallString"] == \
-        r'"C:\Users\x\AppData\Local\Programs\Tapesmith\current\Tapesmith.exe" --uninstall --quiet'
+        r'"C:\Users\x\AppData\Local\Programs\Tapesmith\current\Scripts\pythonw.exe" -m tapesmith uninstall --quiet'
+    assert backend.values["URLInfoAbout"] == "https://github.com/essendyx/tapesmith"
     assert backend.values["NoModify"] == 1
     assert isinstance(backend.values["NoModify"], int)
     assert backend.values["NoRepair"] == 1

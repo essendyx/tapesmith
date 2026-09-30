@@ -1,8 +1,8 @@
 """Startmenü-Verknüpfungen (.lnk) ohne Adminrecht.
 
-`WScriptShortcuts` nutzt `win32com.client` (pywin32), spät importiert wie bei `WinRegBackend`,
-und schützt sich mit demselben Muster gegen Schreibzugriffe unter `pytest` (Sicherheitsnetz
-"Echte Nutzerdaten sind tabu")."""
+`PowerShellShortcuts` nutzt `WScript.Shell` über das Windows-eigene `powershell.exe` (kein
+pywin32 nötig) und schützt sich wie `WinRegBackend` gegen Schreibzugriffe unter `pytest`
+(Sicherheitsnetz "Echte Nutzerdaten sind tabu")."""
 
 from __future__ import annotations
 
@@ -44,31 +44,50 @@ class FakeShortcuts:
         return Path(path) in self.items
 
 
-class WScriptShortcuts:
-    """Echte .lnk-Dateien über `WScript.Shell` (pywin32). Schreibmethoden verweigern sich
-    während `pytest`, `exists` bleibt erlaubt."""
+_PS_CREATE = (
+    "$ErrorActionPreference='Stop';"
+    "$s=(New-Object -ComObject WScript.Shell).CreateShortcut($env:TS_LNK_PATH);"
+    "$s.TargetPath=$env:TS_LNK_TARGET;"
+    "if($env:TS_LNK_ARGS){$s.Arguments=$env:TS_LNK_ARGS};"
+    "$s.IconLocation=$env:TS_LNK_ICON;"
+    "$s.WorkingDirectory=$env:TS_LNK_WORKDIR;"
+    "if($env:TS_LNK_DESC){$s.Description=$env:TS_LNK_DESC};"
+    "$s.Save()"
+)
+
+
+class PowerShellShortcuts:
+    """Echte .lnk-Dateien über `WScript.Shell`, aufgerufen im signierten `powershell.exe` (ohne
+    Fenster). Braucht kein pywin32 in der Versionsumgebung. Die Werte gehen als
+    Umgebungsvariablen hinein, nie als zusammengesetzter Skripttext. Schreibmethoden verweigern
+    sich während `pytest`, `exists` bleibt erlaubt."""
+
+    def __init__(self, runner=None) -> None:
+        self.runner = runner
 
     def _guard(self) -> None:
-        if "PYTEST_CURRENT_TEST" in os.environ:
+        if "PYTEST_CURRENT_TEST" in os.environ and self.runner is None:
             raise RuntimeError(_t("Verknüpfungs-Schreibzugriff in Tests verboten"))
 
     def create(self, path: Path, target: Path, *, arguments: str = "", icon: Path | None = None,
               workdir: Path | None = None, description: str = "") -> None:
-        self._guard()
-        import win32com.client
+        import subprocess
 
+        self._guard()
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
-        shell = win32com.client.Dispatch("WScript.Shell")
-        shortcut = shell.CreateShortcut(str(path))
-        shortcut.TargetPath = str(target)
-        if arguments:
-            shortcut.Arguments = arguments
-        shortcut.IconLocation = str(icon) if icon is not None else str(target)
-        shortcut.WorkingDirectory = str(workdir) if workdir is not None else str(Path(target).parent)
-        if description:
-            shortcut.Description = description
-        shortcut.Save()
+        env = {**os.environ,
+               "TS_LNK_PATH": str(path), "TS_LNK_TARGET": str(target), "TS_LNK_ARGS": arguments,
+               "TS_LNK_ICON": str(icon) if icon is not None else str(target),
+               "TS_LNK_WORKDIR": str(workdir) if workdir is not None else str(Path(target).parent),
+               "TS_LNK_DESC": description}
+        run = self.runner or subprocess.run
+        result = run(["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", _PS_CREATE],
+                     env=env, capture_output=True, text=True, encoding="utf-8", errors="replace",
+                     timeout=60, creationflags=0x08000000)
+        if result.returncode != 0:
+            raise OSError(_t("Verknüpfung {path} nicht angelegt: {detail}", path=path,
+                             detail=(result.stderr or result.stdout or "").strip()[-300:]))
 
     def delete(self, path: Path) -> None:
         self._guard()

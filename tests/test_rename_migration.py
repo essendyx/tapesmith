@@ -20,6 +20,7 @@ from tapesmith.install.registry import FakeUninstallRegistry
 from tapesmith.install.shortcuts import FakeShortcuts
 from tapesmith.templates import gallery, store
 from tapesmith.transport import btports
+from update_fakes import PYTHON, FakeVenvRun
 
 FIXED_NOW = lambda: datetime(2026, 9, 29, 12, 0, 0)  # noqa: E731
 
@@ -230,13 +231,11 @@ def test_installation_loest_alte_installation_ab(tmp_path, monkeypatch):
     old_uninstall = FakeUninstallRegistry()
     old_uninstall.set_str("DisplayName", "P12 Label")
     registry = _legacy_registry()
-    source = tmp_path / "source"
-    source.mkdir()
-    (source / "Tapesmith.exe").write_bytes(b"neu")
     stopped = []
 
     result = installer.install(
-        source, version="0.3.0", root=tmp_path / "Programs" / "Tapesmith", shortcuts=shortcuts,
+        version="0.3.0", root=tmp_path / "Programs" / "Tapesmith", python=PYTHON, run=FakeVenvRun(),
+        shortcuts=shortcuts, source_stopper=lambda env: True,
         uninstall_registry=FakeUninstallRegistry(), registry=registry, start=False,
         legacy_root=legacy_root, legacy_menu_dir=legacy_menu,
         legacy_uninstall_registry=old_uninstall,
@@ -253,7 +252,7 @@ def test_installation_loest_alte_installation_ab(tmp_path, monkeypatch):
     uri = r"Software\Classes\p12label"
     assert registry.get(uri, "P12LabelManaged") is None
     assert registry.get(uri, intg.MARKER) == "1"
-    assert "Tapesmith.exe" in registry.get(uri + r"\shell\open\command")
+    assert "pythonw.exe -m tapesmith.webui.browser" in registry.get(uri + r"\shell\open\command")
     # Nutzerdaten bleiben unberührt
     assert (user_data / "config.json").read_text(encoding="utf-8") == "{}"
     assert any("Alter Programmordner entfernt" in line for line in result.lines)

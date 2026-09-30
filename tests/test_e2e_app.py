@@ -31,7 +31,7 @@ from tapesmith.update.errors import UpdateError
 from tapesmith.update.service import UpdateService
 from tapesmith.webapi import drafts
 from tapesmith.webapi.drafts import DraftStore
-from update_fakes import FakeRun
+from update_fakes import FakeVenvRun, make_version
 from webapi_fakes import close_ctx, make_client, make_token
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -260,24 +260,27 @@ def test_support_bericht_ohne_token(api):
 
 # ---------------------------------------------------------------- 6. Update Ende zu Ende
 
-def _placeholder_zip(path: Path, marker: bytes) -> Path:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(path, "w") as zf:
-        zf.writestr("Tapesmith/Tapesmith.exe", marker)
-        zf.writestr("Tapesmith/_internal/lib.txt", b"lib")
-        zf.writestr("Installieren.cmd", b'@echo off\r\n"%~dp0Tapesmith\\Tapesmith.exe" --install\r\n')
-    return path
+def _wheel_dirs(base: Path, version: str) -> dict[str, Path]:
+    """Wheel-Ordner je Python-Version wie nach `pip download` (Platzhalter-Inhalte)."""
+    dirs = {}
+    for py, tag in (("3.11", "cp311"), ("3.12", "cp312")):
+        folder = base / f"py{tag[2:]}"
+        folder.mkdir(parents=True, exist_ok=True)
+        (folder / f"tapesmith-{version}-py3-none-any.whl").write_bytes(f"tapesmith {version}".encode())
+        (folder / f"pillow-12.3.0-{tag}-{tag}-win_amd64.whl").write_bytes(f"pillow {tag}".encode())
+        dirs[py] = folder
+    return dirs
 
 
 def _installed_root(root: Path) -> Path:
-    exe_dir = layout.version_dir("0.2.0", root)
-    exe_dir.mkdir(parents=True)
-    (exe_dir / layout.APP_EXE).write_bytes(b"exe 0.2.0")
+    make_version(root, "0.2.0")
     installer.activate("0.2.0", root=root)
     return root
 
 
 def test_update_ende_zu_ende_file_quelle(tmp_path, monkeypatch):
+    import hashlib
+
     release = _load_release_tool()
     root = _installed_root(tmp_path / "wurzel")
     monkeypatch.setenv("TAPESMITH_INSTALL_ROOT", str(root))
@@ -289,18 +292,19 @@ def test_update_ende_zu_ende_file_quelle(tmp_path, monkeypatch):
     keys = [(entry["id"], signing.load_private_key(key_file).public_key())]
 
     feed = tmp_path / "quelle"
-    package = _placeholder_zip(tmp_path / "bau" / "Tapesmith-portable-0.2.1.zip", b"exe 0.2.1")
+    dirs = _wheel_dirs(tmp_path / "bau" / "0.2.1", "0.2.1")
+    wheel_args = [arg for py, folder in dirs.items() for arg in ("--wheels", f"{py}={folder}")]
     out: list[str] = []
-    rc = release.main(["publish-dir", "--zip", str(package), "--version", "0.2.1", "--notes", "Probe",
-                       "--key", str(key_file), "--out", str(feed)], out=out.append, restrict=lambda p: None)
+    rc = release.main(["publish-dir", "--version", "0.2.1", "--notes", "Probe", *wheel_args,
+                       "--key", str(key_file), "--copy-wheels", "--out", str(feed)], out=out.append,
+                      restrict=lambda p: None)
     assert rc == 0, out
-    assert {p.name for p in feed.iterdir()} == {"manifest.json", "manifest.json.sig",
-                                                "Tapesmith-portable-0.2.1.zip"}
+    assert {p.name for p in feed.iterdir()} == {"manifest.json", "manifest.json.sig", "lock.txt", "wheels"}
 
     cfg = {"update": {"source": f"file:{feed}", "keep_versions": 2}}
-    run = FakeRun()
+    run = FakeVenvRun()
     svc = UpdateService(lambda: cfg, keys_loader=lambda: keys, root=root, run=run, spawn=lambda argv: 0,
-                        executable=str(layout.version_dir("0.2.0", root) / layout.APP_EXE),
+                        executable=str(layout.venv_python(layout.version_dir("0.2.0", root), gui=True)),
                         now=lambda: datetime(2026, 10, 2, 8, 0), app_version=lambda: "0.2.0")
 
     status = svc.check()
@@ -310,8 +314,15 @@ def test_update_ende_zu_ende_file_quelle(tmp_path, monkeypatch):
 
     target = svc.prepare("0.2.1")
     assert target == layout.version_dir("0.2.1", root)
-    assert (target / layout.APP_EXE).read_bytes() == b"exe 0.2.1"
-    assert run.calls, "Selbsttest der neuen Version wurde nicht ausgeführt"
+    assert layout.is_complete_version(target)
+    assert run.kinds() == ["venv", "pip", "selftest"], "Selbsttest der neuen Version wurde nicht ausgeführt"
+    pip_argv = run.calls[1][0]
+    assert "--require-hashes" in pip_argv and "--no-index" in pip_argv
+    assert pip_argv[pip_argv.index("--find-links") + 1] == str(feed / "wheels")
+    # Die Lock-Liste des Updaters kommt aus dem signierten Manifest und trägt die echten Prüfsummen.
+    wheel = dirs["3.11"] / "tapesmith-0.2.1-py3-none-any.whl"
+    assert hashlib.sha256(wheel.read_bytes()).hexdigest() in run.locks[0]
+    assert run.locks[0] == (feed / "lock.txt").read_text(encoding="utf-8")
     assert svc.status().state == "ready"
 
     spawned: list[list[str]] = []
@@ -323,27 +334,28 @@ def test_update_ende_zu_ende_file_quelle(tmp_path, monkeypatch):
     assert junction.read_junction(layout.current_link(root)).name == "0.2.1"
     state = layout.read_state(root)
     assert state.current == "0.2.1" and state.previous == "0.2.0"
-    assert any("--daemon" in argv for argv in spawned) and any("--tray" in argv for argv in spawned)
+    assert ["-m", "tapesmith.daemon"] in [argv[1:] for argv in spawned]
+    assert ["-m", "tapesmith.gui.tray"] in [argv[1:] for argv in spawned]
 
-    # Zweiter Durchlauf: Paket nach dem Signieren verändert, Prüfsumme passt nicht mehr.
+    # Zweiter Durchlauf: pip lehnt ein Paket ab (Prüfsumme passt nicht), nichts wird umgeschaltet.
     feed2 = tmp_path / "quelle2"
-    package2 = _placeholder_zip(tmp_path / "bau" / "Tapesmith-portable-0.2.2.zip", b"exe 0.2.2")
-    assert release.main(["publish-dir", "--zip", str(package2), "--version", "0.2.2", "--key", str(key_file),
+    dirs2 = _wheel_dirs(tmp_path / "bau" / "0.2.2", "0.2.2")
+    wheel_args2 = [arg for py, folder in dirs2.items() for arg in ("--wheels", f"{py}={folder}")]
+    assert release.main(["publish-dir", "--version", "0.2.2", *wheel_args2, "--key", str(key_file),
                          "--out", str(feed2)], out=out.append, restrict=lambda p: None) == 0
-    with zipfile.ZipFile(feed2 / package2.name, "a") as zf:
-        zf.writestr("Tapesmith/boese.txt", b"x")
     cfg["update"]["source"] = f"file:{feed2}"
-    svc2 = UpdateService(lambda: cfg, keys_loader=lambda: keys, root=root, run=FakeRun(), spawn=lambda argv: 0,
-                         executable=str(layout.version_dir("0.2.1", root) / layout.APP_EXE),
+    svc2 = UpdateService(lambda: cfg, keys_loader=lambda: keys, root=root, run=FakeVenvRun(pip_rc=1),
+                         spawn=lambda argv: 0,
+                         executable=str(layout.venv_python(layout.version_dir("0.2.1", root), gui=True)),
                          now=lambda: datetime(2026, 10, 3, 8, 0), app_version=lambda: "0.2.1")
     assert svc2.check().available["version"] == "0.2.2"
     with pytest.raises(UpdateError) as info:
         svc2.prepare("0.2.2")
-    assert info.value.code == "update.checksum_mismatch"
+    assert info.value.code == "update.download_failed"
     assert junction.read_junction(layout.current_link(root)).name == "0.2.1"
     assert layout.read_state(root).current == "0.2.1"
     assert not layout.version_dir("0.2.2", root).exists()
-    assert svc2.status().error["code"] == "update.checksum_mismatch"
+    assert svc2.status().error["code"] == "update.download_failed"
 
 
 # ---------------------------------------------------------------- 7. Installer Ende zu Ende
@@ -358,29 +370,26 @@ def test_installer_und_deinstallation_mit_fakes(tmp_path, app_home, monkeypatch)
     (app_home / "config.json").write_text('{"transport": "memory"}', encoding="utf-8")
     home_before = _tree(app_home)
 
-    source = tmp_path / "zip" / "Tapesmith"
-    (source / "_internal").mkdir(parents=True)
-    (source / layout.APP_EXE).write_bytes(b"exe 0.2.0")
-    (source / "_internal" / "lib.txt").write_text("lib", encoding="utf-8")
     root = tmp_path / "Programs" / "Tapesmith"
     shortcuts, uninstall_reg, registry = FakeShortcuts(), FakeUninstallRegistry(), integration.FakeRegistry()
     spawned: list[list[str]] = []
 
     assert not root.exists()
     assert uninstall_reg.values == {} and registry.data == {}
-    result = installer.install(source, version="0.2.0", root=root, shortcuts=shortcuts,
+    result = installer.install(version="0.2.0", root=root, python=Path("C:/Fake/Python311/python.exe"),
+                               run=FakeVenvRun(), shortcuts=shortcuts,
                                uninstall_registry=uninstall_reg, registry=registry,
                                spawn=lambda argv: spawned.append(list(argv)) or 0,
-                               stopper=lambda r: True)
+                               stopper=lambda r: True, source_stopper=lambda env: True)
     assert result.version == "0.2.0"
-    assert (layout.version_dir("0.2.0", root) / layout.APP_EXE).read_bytes() == b"exe 0.2.0"
+    assert layout.is_complete_version(layout.version_dir("0.2.0", root))
     assert junction.read_junction(layout.current_link(root)) is not None
     assert layout.read_state(root).current == "0.2.0"
     assert {p.name for p in shortcuts.items} == {"Tapesmith.lnk", "Tapesmith deinstallieren.lnk"}
     assert uninstall_reg.values["DisplayName"] == "Tapesmith"
     assert uninstall_reg.values["DisplayVersion"] == "0.2.0"
     assert registry.data, "Kontextmenü, URI und Autostart fehlen in der Fake-Registry"
-    assert spawned == [[str(layout.current_exe(root)), "--tray"]]
+    assert spawned == [[str(layout.current_pythonw(root)), "-m", "tapesmith.gui.tray"]]
 
     deleted: list[Path] = []
     lines = uninstaller.uninstall(root=root, shortcuts=shortcuts, uninstall_registry=uninstall_reg,

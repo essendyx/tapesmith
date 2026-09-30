@@ -41,7 +41,7 @@ describe('UpdateCard', () => {
   it('nicht installiert: Hinweis und Prüfen-Knopf, kein Installieren', async () => {
     mockStatus({ ...BASE, installed: false, previous: null, root: null });
     renderWithProviders(<UpdateCard />);
-    expect(await screen.findByText(/Portable Version oder Entwicklung: Updates nur in der installierten App/)).toBeInTheDocument();
+    expect(await screen.findByText(/Entwicklung oder nicht installiert: Updates nur in der installierten App/)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Updates' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Jetzt prüfen' })).toBeEnabled();
     expect(screen.queryByRole('button', { name: 'Jetzt installieren' })).toBeNull();

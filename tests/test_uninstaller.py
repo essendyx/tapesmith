@@ -14,13 +14,13 @@ from tapesmith import launch
 from tapesmith.install import installer, junction, layout, processes, uninstaller
 from tapesmith.install.registry import FakeUninstallRegistry
 from tapesmith.install.shortcuts import FakeShortcuts
+from update_fakes import PYTHON, FakeVenvRun
 
 
-def _make_source(tmp_path, name="source", content=b"exe-bytes"):
-    src = tmp_path / name
-    src.mkdir()
-    (src / "Tapesmith.exe").write_bytes(content)
-    return src
+def _install(**kw):
+    kw.setdefault("python", PYTHON)
+    kw.setdefault("run", FakeVenvRun())
+    return installer.install(**kw)
 
 
 def _start_menu(tmp_path, monkeypatch):
@@ -42,7 +42,7 @@ def test_uninstall_entfernt_alles_ausser_benutzerdaten(tmp_path, monkeypatch):
     shortcuts = FakeShortcuts()
     uninstall_registry = FakeUninstallRegistry()
     registry = intg.FakeRegistry()
-    installer.install(_make_source(tmp_path), version="0.2.0", root=root, shortcuts=shortcuts,
+    _install(version="0.2.0", root=root, shortcuts=shortcuts,
                       uninstall_registry=uninstall_registry, registry=registry, start=False)
 
     app_lnk = menu / "Tapesmith.lnk"
@@ -71,7 +71,7 @@ def test_uninstall_entfernt_alles_ausser_benutzerdaten(tmp_path, monkeypatch):
 
 def test_uninstall_ohne_backends_beruehrt_nichts(tmp_path):
     root = tmp_path / "root"
-    installer.install(_make_source(tmp_path), version="0.2.0", root=root, start=False)
+    _install(version="0.2.0", root=root, start=False)
     scheduled = []
 
     lines = uninstaller.uninstall(root=root, shortcuts=None, uninstall_registry=None, registry=None,
@@ -84,9 +84,9 @@ def test_uninstall_ohne_backends_beruehrt_nichts(tmp_path):
 
 def test_uninstall_stoppt_laufende_prozesse(tmp_path, monkeypatch):
     root = tmp_path / "root"
-    installer.install(_make_source(tmp_path), version="0.2.0", root=root, start=False)
+    _install(version="0.2.0", root=root, start=False)
 
-    fake_proc = processes.ProcessInfo(pid=99999, exe=str(root / "current" / "Tapesmith.exe"))
+    fake_proc = processes.ProcessInfo(pid=99999, exe=str(root / "current" / "Scripts" / "pythonw.exe"))
     monkeypatch.setattr(uninstaller.processes, "processes_under", lambda r, **kw: [fake_proc])
     calls = []
 
@@ -165,7 +165,7 @@ def _uninstall_log():
 
 def test_uninstaller_main_erfolg_ohne_backends_nur_log(tmp_path):
     root = tmp_path / "root"
-    installer.install(_make_source(tmp_path), version="0.2.0", root=root, start=False)
+    _install(version="0.2.0", root=root, start=False)
     scheduled = []
 
     code = uninstaller.main(["--root", str(root), "--no-shortcuts", "--no-registry"],
@@ -184,7 +184,7 @@ def test_uninstaller_hat_kein_meldungsfenster():
 
 def test_uninstaller_main_quiet(tmp_path):
     root = tmp_path / "root"
-    installer.install(_make_source(tmp_path), version="0.2.0", root=root, start=False)
+    _install(version="0.2.0", root=root, start=False)
 
     code = uninstaller.main(["--root", str(root), "--no-shortcuts", "--no-registry", "--quiet"],
                             schedule_delete=lambda r: None)

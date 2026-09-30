@@ -1,4 +1,5 @@
-"""Ablösung einer alten Installation unter dem früheren App-Namen "P12 Label" (bis 0.2.x).
+"""Ablösung alter Installationen: früherer App-Name "P12 Label" (bis 0.2.x) und Start aus einer
+Quellcode-Umgebung (`source_run_env`, `stop_source_run`).
 
 Nach einer erfolgreichen Tapesmith-Installation entfernt `remove_legacy` die Programmteile der
 alten Installation: Programmordner `%LOCALAPPDATA%\\Programs\\P12Label`, Apps-und-Features-Eintrag
@@ -81,7 +82,7 @@ def _check_legacy_root(root: Path, new_root: Path | None) -> None:
 
 
 def _default_stop(root: Path) -> bool:
-    running = processes.processes_under(root, exclude_pids=(os.getpid(),))
+    running = processes.processes_under(root, exclude_pids=processes.own_pids())
     if not running:
         return True
     return not processes.terminate([p.pid for p in running])
@@ -100,6 +101,67 @@ def _delete_folder(root: Path, schedule_delete: Callable[[Path], None] | None) -
             schedule_delete = _default_schedule_delete
         schedule_delete(root)
         return _t("Alter Programmordner wird entfernt: {root}", root=root)
+
+
+# ---------- Übergang: Start aus einer Quellcode-Umgebung ----------
+
+_PYTHON_NAMES = ("python.exe", "pythonw.exe")
+
+
+def _first_token(command: str) -> str:
+    text = command.strip()
+    if text.startswith('"'):
+        end = text.find('"', 1)
+        return text[1:end] if end > 0 else text[1:]
+    return text.split(" ", 1)[0]
+
+
+def source_run_env(registry, root: Path) -> Path | None:
+    """Zeigt der Autostart-Wert „Tapesmith“ auf ein Python außerhalb der Installation (z. B. eine
+    Quellcode-Umgebung `C:\\src\\tapesmith\\.venv`, gestartet mit `pythonw -m tapesmith.gui.tray`):
+    Ordner dieser Umgebung, sonst `None`."""
+    from tapesmith import integration
+
+    value = registry.get(integration.RUN_KEY, integration.RUN_VALUE)
+    if not value or "tapesmith" not in value.lower():
+        return None
+    exe = Path(_first_token(value))
+    if exe.name.lower() not in _PYTHON_NAMES:
+        return None
+    real_exe = _real(exe)
+    real_root = _real(root)
+    if real_exe == real_root or real_exe.startswith(real_root + os.sep):
+        return None
+    folder = exe.parent
+    return folder.parent if folder.name.lower() == "scripts" else folder
+
+
+def _default_source_stop(env_dir: Path) -> bool:
+    from tapesmith import config
+
+    try:
+        cfg = config.load_config()
+    except Exception:  # noqa: BLE001 (eine kaputte Konfiguration darf die Installation nicht crashen)
+        cfg = {}
+    processes.stop_daemon(cfg)
+    running = processes.tapesmith_processes_in(env_dir, exclude_pids=processes.own_pids())
+    if not running:
+        return True
+    return not processes.terminate([p.pid for p in running])
+
+
+def stop_source_run(env_dir: Path, *, stopper: Callable[[Path], bool] | None = None) -> list[str]:
+    """Beendet Tapesmith aus der Quellcode-Umgebung `env_dir` (Druckdienst über IPC, dann nur
+    Prozesse dieser Umgebung mit `tapesmith` in der Befehlszeile). Die Umgebung selbst bleibt
+    unangetastet; Autostart und Startmenü stellt die Installation danach um."""
+    stop = stopper or _default_source_stop
+    try:
+        ok = stop(env_dir)
+    except Exception as exc:  # noqa: BLE001 (Übergang darf die Installation nicht abbrechen)
+        return [_t("Start aus {env_dir} nicht beendet: {exc}", env_dir=env_dir, exc=exc)]
+    if not ok:
+        return [_t("Start aus {env_dir} ließ sich nicht vollständig beenden", env_dir=env_dir)]
+    return [_t("Start aus der Quellcode-Umgebung abgelöst: {env_dir}", env_dir=env_dir)]
 
 
 def remove_legacy(*, root: Path | None, new_root: Path | None = None, shortcuts=None,

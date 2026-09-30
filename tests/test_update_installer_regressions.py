@@ -12,19 +12,20 @@ import pytest
 
 from tapesmith.install import installer, junction, layout, processes, uninstaller
 from tapesmith.install.shortcuts import FakeShortcuts
-from tapesmith.update import apply, stage
+from tapesmith.update import apply
+from tapesmith.update import service as service_mod
 from tapesmith.update import state as state_mod
 from tapesmith.update.errors import UpdateError
 from test_update_apply import Env, _current, _root
 from test_update_service import AddonFacade, FakeUpdateService, _service
-from update_fakes import FakeRun, publish_dir
+from update_fakes import PYTHON, FakeVenvRun, publish_dir
 
 
-def _make_source(tmp_path: Path, name: str = "source", content: bytes = b"exe") -> Path:
-    src = tmp_path / name
-    src.mkdir()
-    (src / layout.APP_EXE).write_bytes(content)
-    return src
+def _install(**kw):
+    """Installation mit Fakes: kein echtes Python, kein pip, kein Selbsttest."""
+    kw.setdefault("python", PYTHON)
+    kw.setdefault("run", FakeVenvRun())
+    return installer.install(**kw)
 
 
 @pytest.fixture
@@ -110,7 +111,7 @@ def test_deinstallation_bricht_ab_wenn_prozesse_nicht_enden(tmp_path, monkeypatc
     monkeypatch.setenv("TAPESMITH_START_MENU_DIR", str(menu))
     root = tmp_path / "root"
     shortcuts = FakeShortcuts()
-    installer.install(_make_source(tmp_path), version="0.2.0", root=root, shortcuts=shortcuts, start=False)
+    _install(version="0.2.0", root=root, shortcuts=shortcuts, start=False)
     fake = processes.ProcessInfo(pid=99999, exe=str(root / "current" / layout.APP_EXE))
     monkeypatch.setattr(uninstaller.processes, "processes_under", lambda r, **kw: [fake])
     scheduled: list[Path] = []
@@ -124,7 +125,7 @@ def test_deinstallation_bricht_ab_wenn_prozesse_nicht_enden(tmp_path, monkeypatc
 
 def test_deinstallation_loescht_erst_nach_dem_log(tmp_path, monkeypatch, no_processes):
     root = tmp_path / "root"
-    installer.install(_make_source(tmp_path), version="0.2.0", root=root, start=False)
+    _install(version="0.2.0", root=root, start=False)
     events: list[str] = []
     monkeypatch.setattr(uninstaller, "_log_result", lambda text, ok: events.append("log"))
     code = uninstaller.main(["--root", str(root), "--no-shortcuts", "--no-registry"],
@@ -135,7 +136,7 @@ def test_deinstallation_loescht_erst_nach_dem_log(tmp_path, monkeypatch, no_proc
 
 def test_deinstallation_quiet_loescht_ohne_meldung(tmp_path, no_processes):
     root = tmp_path / "root"
-    installer.install(_make_source(tmp_path), version="0.2.0", root=root, start=False)
+    _install(version="0.2.0", root=root, start=False)
     scheduled: list[Path] = []
     code = uninstaller.main(["--root", str(root), "--no-shortcuts", "--no-registry", "--quiet"],
                             schedule_delete=scheduled.append)
@@ -149,7 +150,7 @@ def test_deinstallation_entfernt_leeren_startmenue_ordner(tmp_path, monkeypatch,
     monkeypatch.setenv("TAPESMITH_START_MENU_DIR", str(menu))
     root = tmp_path / "root"
     shortcuts = FakeShortcuts()
-    installer.install(_make_source(tmp_path), version="0.2.0", root=root, shortcuts=shortcuts, start=False)
+    _install(version="0.2.0", root=root, shortcuts=shortcuts, start=False)
     uninstaller.uninstall(root=root, shortcuts=shortcuts, stopper=lambda r: True, schedule_delete=lambda r: None)
     assert not menu.exists()
 
@@ -161,7 +162,7 @@ def test_deinstallation_laesst_fremde_dateien_im_startmenue(tmp_path, monkeypatc
     monkeypatch.setenv("TAPESMITH_START_MENU_DIR", str(menu))
     root = tmp_path / "root"
     shortcuts = FakeShortcuts()
-    installer.install(_make_source(tmp_path), version="0.2.0", root=root, shortcuts=shortcuts, start=False)
+    _install(version="0.2.0", root=root, shortcuts=shortcuts, start=False)
     uninstaller.uninstall(root=root, shortcuts=shortcuts, stopper=lambda r: True, schedule_delete=lambda r: None)
     assert (menu / "fremd.txt").exists()
 
@@ -171,10 +172,10 @@ def test_deinstallation_laesst_fremde_dateien_im_startmenue(tmp_path, monkeypatc
 def test_neuinstallation_gleicher_version_behaelt_vorige(tmp_path, monkeypatch):
     monkeypatch.setattr(installer.processes, "processes_under", lambda root, **kw: [])
     root = tmp_path / "root"
-    installer.install(_make_source(tmp_path, "v1"), version="0.1.0", root=root, start=False)
-    installer.install(_make_source(tmp_path, "v2"), version="0.2.0", root=root, start=False)
+    _install(version="0.1.0", root=root, start=False)
+    _install(version="0.2.0", root=root, start=False)
     assert layout.read_state(root).previous == "0.1.0"
-    installer.install(_make_source(tmp_path, "v2b"), version="0.2.0", root=root, start=False)
+    _install(version="0.2.0", root=root, start=False)
     st = layout.read_state(root)
     assert (st.current, st.previous) == ("0.2.0", "0.1.0")
 
@@ -201,7 +202,7 @@ def test_install_verweigert_downgrade_auf_bereits_vorhandene_version(tmp_path):
     with pytest.raises(UpdateError):
         svc.start_install("0.1.0")
     assert spawn.calls == []
-    assert (layout.version_dir("0.1.0", root) / layout.APP_EXE).read_bytes() == b"exe 0.1.0"
+    assert layout.is_complete_version(layout.version_dir("0.1.0", root))
 
 
 def test_prepare_verweigert_beta_im_stabilen_kanal(tmp_path):
@@ -219,14 +220,13 @@ def test_prepare_dateifehler_hinterlaesst_kein_halbes_layout(tmp_path, monkeypat
     publish_dir(feed, "0.2.1", private)
     svc.check()
 
-    def boom(staging, version, root_):
+    def boom(version, root_):
         raise PermissionError("Zugriff verweigert (Virenscanner)")
 
-    monkeypatch.setattr(stage, "finalize", boom)
+    monkeypatch.setattr(service_mod.installer, "register_version", boom)
     with pytest.raises(UpdateError) as info:
         svc.prepare("0.2.1")
     assert info.value.code == "update.apply_failed"
-    assert not stage.staging_dir("0.2.1", root).exists()
     assert not layout.version_dir("0.2.1", root).exists()
     assert list((root / "downloads").iterdir()) == []
     status = svc.status()
@@ -235,11 +235,11 @@ def test_prepare_dateifehler_hinterlaesst_kein_halbes_layout(tmp_path, monkeypat
 
 def test_prepare_parallel_nur_einmal(tmp_path):
     """API-Knopf und Addon haben je einen eigenen `UpdateService`: zwei gleichzeitige
-    Bereitstellungen derselben Version dürfen sich den Staging-Ordner nicht gegenseitig löschen."""
+    Bereitstellungen derselben Version dürfen sich den Versionsordner nicht gegenseitig löschen."""
     in_smoke = threading.Event()
     release = threading.Event()
 
-    class BlockingRun(FakeRun):
+    class BlockingRun(FakeVenvRun):
         def __call__(self, argv, env=None, timeout=None):
             in_smoke.set()
             release.wait(10)
@@ -248,7 +248,7 @@ def test_prepare_parallel_nur_einmal(tmp_path):
     run_a = BlockingRun()
     svc_a, private, feed, root, _spawn = _service(tmp_path, run=run_a)
     publish_dir(feed, "0.2.1", private)
-    run_b = FakeRun()
+    run_b = FakeVenvRun()
     svc_b = type(svc_a)(svc_a.cfg_loader, keys_loader=svc_a.keys_loader, root=root, spawn=svc_a.spawn,
                         run=run_b, now=svc_a.now, executable=svc_a.executable, clock=svc_a.clock,
                         heartbeat=svc_a.heartbeat, app_version=svc_a.app_version)
@@ -273,8 +273,8 @@ def test_prepare_parallel_nur_einmal(tmp_path):
     assert not b_ran_meanwhile
     assert errors == []
     assert run_b.calls == []  # B fand die fertige Version vor
-    assert (layout.version_dir("0.2.1", root) / layout.APP_EXE).read_bytes() == b"neue-exe"
-    assert not stage.staging_dir("0.2.1", root).exists()
+    assert layout.is_complete_version(layout.version_dir("0.2.1", root))
+    assert run_a.kinds() == ["venv", "pip", "selftest"]
 
 
 def test_apply_unerwarteter_fehler_startet_alte_version_wieder(tmp_path):
@@ -289,8 +289,8 @@ def test_apply_unerwarteter_fehler_startet_alte_version_wieder(tmp_path):
     result = apply.apply_update("0.2.0", root=root, **deps)
     assert result == apply.RESULT_ROLLED_BACK
     assert _current(root) == "0.1.0"
-    exe = str(layout.current_exe(root))
-    assert [exe, "--daemon"] in env.spawned and [exe, "--tray"] in env.spawned
+    exe = str(layout.current_pythonw(root))
+    assert [exe, "-m", "tapesmith.daemon"] in env.spawned and [exe, "-m", "tapesmith.gui.tray"] in env.spawned
     status = state_mod.load_status()
     assert status.state == "failed" and status.error["code"] == "update.apply_failed"
 

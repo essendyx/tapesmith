@@ -8,7 +8,7 @@ from datetime import datetime
 import pytest
 
 from tapesmith.update.service import UpdateService
-from update_fakes import FakeRun, install_layout, make_test_key, publish_dir
+from update_fakes import FakeVenvRun, install_layout, make_test_key, publish_dir
 from webapi_fakes import close_ctx, make_client, make_token
 
 
@@ -27,10 +27,10 @@ def _svc(tmp_path, *, installed: bool):
     exe = str(sys.executable)
     if installed:
         install_layout(root)
-        exe = str(root / "versions" / "0.1.0" / "Tapesmith.exe")
+        exe = str(root / "versions" / "0.1.0" / "Scripts" / "pythonw.exe")
     spawned = []
     cfg = {"update": {"source": f"file:{feed}"}}
-    svc = UpdateService(lambda: cfg, keys_loader=lambda: keys, root=root, spawn=spawned.append, run=FakeRun(),
+    svc = UpdateService(lambda: cfg, keys_loader=lambda: keys, root=root, spawn=spawned.append, run=FakeVenvRun(),
                         now=lambda: datetime(2026, 10, 2, 8, 0), executable=exe, app_version=lambda: "0.1.0")
     return svc, spawned, root
 
@@ -99,8 +99,8 @@ def test_install_202_bereitet_vor_und_startet(env):
     r = client.post("/api/v1/update/install", json={"version": "0.2.1", "reopen_route": "/einstellungen"})
     assert r.status_code == 202, r.text
     assert r.json() == {"started": True}
-    assert (root / "versions" / "0.2.1" / "Tapesmith.exe").is_file()
-    assert spawned and spawned[0][1:4] == ["--update-apply", "--version", "0.2.1"]
+    assert (root / "versions" / "0.2.1" / "Scripts" / "pythonw.exe").is_file()
+    assert spawned and spawned[0][1:5] == ["-m", "tapesmith.update.apply", "--version", "0.2.1"]
     assert spawned[0][-2:] == ["--reopen-route", "/einstellungen"]
     assert client.get("/api/v1/update/status").json()["state"] == "installing"
 
@@ -140,7 +140,7 @@ def test_rollback_ohne_vorige_und_mit(env):
     assert r.status_code == 500
     assert r.json()["error"]["code"] == "update.apply_failed"
     install_layout(root, versions=("0.1.0", "0.2.0"), current="0.2.0")
-    svc.executable = str(root / "versions" / "0.2.0" / "Tapesmith.exe")
+    svc.executable = str(root / "versions" / "0.2.0" / "Scripts" / "pythonw.exe")
     r = client.post("/api/v1/update/rollback")
     assert r.status_code == 202, r.text
     assert "--rollback" in spawned[-1]

@@ -1,6 +1,6 @@
-"""Selbsttest für den portablen Build und die Entwicklung, ohne Qt.
+"""Selbsttest für neue Versionsumgebungen (Updater, Installer) und die Entwicklung, ohne Qt.
 
-Aufruf: `Tapesmith.exe --selftest [--selftest-out DATEI]` bzw. `p12 gui --selftest`. Geprüft werden
+Aufruf: `python -m tapesmith.selftest [--selftest-out DATEI]` bzw. `p12 gui --selftest`. Geprüft werden
 Paketdaten, Schriften, Renderer, Vorlagen, ein Dokument mit allen Objektarten, Codes, Barcode-Decoder
 (zxing-cpp optional: fehlt er, meldet der Schritt nur `WARNUNG`, der Selbsttest bleibt ok), Icons,
 Band-Invertierung, Lint aller mitgelieferten Vorlagen, IPC mit Speicher-Kanälen, der
@@ -171,7 +171,7 @@ _OLD_WINDOW_MODULES = ("webview", "clr", "clr_loader", "pythonnet", "tapesmith.g
 
 def check_browser_start(*, frozen: bool | None = None) -> str:
     """Browserstart ohne Browser: `webui.browser.open_app` mit Fake-Sitzung und Fake-Öffner muss
-    die Adresse mit Token im Fragment bauen. Im portablen Build darf das frühere App-Fenster
+    die Adresse mit Token im Fragment bauen. In einem eingefrorenen Build darf das frühere App-Fenster
     (pywebview, pythonnet) nicht mehr enthalten sein."""
     from tapesmith.webui import browser
 

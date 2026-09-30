@@ -164,7 +164,7 @@
   "update": {
     "not_installed": {
       "title": "Nicht installiert",
-      "hint": "Updates gibt es nur für die installierte App. Mit „Installieren.cmd“ aus dem Zip installieren."
+      "hint": "Updates gibt es nur für die installierte App. Installieren mit: py -m tapesmith install"
     },
     "no_trusted_key": {
       "title": "Kein Update-Schlüssel",

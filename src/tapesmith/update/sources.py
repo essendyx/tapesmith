@@ -1,8 +1,10 @@
 """Update-Quellen: GitHub-Releases, Ordner bzw. Freigabe, HTTP(S)-Basis-URL.
 
 Jede Quelle liefert `manifest.json` und `manifest.json.sig` (`fetch_manifest`, `None`: kein
-passendes Release) und lädt das Paket gestreamt nach `<ziel>.part`, das erst am Ende umbenannt
-wird (`download`). HTTP läuft nur über `httpx` mit injizierbarem `transport` (Tests:
+passendes Release), lädt einzelne Release-Dateien gestreamt nach `<ziel>.part`, das erst am Ende
+umbenannt wird (`download`), und nennt mit `pip_options` den Paketindex für pip: GitHub und
+HTTP(S) nutzen PyPI, ein Ordner mit Wheels (direkt oder in `wheels`) wird zum einzigen Index
+(`--no-index --find-links`, z. B. eine Freigabe im Firmennetz). HTTP läuft nur über `httpx` mit injizierbarem `transport` (Tests:
 `httpx.MockTransport`), Zeitlimit 30 s je Anfrage. Das Repository ist öffentlich: GitHub wird ohne
 Token abgefragt."""
 
@@ -40,6 +42,8 @@ class Source(Protocol):
     def fetch_manifest(self) -> tuple[bytes, bytes] | None: ...
 
     def download(self, name: str, dest: Path, progress: Progress | None = None) -> Path: ...
+
+    def pip_options(self) -> dict: ...
 
 
 def _user_agent() -> str:
@@ -100,6 +104,13 @@ class FileSource:
         self.folder = Path(folder)
         self.description = _t("Ordner {folder}", folder=self.folder)
 
+    def pip_options(self) -> dict:
+        """Wheels im Ordner (oder in `wheels`): pip nur aus diesem Ordner, sonst PyPI."""
+        for candidate in (self.folder / "wheels", self.folder):
+            if candidate.is_dir() and any(candidate.glob("*.whl")):
+                return {"find_links": [str(candidate)], "no_index": True}
+        return {}
+
     def fetch_manifest(self) -> tuple[bytes, bytes] | None:
         if not self.folder.is_dir():
             raise _unreachable(str(self.folder))
@@ -142,6 +153,9 @@ class UrlSource:
         self.base = base if base.endswith("/") else base + "/"
         self.transport = transport
         self.description = _t("Adresse {base}", base=self.base)
+
+    def pip_options(self) -> dict:
+        return {}
 
     def _url(self, name: str) -> str:
         return urljoin(self.base, check_file_name(name))
@@ -186,6 +200,9 @@ class GitHubSource:
         self.description = f"GitHub {owner}/{repo}"
         self._assets: dict[str, int] | None = None
         self.release_version: str | None = None
+
+    def pip_options(self) -> dict:
+        return {}
 
     def _headers(self, accept: str) -> dict:
         return {"Accept": accept, "X-GitHub-Api-Version": "2022-11-28"}
