@@ -1,6 +1,6 @@
 # Web-Oberfläche (web/)
 
-React 18, TypeScript (strict), Vite, Fluent UI React v9. Der Build landet in `src/tapesmith/webui/static/` und wird eingecheckt, damit Laufzeit und Portable-Build kein Node brauchen.
+React 18, TypeScript (strict), Vite, Fluent UI React v9. Der Build landet in `src/tapesmith/webui/static/` und wird eingecheckt, damit Laufzeit und Python-Paket (Wheel) kein Node brauchen.
 
 ## Befehle
 

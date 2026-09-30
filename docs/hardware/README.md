@@ -101,7 +101,7 @@ und am Windows-Rechner noch zu prüfen:
 6. Schneidpause mit Leertaste im Browser.
 7. Editor 100 % nach Bildschirm-Kalibrierung entspricht echten Millimetern; Druck entspricht der Vorschau.
 8. Kontextmenü/URI nach erneutem `p12 integrate install --context --uri` öffnen die Oberfläche im Browser vorausgefüllt, Druck erst nach Bestätigung.
-9. Portable `Tapesmith.exe` ohne Argument öffnet den Browser; `--tray`, `--daemon`, Selbsttest ok; im Ordner `_internal` liegt kein `webview`, `pythonnet` oder `clr_loader`.
+9. Installierte App: Startmenü „Tapesmith“ (`pythonw -m tapesmith.webui.browser`) öffnet den Browser; Tray und Druckdienst laufen als `pythonw.exe` aus `current`, Selbsttest ok; in der Umgebung liegt kein `webview`, `pythonnet` oder `clr_loader`.
 10. Export (PNG/PDF) im Browser landet im Download-Ordner.
 11. Browser ohne Token zeigt nur den Hinweis; Port von anderem Rechner nicht erreichbar.
 12. Bandwechsel und neue Rolle wirken auf alle Vorschauen und den Restmeter.
@@ -163,11 +163,11 @@ Abschnitt „Release und Update“). Status je Prüfung hier fortschreiben (offe
 
 | Nr. | Prüfung | Status |
 |---|---|---|
-| 1 | Frisches Benutzerprofil (neuer lokaler Windows-Benutzer ohne Adminrechte): `Tapesmith-portable-0.2.0.zip` entpacken, `Installieren.cmd` doppelklicken: keine UAC-Abfrage, Startmenü-Eintrag „Tapesmith“ (öffnet den Standardbrowser), Eintrag unter „Installierte Apps“, Tray startet, Kontextmenü und `tapesmith://`-Link öffnen die Oberfläche im Browser, Autostart nach Neuanmeldung. | offen |
+| 1 | Frisches Benutzerprofil (neuer lokaler Windows-Benutzer ohne Adminrechte, Smart App Control an): `winget install Python.Python.3.12`, `py -m pip install --user tapesmith`, `py -m tapesmith install`: keine UAC-Abfrage, nichts blockiert, Startmenü-Eintrag „Tapesmith“ (öffnet den Standardbrowser), Eintrag unter „Installierte Apps“, Tray startet, Kontextmenü und `tapesmith://`-Link öffnen die Oberfläche im Browser, Autostart nach Neuanmeldung. | offen |
 | 2 | Deinstallieren je einmal über „Installierte Apps“ und über die Startmenü-Verknüpfung: Programmordner, Startmenü und Registry-Einträge sind weg, `%APPDATA%\Tapesmith` (Einstellungen, Verlauf) bleibt erhalten. | offen |
-| 3 | Update-Pfad GitHub: 0.2.0 installiert, Release 0.2.1 veröffentlicht; Einstellungen › Updates „Jetzt prüfen“ zeigt 0.2.1, „Jetzt installieren“: Dienst startet neu, die Oberfläche öffnet sich mit 0.2.1 in einem neuen Browser-Tab auf Einstellungen › Updates, Verlauf und Einstellungen unverändert. Automatisch: `update.auto_install` an, alle Browser-Tabs mit der Oberfläche schließen, nach der Leerlaufzeit ist 0.2.1 aktiv. | offen |
+| 3 | Update-Pfad GitHub und PyPI: Version A installiert, Release B veröffentlicht; Einstellungen › Updates „Jetzt prüfen“ zeigt B, „Jetzt installieren“: neue Umgebung `versions\B` entsteht, Dienst startet neu, die Oberfläche öffnet sich mit B in einem neuen Browser-Tab auf Einstellungen › Updates, Verlauf und Einstellungen unverändert. Automatisch: `update.auto_install` an, alle Browser-Tabs mit der Oberfläche schließen, nach der Leerlaufzeit ist B aktiv. | offen |
 | 4 | Rückfall: absichtlich defektes Release (z. B. Selbsttest scheitert) veröffentlichen: es wird nicht umgeschaltet bzw. automatisch zurückgestellt, Meldung in Einstellungen › Updates; `p12 update rollback` stellt manuell zurück. | offen |
-| 5 | Signatur: Release mit verändertem Zip (Prüfsumme passt nicht) wird abgelehnt (`update.checksum_mismatch`); ohne hinterlegten Schlüssel meldet die Seite „Kein vertrauenswürdiger Signaturschlüssel“. | offen |
+| 5 | Signatur: Release mit veränderter Lock-Liste bzw. verändertem Wheel wird abgelehnt (Signatur ungültig bzw. pip meldet, dass die Prüfsumme nicht passt, `update.download_failed`); ohne hinterlegten Schlüssel meldet die Seite „Kein vertrauenswürdiger Signaturschlüssel“. | offen |
 | 6 | HiDPI: Anzeige auf 150 % und 200 % skalieren: Tray-Symbol scharf mit Statusabzeichen, Web-Oberfläche ohne abgeschnittene Texte, Browser-Zoom 200 % ohne waagrechtes Scrollen. | offen |
 | 7 | Dunkelmodus und Kontrast: Windows auf dunkel und zurück, Oberfläche und Tray-Kontextmenü folgen live; Kontrastdesign „Wüste“ bzw. „Nachthimmel“: alles lesbar, Fokus sichtbar. | offen |
 | 8 | Sprache: Einstellungen › Oberfläche auf English: Oberfläche und Tray-Menü sofort englisch, Fehlermeldung (z. B. Drucker aus) mit englischem Titel; zurück auf „wie Windows“. | offen |

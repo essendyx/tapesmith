@@ -43,7 +43,8 @@ SOFTWARE.
 
 ## Python dependencies (from `pyproject.toml`)
 
-Installed separately (not vendored). The portable build bundles the runtime dependencies.
+Installed separately by pip from PyPI (not vendored). The installed app uses one Python environment per
+version, pinned by the signed lock list of each release.
 
 | Package | License |
 |---|---|
@@ -63,10 +64,9 @@ Installed separately (not vendored). The portable build bundles the runtime depe
 | httpx | BSD-3-Clause |
 | cryptography | Apache-2.0 or BSD-3-Clause |
 | pytest, pytest-qt (development) | MIT |
-| PyInstaller (build only) | GPL-2.0-or-later with bootloader exception |
 | Playwright (screenshots only) | Apache-2.0 |
 
-PySide6 is used under the LGPL: the portable build ships the unmodified Qt libraries as separate
+PySide6 is used under the LGPL: pip installs the unmodified Qt libraries from PyPI as separate
 files, which can be replaced by the user.
 
 ## Web UI dependencies (from `web/package.json`)

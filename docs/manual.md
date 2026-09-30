@@ -272,7 +272,7 @@ closed again.
 
 ### Tray app and hotkeys
 
-`p12 tray` (or `Tapesmith.exe --tray` in the portable build) starts the tray app in the notification
+`p12 tray` (or `pythonw -m tapesmith.gui.tray` in the installed app) starts the tray app in the notification
 area. **The tray app never opens a window of its own**, no dialog, no popup and no message box. Only
 the icon and its context menu are native; everything that needs an interface opens a new tab in the
 default browser (with a fresh session each time). Notes and errors come as Windows notifications of the
@@ -560,8 +560,8 @@ p12 app --route /verlauf   # start directly on a page
 
 `tapesmith` (without console), `python -m tapesmith.gui`, `p12 gui`, the Start menu shortcut, the tray
 menu, the context menu, `tapesmith://` links and the restart after an update open the browser as well;
-in the portable build `Tapesmith.exe` without arguments is enough. If the print service does not
-start, `p12 app` ends with exit 1 and the message on stderr; the EXE without console writes it to
+in the installed app this is `pythonw -m tapesmith.webui.browser`. If the print service does not
+start, `p12 app` ends with exit 1 and the message on stderr; without a console (`pythonw`) it goes to
 `<app folder>\logs\app.log` (no message window). `--browser` (formerly: browser instead of window) is
 still accepted and has no effect anymore, `--compact` no longer exists.
 
@@ -615,7 +615,7 @@ New `config.json` keys:
 **Development:** `cd web && npm ci && npm run dev` starts the Vite development server, `npm run check`
 checks types, ESLint and Vitest. `python tools/build_web.py` (with `--install` first `npm ci`) builds
 the interface into `src/tapesmith/webui/static/`; this folder is checked in so that runtime and
-portable build need no Node.
+wheel need no Node.
 
 **After the update:** run `p12 integrate install --context --uri` once so that the context menu and
 `tapesmith://` links open the web interface in the browser. An old entry `app.quick_window` in
@@ -966,25 +966,61 @@ version).
 
 ### Installation without admin rights
 
-- The zip `Tapesmith-portable-0.2.0.zip` contains, next to the folder `Tapesmith\`, the file
-  **`Installieren.cmd`**: a double click installs without a UAC prompt for the current user.
-- Folders: `%LOCALAPPDATA%\Programs\Tapesmith\versions\<version>\` (one folder per version), `current`
-  is a directory junction to the active version, `install.json` holds the version, the previous version
-  and failed versions. The environment variable `TAPESMITH_INSTALL_ROOT` or `--root` choose another
-  folder.
-- Start menu `Tapesmith` (and “Tapesmith deinstallieren”, uninstall), entry under **Settings › Apps ›
-  Installed apps** (HKCU, publisher “Tapesmith contributors”), context menu, `tapesmith://` and the
-  autostart of the tray app point to `current\Tapesmith.exe`.
-- Uninstall via “Installed apps”, the Start menu shortcut or `Tapesmith.exe --uninstall`: the program
-  folder, Start menu and registry entries are removed. **User data in `%APPDATA%\Tapesmith` (settings,
-  history, drafts) is kept.**
-- Switches of the EXE: `--install [--root D] [--no-shortcuts] [--no-registry] [--no-autostart]
-  [--no-start] [--no-open] [--quiet]`, `--uninstall [--root D] [--no-shortcuts] [--no-registry] [--quiet]`.
-- No message window: installer and uninstaller write their result to `<app folder>\logs\install.log`
-  or `uninstall.log` and report it via the exit code (0 ok, 1 error). After a successful installation
-  the tray app and the web interface start in the default browser (`--no-open` or `--quiet`: only the
-  tray app).
-- `p12 install status [--json]` shows the root, active version, junction and Start menu.
+Tapesmith is distributed through Python (package `tapesmith` on PyPI) and runs with the signed Python
+from python.org. It has no executable of its own, so Windows Smart App Control does not block it,
+although Tapesmith itself carries no code signing certificate.
+
+1. Install Python (3.12, 3.11 works too), for example in a normal terminal without admin rights:
+
+   ```
+   winget install Python.Python.3.12
+   ```
+
+2. Get Tapesmith for the current user and set it up:
+
+   ```
+   py -m pip install --user tapesmith
+   py -m tapesmith install
+   ```
+
+- Folder: `%LOCALAPPDATA%\Programs\Tapesmith\versions\<version>\` is one Python environment (venv) per
+  version with exactly this Tapesmith release, `current` is a directory junction to the active
+  version, `install.json` holds version, previous version, failed versions and the base Python. The
+  environment variable `TAPESMITH_INSTALL_ROOT` or `--root` selects another folder.
+- The installation creates the environment with the running Python (`--python` picks another one),
+  installs Tapesmith into it with pip (ready made wheels only, `--only-binary=:all:`) and runs the
+  self test of the new environment. Only then does it switch over.
+- Everything starts as `current\Scripts\pythonw.exe -m …`: Start menu “Tapesmith”
+  (`-m tapesmith.webui.browser`), autostart of the tray app (`HKCU\…\Run`, value “Tapesmith”,
+  `-m tapesmith.gui.tray`), `tapesmith://`, `p12label://` and the context menu. Entry under
+  **Settings › Apps › Installed apps** (HKCU, publisher “Tapesmith contributors”) with uninstall
+  (`pythonw -m tapesmith uninstall`).
+- **Uninstall** via “Installed apps”, the Start menu shortcut “Tapesmith deinstallieren” or
+  `py -m tapesmith uninstall`: the program folder, Start menu and registry entries are removed.
+  **User data in `%APPDATA%\Tapesmith` (settings, history, drafts) is kept.** The package used for the
+  setup is removed with `py -m pip uninstall tapesmith`.
+- Options: `install [--root D] [--python P] [--no-shortcuts] [--no-registry] [--no-autostart]
+  [--no-start] [--no-open] [--quiet] [--force]`, for tests without PyPI `--wheel FILE`,
+  `--find-links FOLDER`, `--no-index` and `--lock lock.txt`; `uninstall [--root D] [--no-shortcuts]
+  [--no-registry] [--quiet]`.
+- The result goes to the console and to `<app folder>\logs\install.log` or `uninstall.log`, exit code
+  0 ok, 1 error. After a successful installation the tray app and the web interface start in the
+  default browser (`--no-open` or `--quiet`: only the tray app, `--no-start`: nothing).
+- `py -m tapesmith install --status [--json]` shows root, active version, junction, base Python and
+  the kind of installation without changing anything.
+- **Smart App Control:** `python.exe` and `pythonw.exe` from python.org are signed, all native parts
+  (Qt, Pillow, cryptography, pydantic and others) come unmodified as wheels of their projects from
+  PyPI. The small `.exe` launchers that pip creates for command line entry points are not used by the
+  installed app; if Smart App Control blocks them, use `py -m tapesmith …` instead of `tapesmith …`.
+- **Long paths:** Qt (PySide6) ships very long file names. With a very long user name pip can hit the
+  260 character limit (message about “Long Path Support”); then allow long paths in Windows (once,
+  with admin rights, `LongPathsEnabled`) or pick a shorter folder with `--root`.
+- **Moving from the portable build (up to 0.3) or from a source checkout:** run the two commands of
+  step 2. `tapesmith install` stops the old Tapesmith, takes over the installation folder, replaces
+  autostart, Start menu and the entry under “Installed apps” and removes the old `Tapesmith.exe`. If
+  the autostart points to a Python environment outside the installation (for example
+  `C:\src\tapesmith\.venv`), Tapesmith is stopped there and the autostart is switched; the environment
+  itself is left alone. User data stays as it is.
 
 ### Updates
 
@@ -993,13 +1029,19 @@ version).
   both answers are saved (`update.asked`), and the switch under Settings › Updates changes it later.
   Without consent Tapesmith does not connect to the update source on its own; “Check now” still works.
 - **Sources** (`update.source`): `github:essendyx/tapesmith` (default, GitHub releases via the REST
-  API), `file:<folder>` (folder or file share with the same three files) or an `https://…/` base
-  address.
+  API, packages from PyPI), `file:<folder>` (folder or file share with `manifest.json`,
+  `manifest.json.sig` and `lock.txt`; if the wheels are there as well, directly or under `wheels\`,
+  pip installs only from that folder) or an `https://…/` base address.
 - **Without a token:** the repository is public, GitHub is queried without sign-in (at most 60 requests
   per hour and address). An old entry `update.token_ref` in `config.json` is ignored.
-- **Channel** `stable` or `beta` (pre-releases); check interval `update.check_interval_h`.
-- **Process:** load the manifest, check the Ed25519 signature and the SHA-256 of the zip, unpack to
-  `versions\<v>.staging`, self-test of the new EXE, rename. Switching only happens when **idle**:
+- **Channel** `stable` or `beta` (pre-releases such as `0.4.0b1`); check interval `update.check_interval_h`.
+- **Process:** load the manifest and check its Ed25519 signature. The manifest holds version, channel
+  and a complete lock list (every package with version and the SHA-256 of all wheels for Windows x64
+  and the supported Python versions). From it the updater writes `lock.txt`, creates the new
+  environment `versions\<v>` with the base Python of the installation and installs with
+  `pip install --require-hashes --only-binary=:all: -r lock.txt`, so only files whose checksum is in
+  the signed manifest. Then it checks the installed version and runs the self test
+  (`pythonw -m tapesmith.selftest`) in the new environment. Switching only happens when **idle**:
   automatically (`update.auto_install`) only if the service has not printed for `update.idle_min`
   minutes and no browser tab with the interface has been open for 120 s; “Install now” in Settings ›
   Updates only requires “no job active, queue empty” and asks first because the service restarts
@@ -1007,15 +1049,16 @@ version).
   its session and can be closed).
 - **Fallback:** if the new service does not report the new version within 60 s, the updater rolls back
   to the previous version automatically and remembers the failed version (it is never offered
-  automatically again). `update.keep_versions` older versions are kept.
-- CLI: `p12 update status [--json]`, `p12 update check`, `p12 update install [--yes]`,
-  `p12 update rollback [--yes]`.
+  automatically again). If the self test already fails, nothing is switched. `update.keep_versions`
+  older versions are kept.
+- CLI: `py -m tapesmith update status [--json]`, `… update check`, `… update install [--yes]`,
+  `… update rollback [--yes]` (in a development environment also `p12 update …`).
 - **Signing keys:** only manifests whose signature matches a key in
-  `src/tapesmith/update/trusted_keys.json` are accepted. The file is empty at first; without a key the
-  page reports “No trusted signing key” and there are no updates.
-- **Publishing a release:** `deploy/infra/publish-tapesmith-release.ps1 -Version <v> -Notes "…"` builds
-  the zip, signs it with `tools/release.py publish-dir` and creates the GitHub release `v<v>` with
-  `manifest.json`, `manifest.json.sig` and the zip (details in `deploy/infra/README.md`).
+  `src/tapesmith/update/trusted_keys.json` are accepted; without a matching key the page reports
+  “No trusted signing key” and there are no updates.
+- **Publishing a release:** push the tag `v<version>`; the workflow `.github/workflows/release.yml`
+  builds wheel and sdist, creates lock list and manifest, signs it, publishes to PyPI and creates the
+  GitHub release (details in `deploy/infra/README.md`).
 
 ### Report a problem
 
@@ -1045,47 +1088,42 @@ written in the current language.
 - No Mica effect (the interface runs in the browser), calm Fluent surfaces instead; the color scheme
   can also be set to light or dark permanently.
 - Tabs exist in the editor (labels are created freely there); “Report a problem” sends nothing.
-- An installer of its own in the EXE instead of Inno Setup; update signature Ed25519 over a SHA-256
-  manifest instead of Authenticode (no code signing certificate); the file association stays with the
+- Installation through Python (`py -m tapesmith install`) instead of Inno Setup or an executable of
+  its own; update signature Ed25519 over a manifest with the SHA-256 of all packages instead of
+  Authenticode (no code signing certificate); the file association stays with the
   context menu for `*.tapesmith.json`.
 - No choice of units (sizes stay in mm and print dots). Option names and subcommands of the CLI,
   template IDs and status values are German identifiers and stay the same in all languages.
 
-## Portable version
+## Building and checking the package
 
-Building (a venv with PyInstaller from `pip install -e ".[dev,build]"` is enough):
+Wheel and sdist are built with `python -m build` (in the development venv from `pip install -e ".[dev]"`):
 
 ```
-.venv\Scripts\python tools\build_portable.py --zip
+.venv\Scripts\python tools\build_web.py
+.venv\Scripts\python -m build
 ```
 
-Result: `dist\Tapesmith\Tapesmith.exe`; the folder can be copied anywhere, also without Python/venv in
-the PATH; no Python knowledge needed. Without arguments the EXE opens the web interface in the default
-browser; `--app` (like `p12 app`, e.g. `--app --route /verlauf`), `--daemon` (print service), `--tray`
-(tray app) and `--selftest` choose the other process kinds. The built web interface and uvicorn are
-included in the folder; pywebview, the WebView2 binding and pythonnet are explicitly excluded. The zip
-`dist\Tapesmith-portable-<version>.zip` is created as well. Settings and history live in
-`%APPDATA%\Tapesmith` regardless of the installation location.
+Result: `dist\tapesmith-<version>-py3-none-any.whl` and `dist\tapesmith-<version>.tar.gz`. The wheel
+contains the built web interface (`tapesmith/webui/static`), fonts, templates, icons and the
+translation catalogs; settings and history live independently of it in `%APPDATA%\Tapesmith`. A trial
+installation without PyPI, registry or Start menu (for example in a throwaway environment under
+`%TEMP%`):
 
-Next to the folder `Tapesmith\` the zip contains the file `Installieren.cmd`
-(`"%~dp0Tapesmith\Tapesmith.exe" --install`): a double click installs the app without admin rights
-to `%LOCALAPPDATA%\Programs\Tapesmith` (see “Installation without admin rights” under “Finishing
-touches”). Without installation the folder keeps working portably, only without updates. The EXE
-carries the app icon `src/tapesmith/icons/app.ico` (created by `tools/make_app_icon.py`, `--check`
-checks it).
+```
+py -m venv %TEMP%\ts-probe
+%TEMP%\ts-probe\Scripts\python -m pip install dist\tapesmith-<version>-py3-none-any.whl
+set TAPESMITH_INSTALL_ROOT=%TEMP%\ts-probe-root
+set TAPESMITH_HOME=%TEMP%\ts-probe-home
+%TEMP%\ts-probe\Scripts\python -m tapesmith install --wheel dist\tapesmith-<version>-py3-none-any.whl --no-registry --no-shortcuts --no-start
+```
 
-The build script checks the result itself with the built in self-test
-(`Tapesmith.exe --selftest --selftest-out selftest.txt`; last line “Selbsttest ok”). It also checks the
-web API (without a port), the built interface, uvicorn and the browser start (address with token,
-without a real browser; in the build also: no pywebview or pythonnet included), the translation
-catalogs (de/en with the same keys, message catalog readable), the update signature (Ed25519 in
-memory, `trusted_keys.json` readable) and the installation layout (create, switch and remove a
-junction in a temp folder).
-
-Deliberately no onefile build: a cold start of 3 to 8 s and Defender false positives would undermine
-the 5 s quick print. Nuitka is available as an option via `--backend nuitka` (needs a C compiler and
-takes much longer than PyInstaller).
-
-There is also `deploy/infra/build-tapesmith-portable.ps1` as a PowerShell caller.
+The built in self test (`python -m tapesmith.selftest --selftest-out selftest.txt`; last line
+“Selbsttest ok”) runs on every installation and every update in the new environment. It also checks
+the web API (without a port), the built interface, uvicorn and the browser start (address with token,
+without a real browser), the translation catalogs (de/en with the same keys, message catalog
+readable), the update signature (Ed25519 in memory, `trusted_keys.json` readable) and the installation
+layout (create, switch and remove a junction in a temp folder). The app icon
+`src/tapesmith/icons/app.ico` is created by `tools/make_app_icon.py` (`--check` verifies it).
 
 Hardware findings: [`docs/hardware/README.md`](hardware/README.md)
