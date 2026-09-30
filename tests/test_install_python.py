@@ -206,7 +206,7 @@ def test_pip_options_der_quellen(tmp_path):
     (folder / "wheels").mkdir()
     (folder / "wheels" / "pillow-1-cp311-cp311-win_amd64.whl").write_bytes(b"w")
     assert FileSource(folder).pip_options() == {"find_links": [str(folder / "wheels")], "no_index": True}
-    assert GitHubSource("essendyx", "tapesmith").pip_options() == {}
+    assert GitHubSource("example-owner", "tapesmith").pip_options() == {}
     assert UrlSource("https://example.org/feed/").pip_options() == {}
 
 
