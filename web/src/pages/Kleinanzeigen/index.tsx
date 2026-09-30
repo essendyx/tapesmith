@@ -1,4 +1,8 @@
-/** Seite „Kleinanzeigen": Artikel-Tracking mit Etikett und Reservierung. */
+/**
+ * Seite „Kleinanzeigen": Artikel-Tracking mit Etikett und Reservierung. Liste nach dem gemeinsamen
+ * Muster (`DataList`): ein sichtbarer Hauptknopf je Zeile („Etikett“), Reservieren, Freigeben,
+ * Verkauft und Bearbeiten im „Mehr“-Menü.
+ */
 import { useEffect, useState } from 'react';
 import {
   Badge,
@@ -16,18 +20,27 @@ import {
   makeStyles,
   tokens,
 } from '@fluentui/react-components';
-import { Add20Regular } from '@fluentui/react-icons';
+import {
+  Add20Regular,
+  CalendarClock20Regular,
+  CheckmarkCircle20Regular,
+  Edit20Regular,
+  LockOpen20Regular,
+  Open20Regular,
+  Print20Regular,
+  Tag20Regular,
+} from '@fluentui/react-icons';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { printLabel, useLabelRender } from '../../api/labels';
 import { DEFAULT_PRINT_OPTIONS, type LabelSource, type PrintOptions } from '../../api/types';
+import { DataList, type ListColumn } from '../../components/DataList';
 import { EmptyState } from '../../components/EmptyState';
 import { ErrorMessage, useErrorText } from '../../components/ErrorMessage';
-import { LoadingState } from '../../components/LoadingState';
 import { useNotify } from '../../components/NotifyProvider';
 import { PageHeader } from '../../components/PageHeader';
 import { moduleTexts } from '../../modules';
-import { Section } from '../../components/Section';
+import { RowActions } from '../../components/RowActions';
 import { PrintOptionsBar } from '../../components/PrintOptionsBar';
 import { TapePreview } from '../../components/TapePreview';
 import { usePrintFlow } from '../../components/usePrint';
@@ -47,21 +60,10 @@ function todayPlusDays(days: number): string {
 }
 
 const useStyles = makeStyles({
-  cards: { listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalS },
-  card: {
-    display: 'flex',
-    flexDirection: 'column',
-    rowGap: tokens.spacingVerticalXS,
-    padding: tokens.spacingHorizontalM,
-    borderRadius: tokens.borderRadiusMedium,
-    border: `${tokens.strokeWidthThin} solid ${tokens.colorNeutralStroke2}`,
-    backgroundColor: tokens.colorNeutralBackground2,
-    minWidth: 0,
-  },
-  cardHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', columnGap: tokens.spacingHorizontalS, flexWrap: 'wrap' },
-  cardTitle: { fontWeight: tokens.fontWeightSemibold, overflowWrap: 'anywhere', minWidth: 0 },
-  cardMeta: { color: tokens.colorNeutralForeground3, fontSize: tokens.fontSizeBase200, overflowWrap: 'anywhere' },
-  actions: { display: 'flex', columnGap: tokens.spacingHorizontalS, rowGap: tokens.spacingVerticalXXS, flexWrap: 'wrap' },
+  titleCell: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalXXS, minWidth: 0 },
+  itemTitle: { fontWeight: tokens.fontWeightSemibold, overflowWrap: 'anywhere' },
+  meta: { color: tokens.colorNeutralForeground3, fontSize: tokens.fontSizeBase200, overflowWrap: 'anywhere' },
+  id: { fontFamily: tokens.fontFamilyMonospace, fontSize: tokens.fontSizeBase200 },
   dialogContent: { display: 'flex', flexDirection: 'column', rowGap: tokens.spacingVerticalM, minWidth: '260px' },
 });
 
@@ -332,6 +334,110 @@ export default function KleinanzeigenPage(): JSX.Element {
         ? t('status.sold')
         : t('status.available');
 
+  const statusColor = (status: KaStatus): 'warning' | 'success' | 'informative' =>
+    status === 'reserviert' ? 'warning' : status === 'verkauft' ? 'success' : 'informative'; // i18n-ignore (Server-Werte)
+  const rowTitle = (art: ArtikelJson): string => `${art.id} ${art.titel}`;
+
+  const columns: ListColumn<ArtikelJson>[] = [
+    { id: 'id', header: t('list.columns.id'), cell: (art) => <span className={styles.id}>{art.id}</span> },
+    {
+      id: 'title',
+      header: t('list.columns.title'),
+      kind: 'title',
+      cell: (art) => (
+        <div className={styles.titleCell}>
+          <span className={styles.itemTitle}>{art.titel}</span>
+          {art.status !== 'verfügbar' ? ( // i18n-ignore (Server-Wert)
+            <span className={styles.meta}>
+              {art.status === 'reserviert' // i18n-ignore (Server-Wert)
+                ? t('list.reservedUntil', { name: art.name, date: art.datum })
+                : t('list.soldOn', { name: art.name, date: art.datum })}
+            </span>
+          ) : null}
+        </div>
+      ),
+    },
+    { id: 'price', header: t('list.columns.price'), kind: 'number', cell: (art) => art.preis },
+    { id: 'place', header: t('list.columns.place'), cell: (art) => art.ort },
+    {
+      id: 'status',
+      header: t('list.columns.status'),
+      kind: 'status',
+      cell: (art) => (
+        <Badge appearance="tint" color={statusColor(art.status)}>
+          {statusLabel(art.status)}
+        </Badge>
+      ),
+    },
+    {
+      id: 'actions',
+      header: t('list.columns.actions'),
+      kind: 'actions',
+      cell: (art) => (
+        <RowActions
+          title={rowTitle(art)}
+          primary={
+            <Button
+              icon={<Tag20Regular />}
+              aria-label={t('actions.for', { action: t('actions.label'), title: rowTitle(art) })}
+              onClick={() => setLabelTarget(art)}
+            >
+              {t('actions.label')}
+            </Button>
+          }
+          actions={[
+            {
+              key: 'reserve',
+              label: t('actions.reserve'),
+              icon: <CalendarClock20Regular />,
+              hidden: art.status === 'verkauft', // i18n-ignore (Server-Wert)
+              onClick: () => setReserveTarget(art),
+            },
+            {
+              key: 'reserved-label',
+              label: t('actions.printReservedLabel'),
+              icon: <Print20Regular />,
+              hidden: art.status !== 'reserviert', // i18n-ignore (Server-Wert)
+              onClick: () => void quickPrintReserved(art),
+            },
+            {
+              key: 'release',
+              label: t('actions.release'),
+              icon: <LockOpen20Regular />,
+              hidden: art.status !== 'reserviert', // i18n-ignore (Server-Wert)
+              onClick: () => void releaseArtikel(art),
+            },
+            {
+              key: 'sold',
+              label: t('actions.markSold'),
+              icon: <CheckmarkCircle20Regular />,
+              hidden: art.status === 'verkauft', // i18n-ignore (Server-Wert)
+              onClick: () => setSellTarget(art),
+            },
+            {
+              key: 'edit',
+              label: t('actions.edit'),
+              icon: <Edit20Regular />,
+              onClick: () => {
+                setDialogArtikel(art);
+                setDialogMode('bearbeiten');
+              },
+            },
+            {
+              key: 'ad',
+              label: t('list.openAd'),
+              icon: <Open20Regular />,
+              hidden: !art.anzeige,
+              onClick: () => {
+                if (art.anzeige) window.open(art.anzeige, '_blank', 'noopener,noreferrer');
+              },
+            },
+          ]}
+        />
+      ),
+    },
+  ];
+
   return (
     <div className={layout.stack}>
       <PageHeader
@@ -344,91 +450,23 @@ export default function KleinanzeigenPage(): JSX.Element {
         }
       />
 
-      <Section flush>
-        <TabList selectedValue={tab} onTabSelect={(_e, data) => setTab(data.value as StatusFilter)}>
-          <Tab value="alle">{t('tabs.all')}</Tab>
-          <Tab value="verfügbar">{t('tabs.available')}</Tab> {/* i18n-ignore (Server-Wert) */}
-          <Tab value="reserviert">{t('tabs.reserved')}</Tab>
-          <Tab value="verkauft">{t('tabs.sold')}</Tab>
-        </TabList>
-      </Section>
+      <TabList selectedValue={tab} onTabSelect={(_e, data) => setTab(data.value as StatusFilter)}>
+        <Tab value="alle">{t('tabs.all')}</Tab>
+        <Tab value="verfügbar">{t('tabs.available')}</Tab> {/* i18n-ignore (Server-Wert) */}
+        <Tab value="reserviert">{t('tabs.reserved')}</Tab>
+        <Tab value="verkauft">{t('tabs.sold')}</Tab>
+      </TabList>
 
-      {listQuery.isLoading ? <LoadingState variant="list" rows={3} /> : null}
-      {listQuery.error ? <ErrorMessage error={listQuery.error} onRetry={() => void listQuery.refetch()} /> : null}
-      {!listQuery.isLoading && !listQuery.error && items.length === 0 ? (
-        <EmptyState title={t('empty.title')} body={t('empty.body')} />
-      ) : null}
-
-      {items.length ? (
-        <ul className={styles.cards} aria-label={t('list.ariaLabel')}>
-          {items.map((art) => (
-            <li key={art.id} className={styles.card}>
-              <div className={styles.cardHead}>
-                <span className={styles.cardTitle}>
-                  {art.id} · {art.titel}
-                </span>
-                <Badge
-                  appearance="tint"
-                  color={art.status === 'reserviert' ? 'warning' : art.status === 'verkauft' ? 'success' : 'informative'} // i18n-ignore (Server-Wert)
-                >
-                  {statusLabel(art.status)}
-                </Badge>
-              </div>
-              <span className={styles.cardMeta}>
-                {art.preis ? `${art.preis}` : ''}
-                {art.preis && art.ort ? ' · ' : ''}
-                {art.ort}
-              </span>
-              {art.status !== 'verfügbar' ? ( // i18n-ignore (Server-Wert)
-                <span className={styles.cardMeta}>
-                  {art.status === 'reserviert' // i18n-ignore (Server-Wert)
-                    ? t('list.reservedUntil', { name: art.name, date: art.datum })
-                    : t('list.soldOn', { name: art.name, date: art.datum })}
-                </span>
-              ) : null}
-              {art.anzeige ? (
-                <a href={art.anzeige} target="_blank" rel="noreferrer">
-                  {t('list.openAd')}
-                </a>
-              ) : null}
-              <div className={styles.actions}>
-                <Button size="small" onClick={() => setLabelTarget(art)}>
-                  {t('actions.label')}
-                </Button>
-                {art.status !== 'verkauft' ? ( // i18n-ignore (Server-Wert)
-                  <Button size="small" onClick={() => setReserveTarget(art)}>
-                    {t('actions.reserve')}
-                  </Button>
-                ) : null}
-                {art.status === 'reserviert' ? ( // i18n-ignore (Server-Wert)
-                  <Button size="small" onClick={() => void quickPrintReserved(art)}>
-                    {t('actions.printReservedLabel')}
-                  </Button>
-                ) : null}
-                {art.status === 'reserviert' ? ( // i18n-ignore (Server-Wert)
-                  <Button size="small" onClick={() => void releaseArtikel(art)}>
-                    {t('actions.release')}
-                  </Button>
-                ) : null}
-                {art.status !== 'verkauft' ? ( // i18n-ignore (Server-Wert)
-                  <Button size="small" onClick={() => setSellTarget(art)}>
-                    {t('actions.markSold')}
-                  </Button>
-                ) : null}
-                <Button
-                  size="small"
-                  onClick={() => {
-                    setDialogArtikel(art);
-                    setDialogMode('bearbeiten');
-                  }}
-                >
-                  {t('actions.edit')}
-                </Button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : null}
+      <DataList
+        items={items}
+        columns={columns}
+        getKey={(art) => art.id}
+        label={t('list.ariaLabel')}
+        loading={listQuery.isLoading}
+        error={listQuery.error}
+        onRetry={() => void listQuery.refetch()}
+        empty={<EmptyState title={t('empty.title')} body={t('empty.body')} />}
+      />
 
       <ArtikelDialog
         open={dialogMode !== null}

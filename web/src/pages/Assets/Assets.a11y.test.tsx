@@ -1,7 +1,7 @@
 /** Barrierefreiheit und Tastatur der Seite Assets: axe in de und en, Dialog, Tastatur. */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
-import { anyDialogInDom, findDialog, mockApi, MockResponse, renderWithProviders } from '../../test/utils';
+import { anyDialogInDom, chooseRowAction, findDialog, mockApi, MockResponse, renderWithProviders } from '../../test/utils';
 import { expectNoA11yViolations } from '../../test/a11y';
 import type { Language } from '../../i18n';
 import type { AssetJson, AssetsListResponse } from './types';
@@ -83,8 +83,8 @@ describe('Seite Assets: Tastatur', () => {
     mockApi({ 'GET /api/v1/homelab/assets': () => listResponse() });
     const { user } = renderWithProviders(<AssetsPage />);
     await screen.findByText('HL-0001');
-    const voidButton = screen.getByRole('button', { name: 'Verwerfen' });
-    await user.click(voidButton);
+    const voidButton = screen.getByRole('button', { name: 'Weitere Aktionen für HL-0001' });
+    await chooseRowAction(user, 'HL-0001', 'Verwerfen');
     const dialog = await findDialog('Asset verwerfen');
     // Unter Volllast setzt Tabster kurz aria-hidden: den Knopf im Dialog abwarten.
     await user.click(await within(dialog).findByRole('button', { name: CANCEL_BUTTON.de, hidden: true }));

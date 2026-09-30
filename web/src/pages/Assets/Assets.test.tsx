@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
-import { LocationProbe, findDialog, fixtures, mockApi, renderWithProviders } from '../../test/utils';
+import { LocationProbe, chooseRowAction, findDialog, fixtures, mockApi, renderWithProviders } from '../../test/utils';
 import type { AssetJson, AssetsListResponse } from './types';
 import AssetsPage from '.';
 
@@ -81,7 +81,7 @@ describe('AssetsPage', () => {
     const { user } = renderWithProviders(<AssetsPage />);
     await screen.findByText('HL-0001');
 
-    await user.click(screen.getByRole('button', { name: 'Label drucken' }));
+    await user.click(screen.getByRole('button', { name: 'Label drucken: HL-0001' }));
 
     await waitFor(() =>
       expect(api.calls.find((c) => c.path === '/api/v1/labels/print')?.body).toEqual(
@@ -100,7 +100,7 @@ describe('AssetsPage', () => {
     const { user } = renderWithProviders(<AssetsPage />);
     await screen.findByText('HL-0001');
 
-    await user.click(screen.getByRole('button', { name: 'Vault-Notiz anlegen' }));
+    await chooseRowAction(user, 'HL-0001', 'Vault-Notiz anlegen');
 
     await waitFor(() =>
       expect(api.calls.some((c) => c.method === 'POST' && c.path === '/api/v1/homelab/assets/HL-0001/vault-note')).toBe(true),

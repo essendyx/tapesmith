@@ -10,11 +10,13 @@
  * - `text` (Standard): ohne Umbruch, außer `wrap`.
  *
  * In der Kartenansicht stehen Vorschau, Titel und Status oben, die übrigen Spalten als
- * „Beschriftung: Wert“ darunter und die Aktionen am Ende. Lade-, Fehler- und Leerzustand sind
+ * „Beschriftung: Wert“ darunter und die Aktionen am Ende. Mit `selection` erhält jede Zeile ein
+ * Auswahlkästchen (Kopf: alle auswählen), z. B. für „Als Serie drucken“. Lade-, Fehler- und Leerzustand sind
  * eingebaut (`LoadingState`, `ErrorMessage`, `EmptyState`), damit jede Liste sie gleich zeigt.
  */
 import type { ReactNode } from 'react';
 import {
+  Checkbox,
   Table,
   TableBody,
   TableCell,
@@ -81,6 +83,7 @@ const useStyles = makeStyles({
   },
   numberHead: { justifyContent: 'flex-end', textAlign: 'right' },
   actions: { width: '1%', whiteSpace: 'nowrap', textAlign: 'right' },
+  select: { width: '44px', paddingLeft: tokens.spacingHorizontalXS, paddingRight: 0 },
   media: { width: '1%', paddingTop: tokens.spacingVerticalXS, paddingBottom: tokens.spacingVerticalXS },
   cellInner: { display: 'flex', alignItems: 'center', minWidth: 0 },
   cellEnd: { justifyContent: 'flex-end' },
@@ -134,6 +137,16 @@ const useStyles = makeStyles({
   cardActions: { display: 'flex', justifyContent: 'flex-end' },
 });
 
+export interface ListSelection<T> {
+  isSelected: (item: T) => boolean;
+  onChange: (item: T, selected: boolean) => void;
+  onChangeAll: (selected: boolean) => void;
+  /** Zugänglicher Name des Kästchens einer Zeile („Auswählen: pmx10“). */
+  itemLabel: (item: T) => string;
+  /** Zugänglicher Name des Kästchens im Tabellenkopf („Alle auswählen“). */
+  allLabel: string;
+}
+
 export interface DataListProps<T> {
   items: T[];
   columns: ListColumn<T>[];
@@ -154,6 +167,8 @@ export interface DataListProps<T> {
   /** Zusätzliche Klasse der Tabellenzeile (z. B. hervorgehobene Zeile). */
   rowClassName?: (item: T) => string | undefined;
   className?: string;
+  /** Auswahlkästchen je Zeile. */
+  selection?: ListSelection<T>;
 }
 
 export function DataList<T>(props: DataListProps<T>): JSX.Element {
@@ -172,6 +187,18 @@ export function DataList<T>(props: DataListProps<T>): JSX.Element {
   }
 
   const tableColumns = props.columns.filter((c) => !c.hideInTable);
+  const sel = props.selection;
+  const selectBox = (item: T): JSX.Element | null =>
+    sel ? (
+      <Checkbox
+        checked={sel.isSelected(item)}
+        aria-label={sel.itemLabel(item)}
+        onChange={(_e, d) => sel.onChange(item, Boolean(d.checked))}
+      />
+    ) : null;
+  const selectedCount = sel ? props.items.filter((i) => sel.isSelected(i)).length : 0;
+  const allState: boolean | 'mixed' =
+    selectedCount === 0 ? false : selectedCount === props.items.length ? true : 'mixed';
 
   if (narrow) {
     const media = props.columns.find((c) => c.kind === 'media' && !c.hideInCard);
@@ -186,6 +213,7 @@ export function DataList<T>(props: DataListProps<T>): JSX.Element {
         {props.items.map((item) => (
           <li key={props.getKey(item)} className={styles.card}>
             <div className={styles.cardTop}>
+              {selectBox(item)}
               {media ? media.cell(item) : null}
               <div className={styles.cardHead}>
                 <div className={styles.cardTitleRow}>
@@ -225,6 +253,15 @@ export function DataList<T>(props: DataListProps<T>): JSX.Element {
       <Table className={styles.table} aria-label={props.label} size="small">
         <TableHeader>
           <TableRow>
+            {sel ? (
+              <TableHeaderCell className={styles.select}>
+                <Checkbox
+                  checked={allState}
+                  aria-label={sel.allLabel}
+                  onChange={(_e, d) => sel.onChangeAll(d.checked === true)}
+                />
+              </TableHeaderCell>
+            ) : null}
             {tableColumns.map((c) => (
               <TableHeaderCell
                 key={c.id}
@@ -241,6 +278,7 @@ export function DataList<T>(props: DataListProps<T>): JSX.Element {
         <TableBody>
           {props.items.map((item) => (
             <TableRow key={props.getKey(item)} className={props.rowClassName?.(item)}>
+              {sel ? <TableCell className={mergeClasses(styles.cell, styles.select)}>{selectBox(item)}</TableCell> : null}
               {tableColumns.map((c) => (
                 <TableCell key={c.id} className={cellClass(c)} style={c.width ? { width: c.width } : undefined}>
                   {c.kind === 'actions' ? (

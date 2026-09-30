@@ -75,7 +75,11 @@ function ActionItem(props: { action: RowAction; dangerClass: string }): JSX.Elem
       disabled={action.disabled}
       className={action.danger ? props.dangerClass : undefined}
       data-action={action.key}
-      onClick={action.onClick}
+      onClick={() => {
+        // Erst schließen lassen (Fokus zurück auf den Menüknopf), dann die Aktion: ein Dialog, den
+        // sie öffnet, gibt den Fokus beim Schließen so an den Menüknopf der Zeile zurück.
+        if (action.onClick) setTimeout(action.onClick, 0);
+      }}
     >
       {action.label}
     </MenuItem>

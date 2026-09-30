@@ -1,10 +1,15 @@
-/** Seite „Assets": Register mit zentralem Nummernkreis und Kurz-Links. */
-import { useEffect, useMemo, useRef, useState } from 'react';
+/**
+ * Seite „Assets": Register mit zentralem Nummernkreis und Kurz-Links. Liste nach dem gemeinsamen
+ * Muster (`DataList` mit Auswahl): je Zeile ein sichtbarer Hauptknopf („Label drucken“), Bearbeiten,
+ * Kurz-Link, Vault-Notiz und Verwerfen im „Mehr“-Menü; Suche, Statusfilter und „Als Serie drucken“
+ * in der Werkzeugleiste über der Liste.
+ */
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Badge,
   Button,
-  Checkbox,
+  Caption1,
   Dialog,
   DialogActions,
   DialogBody,
@@ -23,15 +28,25 @@ import {
   tokens,
   type BadgeProps,
 } from '@fluentui/react-components';
-import { Add16Regular, ArrowDownload16Regular, BookRegular, Copy16Regular, Print16Regular, TagQuestionMark16Regular } from '@fluentui/react-icons';
+import {
+  Add20Regular,
+  ArrowDownload20Regular,
+  Book20Regular,
+  Copy20Regular,
+  Delete20Regular,
+  Edit20Regular,
+  Print20Regular,
+  Search20Regular,
+  TagQuestionMark20Regular,
+} from '@fluentui/react-icons';
 import { useTranslation } from 'react-i18next';
 import { ApiError } from '../../api/client';
+import { DataList, type ListColumn } from '../../components/DataList';
 import { EmptyState } from '../../components/EmptyState';
-import { ErrorMessage } from '../../components/ErrorMessage';
-import { LoadingState } from '../../components/LoadingState';
+import { ListToolbar, useToolbarSearchStyles } from '../../components/ListToolbar';
 import { PageHeader } from '../../components/PageHeader';
 import { moduleTexts } from '../../modules';
-import { Section } from '../../components/Section';
+import { RowActions } from '../../components/RowActions';
 import { useConfirm } from '../../components/ConfirmProvider';
 import { useNotify } from '../../components/NotifyProvider';
 import { usePrint } from '../../components/usePrint';
@@ -48,20 +63,15 @@ const STATUS_COLOR: Record<string, NonNullable<BadgeProps['color']>> = {
 const SEARCH_DEBOUNCE_MS = 250;
 
 const useStyles = makeStyles({
-  toolbar: { display: 'flex', columnGap: tokens.spacingHorizontalM, rowGap: tokens.spacingVerticalS, flexWrap: 'wrap', marginBottom: tokens.spacingVerticalL, alignItems: 'flex-end' },
-  search: { minWidth: '220px', flexGrow: 1, maxWidth: '360px' },
-  actions: { display: 'flex', columnGap: tokens.spacingHorizontalS, flexWrap: 'wrap' },
-  tableWrap: { overflowX: 'auto', width: '100%' },
-  table: { width: '100%', borderCollapse: 'collapse' },
-  th: { textAlign: 'left', padding: `${tokens.spacingVerticalS} ${tokens.spacingHorizontalM}`, borderBottom: `${tokens.strokeWidthThin} solid ${tokens.colorNeutralStroke2}`, color: tokens.colorNeutralForeground3, fontWeight: tokens.fontWeightRegular, fontSize: tokens.fontSizeBase200, whiteSpace: 'nowrap' },
-  td: { padding: `${tokens.spacingVerticalS} ${tokens.spacingHorizontalM}`, borderBottom: `${tokens.strokeWidthThin} solid ${tokens.colorNeutralStroke2}`, verticalAlign: 'middle' },
-  rowActions: { display: 'flex', columnGap: tokens.spacingHorizontalXS, flexWrap: 'wrap' },
-  info: { display: 'flex', columnGap: tokens.spacingHorizontalM, rowGap: tokens.spacingVerticalXS, flexWrap: 'wrap', alignItems: 'center', marginBottom: tokens.spacingVerticalM, color: tokens.colorNeutralForeground2 },
+  status: { minWidth: '160px' },
+  mono: { fontFamily: tokens.fontFamilyMonospace, fontSize: tokens.fontSizeBase200 },
+  next: { color: tokens.colorNeutralForeground3 },
   warning: { marginBottom: tokens.spacingVerticalM },
 });
 
 export default function AssetsPage(): JSX.Element {
   const styles = useStyles();
+  const toolbarStyles = useToolbarSearchStyles();
   const { t } = useTranslation('assets');
   const navigate = useNavigate();
   const notify = useNotify();
@@ -226,9 +236,68 @@ export default function AssetsPage(): JSX.Element {
     }
   };
 
-  const allSelected = assets.length > 0 && assets.every((a) => selected.has(a.id));
 
-  const rows = useMemo(() => assets, [assets]);
+  const columns: ListColumn<AssetJson>[] = [
+    { id: 'id', header: t('table.columns.id'), cell: (asset) => <span className={styles.mono}>{asset.id}</span> },
+    { id: 'bezeichnung', header: t('table.columns.bezeichnung'), kind: 'title', cell: (asset) => asset.bezeichnung },
+    { id: 'kategorie', header: t('table.columns.kategorie'), cell: (asset) => asset.kategorie },
+    { id: 'standort', header: t('table.columns.standort'), cell: (asset) => asset.standort },
+    { id: 'sn', header: t('table.columns.sn'), cell: (asset) => <span className={styles.mono}>{asset.seriennummer}</span> },
+    { id: 'host', header: t('table.columns.host'), cell: (asset) => asset.host },
+    {
+      id: 'status',
+      header: t('table.columns.status'),
+      kind: 'status',
+      cell: (asset) => (
+        <Badge appearance="tint" color={STATUS_COLOR[asset.status] ?? 'informative'}>
+          {STATUS_LABEL[asset.status] ?? asset.status}
+        </Badge>
+      ),
+    },
+    {
+      id: 'actions',
+      header: t('table.columns.actions'),
+      kind: 'actions',
+      cell: (asset) => (
+        <RowActions
+          title={asset.id}
+          primary={
+            <Button
+              icon={<Print20Regular />}
+              aria-label={t('rowActions.for', { action: t('rowActions.printLabel'), title: asset.id })}
+              onClick={() => void onPrintLabel(asset)}
+            >
+              {t('rowActions.printLabel')}
+            </Button>
+          }
+          actions={[
+            {
+              key: 'edit',
+              label: t('rowActions.edit'),
+              icon: <Edit20Regular />,
+              onClick: () => {
+                setDialogAsset(asset);
+                setDialogMode('edit');
+              },
+            },
+            { key: 'shortlink', label: t('rowActions.copyShortlink'), icon: <Copy20Regular />, onClick: () => void onCopyShortlink(asset) },
+            { key: 'vault', label: t('rowActions.createVaultNote'), icon: <Book20Regular />, onClick: () => void onCreateVaultNote(asset) },
+            {
+              key: 'void',
+              label: t('rowActions.void'),
+              icon: <Delete20Regular />,
+              danger: true,
+              disabled: asset.status === 'verworfen',
+              onClick: () => {
+                setVoidTarget(asset);
+                setVoidReason('');
+              },
+            },
+          ]}
+        />
+      ),
+    },
+  ];
 
   return (
     <>
@@ -237,20 +306,18 @@ export default function AssetsPage(): JSX.Element {
         subtitle={moduleTexts('assets').description}
         actions={
           <>
-            <Button appearance="primary" icon={<Add16Regular />} onClick={() => setDialogMode('create')}>
+            <Button appearance="primary" icon={<Add20Regular />} onClick={() => setDialogMode('create')}>
               {t('actions.new')}
             </Button>
-            <Button icon={<TagQuestionMark16Regular />} onClick={() => setDialogMode('import')}>
+            <Button icon={<TagQuestionMark20Regular />} onClick={() => setDialogMode('import')}>
               {t('actions.import')}
             </Button>
-            <Button icon={<ArrowDownload16Regular />} onClick={() => void onExport()}>
+            <Button icon={<ArrowDownload20Regular />} onClick={() => void onExport()}>
               {t('actions.export')}
             </Button>
           </>
         }
       />
-
-      <div className={styles.info}>{range ? <span>{t('nextNumber', { next: range.next })}</span> : null}</div>
 
       {!shortlinkOk ? (
         <MessageBar intent="warning" className={styles.warning}>
@@ -261,127 +328,59 @@ export default function AssetsPage(): JSX.Element {
         </MessageBar>
       ) : null}
 
-      {loadError ? (
-        <div className={styles.warning}>
-          <ErrorMessage error={loadError} title={t('loadErrorFallback')} onRetry={load} />
-        </div>
-      ) : null}
-
-      <Section
+      <ListToolbar
         actions={
-          <Button
-            appearance="secondary"
-            icon={<Print16Regular />}
-            disabled={selected.size === 0}
-            onClick={() => void onPrintSeries()}
-          >
-            {t('actions.printSeries', { count: selected.size })}
-          </Button>
+          <>
+            {range ? <Caption1 className={styles.next}>{t('nextNumber', { next: range.next })}</Caption1> : null}
+            <Button icon={<Print20Regular />} disabled={selected.size === 0} onClick={() => void onPrintSeries()}>
+              {t('actions.printSeries', { count: selected.size })}
+            </Button>
+          </>
         }
       >
-        <div className={styles.toolbar}>
-          <Input
-            ref={searchRef}
-            className={styles.search}
-            aria-label={t('toolbar.searchAria')}
-            placeholder={t('toolbar.searchPlaceholder')}
-            value={searchInput}
-            onChange={(_e, d) => onSearchChange(d.value)}
-          />
-          <Field label={t('toolbar.statusLabel')}>
-            <Dropdown
-              aria-label={t('toolbar.statusFilterAria')}
-              value={statusFilter ? STATUS_LABEL[statusFilter] ?? statusFilter : t('status.all')}
-              selectedOptions={[statusFilter]}
-              onOptionSelect={(_e, d) => setStatusFilter(d.optionValue ?? '')}
-            >
-              <Option value="">{t('status.all')}</Option>
-              <Option value="aktiv">{t('status.aktiv')}</Option>
-              <Option value="verworfen">{t('status.verworfen')}</Option>
-              <Option value="ausgemustert">{t('status.ausgemustert')}</Option>
-            </Dropdown>
-          </Field>
-        </div>
+        <Input
+          ref={searchRef}
+          className={toolbarStyles.search}
+          contentBefore={<Search20Regular />}
+          aria-label={t('toolbar.searchAria')}
+          placeholder={t('toolbar.searchPlaceholder')}
+          value={searchInput}
+          onChange={(_e, d) => onSearchChange(d.value)}
+        />
+        <Field label={t('toolbar.statusLabel')} orientation="horizontal">
+          <Dropdown
+            className={styles.status}
+            aria-label={t('toolbar.statusFilterAria')}
+            value={statusFilter ? STATUS_LABEL[statusFilter] ?? statusFilter : t('status.all')}
+            selectedOptions={[statusFilter]}
+            onOptionSelect={(_e, d) => setStatusFilter(d.optionValue ?? '')}
+          >
+            <Option value="">{t('status.all')}</Option>
+            <Option value="aktiv">{t('status.aktiv')}</Option>
+            <Option value="verworfen">{t('status.verworfen')}</Option>
+            <Option value="ausgemustert">{t('status.ausgemustert')}</Option>
+          </Dropdown>
+        </Field>
+      </ListToolbar>
 
-        {!loaded ? (
-          <LoadingState variant="list" label={t('loading')} />
-        ) : rows.length === 0 ? (
-          <EmptyState title={t('empty.title')} body={t('empty.body')} />
-        ) : (
-          <div className={styles.tableWrap}>
-            <table className={styles.table} aria-label={t('table.ariaLabel')}>
-              <thead>
-                <tr>
-                  <th className={styles.th}>
-                    <Checkbox
-                      checked={allSelected}
-                      aria-label={t('table.selectAllAria')}
-                      onChange={(_e, d) => setSelected(d.checked ? new Set(rows.map((a) => a.id)) : new Set())}
-                    />
-                  </th>
-                  <th className={styles.th}>{t('table.columns.id')}</th>
-                  <th className={styles.th}>{t('table.columns.bezeichnung')}</th>
-                  <th className={styles.th}>{t('table.columns.kategorie')}</th>
-                  <th className={styles.th}>{t('table.columns.standort')}</th>
-                  <th className={styles.th}>{t('table.columns.sn')}</th>
-                  <th className={styles.th}>{t('table.columns.host')}</th>
-                  <th className={styles.th}>{t('table.columns.status')}</th>
-                  <th className={styles.th}>{t('table.columns.ziel')}</th>
-                  <th className={styles.th}>{t('table.columns.actions')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((asset) => (
-                  <tr key={asset.id}>
-                    <td className={styles.td}>
-                      <Checkbox
-                        checked={selected.has(asset.id)}
-                        aria-label={t('table.selectRowAria', { id: asset.id })}
-                        onChange={(_e, d) => toggleSelected(asset.id, Boolean(d.checked))}
-                      />
-                    </td>
-                    <td className={styles.td}>{asset.id}</td>
-                    <td className={styles.td}>{asset.bezeichnung}</td>
-                    <td className={styles.td}>{asset.kategorie}</td>
-                    <td className={styles.td}>{asset.standort}</td>
-                    <td className={styles.td}>{asset.seriennummer}</td>
-                    <td className={styles.td}>{asset.host}</td>
-                    <td className={styles.td}>
-                      <Badge appearance="tint" color={STATUS_COLOR[asset.status] ?? 'informative'}>
-                        {STATUS_LABEL[asset.status] ?? asset.status}
-                      </Badge>
-                    </td>
-                    <td className={styles.td}>{asset.ziel ?? ''}</td>
-                    <td className={styles.td}>
-                      <div className={styles.rowActions}>
-                        <Button size="small" onClick={() => { setDialogAsset(asset); setDialogMode('edit'); }}>
-                          {t('rowActions.edit')}
-                        </Button>
-                        <Button size="small" icon={<Print16Regular />} onClick={() => void onPrintLabel(asset)}>
-                          {t('rowActions.printLabel')}
-                        </Button>
-                        <Button size="small" icon={<Copy16Regular />} onClick={() => void onCopyShortlink(asset)}>
-                          {t('rowActions.copyShortlink')}
-                        </Button>
-                        <Button size="small" icon={<BookRegular />} onClick={() => void onCreateVaultNote(asset)}>
-                          {t('rowActions.createVaultNote')}
-                        </Button>
-                        <Button
-                          size="small"
-                          disabled={asset.status === 'verworfen'}
-                          onClick={() => { setVoidTarget(asset); setVoidReason(''); }}
-                        >
-                          {t('rowActions.void')}
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </Section>
+      <DataList
+        items={assets}
+        columns={columns}
+        getKey={(asset) => asset.id}
+        label={t('table.ariaLabel')}
+        loading={!loaded && !loadError}
+        error={loadError}
+        errorTitle={t('loadErrorFallback')}
+        onRetry={load}
+        empty={<EmptyState title={t('empty.title')} body={t('empty.body')} />}
+        selection={{
+          isSelected: (asset) => selected.has(asset.id),
+          onChange: (asset, on) => toggleSelected(asset.id, on),
+          onChangeAll: (on) => setSelected(on ? new Set(assets.map((a) => a.id)) : new Set()),
+          itemLabel: (asset) => t('table.selectRowAria', { id: asset.id }),
+          allLabel: t('table.selectAllAria'),
+        }}
+      />
 
       <AssetDialog
         mode={dialogMode}

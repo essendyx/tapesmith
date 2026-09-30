@@ -41,7 +41,7 @@ describe.each(['de', 'en'] as Language[])('Kleinanzeigen a11y (%s)', (language) 
   it('Grundzustand ohne axe-Befund', async () => {
     mockApi(routes([makeArtikel(), makeArtikel({ id: 'KA-002', titel: 'Stuhl', status: 'reserviert', name: 'Hubert', datum: '30.09.2026' })]));
     const { container } = renderWithProviders(<KleinanzeigenPage />, { language });
-    await screen.findByRole('list');
+    await screen.findByRole('table');
     await expectNoA11yViolations(container);
   });
 
