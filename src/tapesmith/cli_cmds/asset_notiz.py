@@ -1,6 +1,6 @@
-"""Plugin-Befehl 'p12 asset-notiz': Vault-Notiz aus einem Asset anlegen.
+"""Plugin-Befehl 'tapesmith asset-notiz': Vault-Notiz aus einem Asset anlegen.
 
-`p12 asset-notiz ID` legt die Notiz `Assets/<ID>` über den MCP an (nie überschreibend) und gibt
+`tapesmith asset-notiz ID` legt die Notiz `Assets/<ID>` über den MCP an (nie überschreibend) und gibt
 den Pfad aus. `TRANSPORT` ersetzt Tests.
 """
 

@@ -117,7 +117,7 @@ def test_template_print_reports_shortened_fields(tmp_path, capsys):
     assert "Gekürzt:" in capsys.readouterr().err
 
 
-# 18. Dunkles Band in `p12 text --qr` ---------------------------------------------------------
+# 18. Dunkles Band in `tapesmith text --qr` ---------------------------------------------------------
 
 def test_text_qr_inverts_on_dark_tape(tmp_path):
     light = tmp_path / "light.png"
@@ -171,7 +171,7 @@ def test_template_show_displays_kind_document(capsys):
     assert "Art: document" in out
 
 
-# 21. Dunkles Band in `p12 print --qr` --------------------------------------------------------
+# 21. Dunkles Band in `tapesmith print --qr` --------------------------------------------------------
 
 def test_print_qr_inverts_on_dark_tape(tmp_path):
     light = tmp_path / "light.png"

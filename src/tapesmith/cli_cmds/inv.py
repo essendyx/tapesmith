@@ -1,4 +1,4 @@
-"""`p12 inv`: Boxen mit Inhalt, Verleihliste und Label-Druck.
+"""`tapesmith inv`: Boxen mit Inhalt, Verleihliste und Label-Druck.
 
 Zentrale Nummernkreise: `label box` holt den Zähler für die Vorlage `aufbewahrungsbox`
 ausschließlich über `numbering.counter_store(ctx.load_config())`, nie einen lokalen Default.

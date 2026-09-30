@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 backup': Sicherung erstellen, auflisten, wiederherstellen."""
+"""Plugin-Befehl 'tapesmith backup': Sicherung erstellen, auflisten, wiederherstellen."""
 
 import argparse
 from pathlib import Path

@@ -152,7 +152,8 @@ def _check_hosts(value: Any) -> list[str]:
         problem = _url_problem(host.get("url"), https_only=True)
         if problem:
             errors.append(_msg(key, f"{where}: url {problem}"))
-        problem = _ref_problem(host.get("token_ref"))
+        # Ohne Token (noch nicht gesetzt) ist ein Host gültig; das Token setzt die Oberfläche.
+        problem = None if host.get("token_ref") is None else _ref_problem(host.get("token_ref"))
         if problem:
             errors.append(_msg(key, f"{where}: token_ref {problem}"))
         if not isinstance(host.get("verify_tls", False), bool):
@@ -294,6 +295,12 @@ def load_settings(path: Path | None = None) -> dict:
     if errors:
         raise SettingsError(errors)
     return data
+
+
+def load_unchecked(path: Path | None = None) -> dict:
+    """Wie `load_settings`, aber ohne Prüfung (für Reparaturen und das Setzen einzelner Werte)."""
+    path = settings_path() if path is None else Path(path)
+    return _merge(_read_file(path))
 
 
 def setting(data: dict, key: str):

@@ -1,4 +1,4 @@
-"""`p12 secret`: MQTT-Passwort und Telegram-Bot-Token pflegen (Secret-Referenzen)."""
+"""`tapesmith secret`: MQTT-Passwort und Telegram-Bot-Token pflegen (Secret-Referenzen)."""
 
 import argparse
 import getpass as _getpass_module

@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 platte': Assistent Platte tauschen (ZFS).
+"""Plugin-Befehl 'tapesmith platte': Assistent Platte tauschen (ZFS).
 
 `status` zeigt defekte Geräte und Kandidaten, `plan` den `zpool replace`-Befehl samt Hinweisen und
 Changelog-Entwurf (nur zum Kopieren, nichts wird ausgeführt), `label` druckt die Labels „defekt"

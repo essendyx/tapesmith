@@ -1,4 +1,4 @@
-"""`p12 hotfolder`: Status, `run-once`, `HttpPrinter`."""
+"""`tapesmith hotfolder`: Status, `run-once`, `HttpPrinter`."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ def _ok() -> dict:
             "title": "Test", "balance_text": ""}
 
 
-# ---------- p12 hotfolder status ----------
+# ---------- tapesmith hotfolder status ----------
 
 
 def test_status_nennt_ordner_und_aus(tmp_path, monkeypatch, capsys):
@@ -29,7 +29,7 @@ def test_status_nennt_ordner_und_aus(tmp_path, monkeypatch, capsys):
     assert "aus" in out
 
 
-# ---------- p12 hotfolder run-once mit gefälschter Fassade ----------
+# ---------- tapesmith hotfolder run-once mit gefälschter Fassade ----------
 
 
 def test_run_once_druckt_abgelegte_datei(tmp_path, monkeypatch, capsys):

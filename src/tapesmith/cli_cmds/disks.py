@@ -1,5 +1,5 @@
-"""Plugin-Befehl 'p12 disks': Seriennummern eines Homelab-Hosts per SSH einlesen und als
-Serie über die Vorlage `datentraeger` drucken, als Ergänzung zu `p12 batch`.
+"""Plugin-Befehl 'tapesmith disks': Seriennummern eines Homelab-Hosts per SSH einlesen und als
+Serie über die Vorlage `datentraeger` drucken, als Ergänzung zu `tapesmith batch`.
 
 Kein echter SSH-Aufruf standardmäßig: `RUNNER` ist injizierbar (Tests ersetzen es), Default ist
 `sshscan.default_runner` (über `scan_host`). Vorlagen-Zähler kommen aus dem zentralen

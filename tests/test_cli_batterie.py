@@ -1,4 +1,4 @@
-"""CLI-Befehl `p12 batterie` (list/typ/print/wartung). Kein echter HA-Aufruf,
+"""CLI-Befehl `tapesmith batterie` (list/typ/print/wartung). Kein echter HA-Aufruf,
 kein echtes Token: `TRANSPORT` wird durch `httpx.MockTransport` ersetzt."""
 
 from __future__ import annotations

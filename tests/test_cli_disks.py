@@ -1,4 +1,4 @@
-"""CLI-Integration `p12 disks`: `hosts`/`scan`/`print`, zentrale Zähler,
+"""CLI-Integration `tapesmith disks`: `hosts`/`scan`/`print`, zentrale Zähler,
 `SshError` -> Exit 5. Kein echter SSH-Aufruf: `RUNNER` wird durch einen Fake ersetzt."""
 
 import json

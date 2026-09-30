@@ -1,4 +1,4 @@
-"""Tests für 'p12 tape' (CLI-Plugin)."""
+"""Tests für 'tapesmith tape' (CLI-Plugin)."""
 
 import json
 

@@ -1,4 +1,4 @@
-"""`p12 drives`: Wechseldatenträger anzeigen und ein Kurzetikett vorschlagen/drucken."""
+"""`tapesmith drives`: Wechseldatenträger anzeigen und ein Kurzetikett vorschlagen/drucken."""
 
 import argparse
 import json

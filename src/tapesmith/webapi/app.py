@@ -18,7 +18,8 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from tapesmith.webapi import homelab_routers
 from tapesmith.webapi import (mcp_http, routes_access, routes_core, routes_data, routes_drafts, routes_editor,
                              routes_family, routes_labels, routes_modules, routes_settings, routes_short,
-                             routes_support, routes_system, routes_templates, routes_update)
+                             routes_logs, routes_secrets, routes_support, routes_system, routes_templates,
+                             routes_update)
 from tapesmith.webapi.context import ApiContext
 from tapesmith.webapi.errors import http_error_body, install_handlers
 from tapesmith.webapi.language import LanguageMiddleware
@@ -111,7 +112,7 @@ def create_app(ctx: ApiContext) -> FastAPI:
     app.include_router(routes_core.health_router)
     for module in (routes_core, routes_short, routes_labels, routes_templates, routes_editor, routes_drafts,
                    routes_data, routes_settings, routes_system, routes_access, routes_family, routes_support,
-                   routes_update, routes_modules):
+                   routes_update, routes_modules, routes_secrets, routes_logs):
         app.include_router(module.router, prefix=API_PREFIX)
     homelab_routers.install(app, API_PREFIX)
     mcp_http.mount(app, ctx)

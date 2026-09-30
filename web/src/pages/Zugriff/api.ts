@@ -1,6 +1,6 @@
 /** Endpunkte der Seite Zugriff. */
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
-import { apiDelete, apiGet, apiPatch, apiPost, apiPut } from '../../api/client';
+import { apiDelete, apiGet, apiPatch, apiPost } from '../../api/client';
 import type { AccessJson, CreateTokenResponse, Role } from './types';
 
 /** Query-Schlüssel der Zugriffsseite (auch von der SSE-Invalidierung in `api/events.tsx` verwendet). */
@@ -24,10 +24,6 @@ export function createAccessToken(name: string, role: Role): Promise<CreateToken
 
 export function revokeAccessToken(id: string): Promise<Record<string, never>> {
   return apiDelete<Record<string, never>>(`/api/v1/access/tokens/${encodeURIComponent(id)}`);
-}
-
-export function putAccessSecret(name: 'mqtt' | 'telegram', value: string): Promise<{ set: boolean; describe: string }> {
-  return apiPut<{ set: boolean; describe: string }>(`/api/v1/access/secrets/${name}`, { value });
 }
 
 export function telegramTest(): Promise<{ ok: boolean; error: string | null }> {

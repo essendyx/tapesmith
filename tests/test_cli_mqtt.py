@@ -1,4 +1,4 @@
-"""Tests für `p12 mqtt discovery|status` (über `tapesmith.cli.main`)."""
+"""Tests für `tapesmith mqtt discovery|status` (über `tapesmith.cli.main`)."""
 
 from __future__ import annotations
 

@@ -1,7 +1,7 @@
 """Zugang der MCP-Werkzeuge zum Druckdienst.
 
 `FacadeBackend` läuft im Dienst (Streamable HTTP unter `/mcp`) und druckt über die Fassade mit der
-Quelle `mcp`. `HttpBackend` dient dem stdio-Server `p12 mcp`: er druckt nie selbst, sondern spricht
+Quelle `mcp`. `HttpBackend` dient dem stdio-Server `tapesmith mcp`: er druckt nie selbst, sondern spricht
 per HTTP mit dem lokalen Druckdienst (Sitzung aus `session.json`, Kopf `X-P12-Source: mcp`).
 """
 

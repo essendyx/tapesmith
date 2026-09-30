@@ -169,7 +169,7 @@ def restore_backup(archive: Path, *, dry_run: bool = False,
     archive = Path(archive)
     now = now or datetime.now()
     if running_check is not None and running_check():
-        raise ValueError(_t("Druckdienst läuft, erst `p12 daemon stop`"))
+        raise ValueError(_t("Druckdienst läuft, erst `tapesmith daemon stop`"))
 
     with zipfile.ZipFile(archive, "r") as zf:
         names = zf.namelist()

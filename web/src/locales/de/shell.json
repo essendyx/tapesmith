@@ -13,6 +13,7 @@
     "datentraeger": "Datenträger",
     "homelab": "Homelab",
     "statistik": "Statistik",
+    "protokoll": "Protokoll",
     "zugriff": "Zugriff",
     "einstellungen": "Einstellungen",
     "kompakt": "Kompakt",
@@ -104,25 +105,25 @@
     "reload": "Neu laden"
   },
   "noToken": {
-    "openViaApp": "Bitte über „p12 app“ öffnen",
+    "openViaApp": "Bitte über „tapesmith app“ öffnen",
     "expired": "Sitzung abgelaufen",
     "loginNeeded": "Anmeldung nötig",
     "reconnect": "Neu verbinden",
     "appExpired": "Der Druckdienst wurde neu gestartet, die Anmeldung dieser Seite gilt nicht mehr.",
     "appNeedsSession": "Diese Oberfläche braucht die Anmeldung des Druckdienstes.",
-    "appStart": "Starte sie mit <code>p12 app</code> oder über das Tray-Symbol, dann öffnet sich das Fenster mit gültiger Sitzung.",
+    "appStart": "Starte sie mit <code>tapesmith app</code> oder über das Tray-Symbol, dann öffnet sich das Fenster mit gültiger Sitzung.",
     "tokenInvalid": "Das Token ist ungültig oder wurde widerrufen.",
     "otherToken": "Anderes Token eingeben",
     "needsToken": "Diese Oberfläche braucht ein Zugangstoken aus der Verwaltung.",
     "tokenField": "Zugangstoken",
     "remember": "Auf diesem Gerät merken",
     "login": "Anmelden",
-    "tokenHint": "Tokens legt die Verwaltung unter Zugriff an (<code>p12 token add</code>)."
+    "tokenHint": "Tokens legt die Verwaltung unter Zugriff an (<code>tapesmith token add</code>)."
   },
   "offline": {
     "title": "Druckdienst nicht erreichbar",
     "retry": "Erneut versuchen",
     "appHint": "„Erneut versuchen“ startet den Dienst und verbindet dieses Fenster neu.",
-    "browserHint": "Der Dienst läuft gerade nicht. Starte ihn mit <code>p12 daemon start</code>, die Seite verbindet sich alle 3 Sekunden neu."
+    "browserHint": "Der Dienst läuft gerade nicht. Starte ihn mit <code>tapesmith daemon start</code>, die Seite verbindet sich alle 3 Sekunden neu."
   }
 }

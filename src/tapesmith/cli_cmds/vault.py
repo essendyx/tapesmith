@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 vault': Obsidian-Vault als Datenquelle und Rückkanal.
+"""Plugin-Befehl 'tapesmith vault': Obsidian-Vault als Datenquelle und Rückkanal.
 
 Unterbefehle: `list [ORDNER]`, `show NOTIZ [--json]`, `print NOTIZ --template NAME` (Einzellabel aus
 den Notizwerten, danach Vermerk in der Notiz, wenn `obsidian.append_after_print` an ist oder

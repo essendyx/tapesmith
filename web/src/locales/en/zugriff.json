@@ -54,7 +54,7 @@
     "enableLabel": "Share on the home network",
     "activeStatus": "Active: listening on {{listen}}",
     "localOnlyStatus": "Local only (listening on 127.0.0.1)",
-    "restartNeeded": "Print service restart needed for the sharing to take effect (<code>p12 daemon restart</code>).",
+    "restartNeeded": "Print service restart needed for the sharing to take effect (<code>tapesmith daemon restart</code>).",
     "bindLabel": "Address to bind to",
     "bindHint": "0.0.0.0 = all network adapters",
     "networksLabel": "Allowed networks",
@@ -119,11 +119,6 @@
     "templatesLabel": "Allowed templates",
     "templatesHint": "These templates can be printed over MQTT. Without a selection, all are allowed.",
     "passwordLabel": "Password",
-    "passwordSet": "Set",
-    "passwordMissing": "Missing",
-    "setPassword": "Set password",
-    "secretDialogTitle": "Set MQTT password",
-    "secretFieldLabel": "Password",
     "saveSuccess": "Home Assistant (MQTT): saved",
     "enableHint": "Reports the printer and templates to Home Assistant.",
     "hostHint": "Host name or IP address of the broker.",
@@ -132,7 +127,8 @@
     "userHint": "Leave empty to connect without login.",
     "baseTopicHint": "Prefix of all Tapesmith topics.",
     "discoveryHint": "Home Assistant usually expects homeassistant.",
-    "templatesAll": "None selected, all allowed"
+    "templatesAll": "None selected, all allowed",
+    "passwordHint": "Password of the broker. Stored in Windows Credential Manager."
   },
   "telegram": {
     "title": "Telegram",
@@ -151,12 +147,6 @@
     "notifyError": "Print error",
     "notifyRoll": "Tape low",
     "tokenLabel": "Bot token",
-    "tokenSet": "Set",
-    "tokenMissing": "Missing",
-    "setToken": "Set token",
-    "tokenFromSource": "Token comes from {{source}}",
-    "secretDialogTitle": "Set Telegram token",
-    "secretFieldLabel": "Token",
     "sendTest": "Send test message",
     "testSuccess": "Test message sent",
     "testErrorTitle": "Test message failed",
@@ -174,10 +164,7 @@
     "notifyOfflineHint": "The printer can no longer be reached.",
     "notifyQueueHint": "Jobs are not making progress.",
     "notifyRollHint": "The tape roll is running out.",
-    "tokenNoSource": "No source configured (setting telegram.token_ref)."
-  },
-  "secretDialog": {
-    "saved": "{{title}}: saved"
+    "tokenHint": "Bot token from BotFather. Stored in Windows Credential Manager."
   },
   "addons": {
     "title": "Additional services",
@@ -209,8 +196,5 @@
     "clear": "Clear all",
     "clearAria": "Clear all: {{label}}",
     "noMatch": "No template matches “{{query}}”"
-  },
-  "secret": {
-    "storage": "Stored in: {{source}}"
   }
 }

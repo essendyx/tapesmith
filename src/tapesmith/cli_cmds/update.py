@@ -1,4 +1,4 @@
-"""`p12 update`: Update-Status, Prüfen, Installieren und Rückstellung (Deutsch).
+"""`tapesmith update`: Update-Status, Prüfen, Installieren und Rückstellung (Deutsch).
 
 Exit-Codes: 0 ok, 1 Fehler, 5 Update-Quelle nicht erreichbar. Installation und Rückstellung starten
 `pythonw -m tapesmith.update.apply …` losgelöst; das geht nur in der installierten App."""

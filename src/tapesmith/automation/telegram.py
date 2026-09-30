@@ -134,7 +134,7 @@ def _chat_id_missing(chat_id) -> bool:
     return chat_id is None or (isinstance(chat_id, str) and not chat_id.strip())
 
 
-CHAT_ID_MISSING = N_("Chat-ID fehlt: p12 config set telegram.chat_id <id>")
+CHAT_ID_MISSING = N_("Chat-ID fehlt: tapesmith config set telegram.chat_id <id>")
 
 
 # ---------- Ruhezeiten ----------
@@ -209,7 +209,7 @@ def send_message(token: str, chat_id, text: str, *, http_post=None, timeout_s: f
 def _load_token(cfg: dict, reader, **kw) -> str:
     ref = setting(cfg, "token_ref")
     if not ref:
-        raise SecretMissing(_t("Bot-Token nicht gesetzt: p12 config set telegram.token_ref <referenz>"))
+        raise SecretMissing(_t("Bot-Token nicht gesetzt: tapesmith config set telegram.token_ref <referenz>"))
     return reader(ref, **kw)
 
 

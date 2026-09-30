@@ -1,5 +1,5 @@
 """Einheitliche QR-Regel: dieselbe Lesbarkeitsregel auf allen Wegen,
-`render_label` (Vorlagen, `p12 text --qr`), `p12 qr` (CLI) und `suggest_fixes`."""
+`render_label` (Vorlagen, `tapesmith text --qr`), `tapesmith qr` (CLI) und `suggest_fixes`."""
 
 import pytest
 

@@ -1,4 +1,4 @@
-"""`p12 archive`: Verlaufseinträge nachträglich ins Git-Archiv legen und Secret-Scan
+"""`tapesmith archive`: Verlaufseinträge nachträglich ins Git-Archiv legen und Secret-Scan
 (auch für Pre-Commit-Hooks im Infra-Repo)."""
 
 import argparse
@@ -21,7 +21,7 @@ def register(parser: argparse.ArgumentParser) -> None:
     sub = parser.add_subparsers(dest="archive_cmd", required=True)
 
     add_p = sub.add_parser("add", help=_t("einen Verlaufseintrag nachträglich archivieren"))
-    add_p.add_argument("target", help=_t("'last' oder die ID aus 'p12 history'"))
+    add_p.add_argument("target", help=_t("'last' oder die ID aus 'tapesmith history'"))
     add_p.add_argument("--dir", type=Path, metavar=_t("ORDNER"), help=_t("Archivordner (sonst archive.dir)"))
 
     scan_p = sub.add_parser("scan", help=_t("Secret-Scan über eine Datei oder einen Ordner"))

@@ -1,4 +1,4 @@
-"""`p12 stats`: Bandverbrauch pro Monat, Vorlage, Quelle, Art oder Rolle."""
+"""`tapesmith stats`: Bandverbrauch pro Monat, Vorlage, Quelle, Art oder Rolle."""
 
 import argparse
 import dataclasses

@@ -1,4 +1,4 @@
-"""CLI-Integration `p12 garantie`: suche/print. Kein echtes Netz: TRANSPORT ersetzt."""
+"""CLI-Integration `tapesmith garantie`: suche/print. Kein echtes Netz: TRANSPORT ersetzt."""
 
 from tapesmith.cli import main
 from tapesmith.cli_cmds import garantie as garantie_cmd

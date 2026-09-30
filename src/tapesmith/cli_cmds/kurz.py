@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 kurz' (Client-Seite): Kurz-Links direkt über die Admin-API pflegen.
+"""Plugin-Befehl 'tapesmith kurz' (Client-Seite): Kurz-Links direkt über die Admin-API pflegen.
 
 Kein echter Netzzugriff standardmäßig: `TRANSPORT` ist injizierbar (Tests ersetzen es). `kurz url`
 rechnet nur die Kurz-URL aus (kein Netz, kein Token nötig).

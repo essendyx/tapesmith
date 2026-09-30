@@ -1,4 +1,4 @@
-"""CLI-Befehl `p12 kurz` (Client-Seite)."""
+"""CLI-Befehl `tapesmith kurz` (Client-Seite)."""
 
 import json
 

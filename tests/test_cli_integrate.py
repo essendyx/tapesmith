@@ -1,4 +1,4 @@
-"""Tests für 'p12 integrate' (CLI-Plugin), nur mit Fake-Registry-Fabrik."""
+"""Tests für 'tapesmith integrate' (CLI-Plugin), nur mit Fake-Registry-Fabrik."""
 
 import json
 

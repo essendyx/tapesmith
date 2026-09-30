@@ -1,4 +1,4 @@
-"""DaemonBackend überlebt einen Neustart des Druckdienstes (Absturz, `p12 daemon restart/stop`).
+"""DaemonBackend überlebt einen Neustart des Druckdienstes (Absturz, `tapesmith daemon restart/stop`).
 
 Ist der Kanal schon zu, bevor eine Anfrage raus geht, wird einmal neu verbunden (Listener neu
 angemeldet) und wiederholt; ging der Druckauftrag schon raus, nie. Ist kein Dienst mehr erreichbar,

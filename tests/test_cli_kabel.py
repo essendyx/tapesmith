@@ -1,4 +1,4 @@
-"""CLI-Befehl `p12 kabel` (netbox, ids, register, pruefen)."""
+"""CLI-Befehl `tapesmith kabel` (netbox, ids, register, pruefen)."""
 
 from pathlib import Path
 

@@ -2,29 +2,29 @@
   "printer": {
     "busy": { "title": "Printer busy", "hint": "Another P12 program is printing right now. Wait a moment or close the other program." },
     "unreachable": { "title": "Printer unreachable", "hint": "Is the printer off or asleep? Turn it on. Is the phone app connected? Only one host can connect at a time, so disconnect it there." },
-    "not_paired": { "title": "Printer not paired", "hint": "Pair the printer in the Windows Bluetooth settings, then run 'p12 setup'." }
+    "not_paired": { "title": "Printer not paired", "hint": "Pair the printer in the Windows Bluetooth settings, then run 'tapesmith setup'." }
   },
   "file": {
     "locked": { "title": "File locked", "hint": "Another P12 program is writing right now. Wait a moment and try again." }
   },
   "print": {
-    "incomplete": { "title": "Print incomplete", "hint": "The connection was lost while printing (battery empty? printer off?). Check the printer and print the label again (p12 reprint last)." }
+    "incomplete": { "title": "Print incomplete", "hint": "The connection was lost while printing (battery empty? printer off?). Check the printer and print the label again (tapesmith reprint last)." }
   },
   "port": {
     "busy": { "title": "COM port in use", "hint": "Another program is holding the port (phone app, old phomemo tool, terminal). Close it or turn the printer off and on again." },
-    "missing": { "title": "COM port missing", "hint": "Pair the printer in the Windows Bluetooth settings or run 'p12 setup'." }
+    "missing": { "title": "COM port missing", "hint": "Pair the printer in the Windows Bluetooth settings or run 'tapesmith setup'." }
   },
   "bluetooth": {
     "lost": { "title": "Bluetooth connection lost", "hint": "The printer is off or out of range. Turn it on, move closer and try again." }
   },
   "transport": {
-    "error": { "title": "Connection error", "hint": "Run 'p12 doctor'." }
+    "error": { "title": "Connection error", "hint": "Run 'tapesmith doctor'." }
   },
   "ipc": {
-    "error": { "title": "Print service not responding", "hint": "Restart the print service (p12 daemon restart) and try again." }
+    "error": { "title": "Print service not responding", "hint": "Restart the print service (tapesmith daemon restart) and try again." }
   },
   "template": {
-    "invalid": { "title": "Invalid template or variable", "hint": "'p12 template show <name>' lists the fields." }
+    "invalid": { "title": "Invalid template or variable", "hint": "'tapesmith template show <name>' lists the fields." }
   },
   "document": {
     "invalid": { "title": "Invalid label", "hint": "The label contains invalid data. Check its objects and try again." }
@@ -49,7 +49,7 @@
   },
   "not_found": { "title": "Not found", "hint": "This entry no longer exists. Reload the list." },
   "auth": {
-    "required": { "title": "Sign-in required", "hint": "Reopen the app from the tray icon or with 'p12 web'." },
+    "required": { "title": "Sign-in required", "hint": "Reopen the app from the tray icon or with 'tapesmith web'." },
     "forbidden": { "title": "Access denied", "hint": "This feature is not available for this access level." }
   },
   "method": {
@@ -59,7 +59,7 @@
   "too_large": { "title": "Too large", "hint": "Make the file or content smaller and try again." },
   "rate_limited": { "title": "Too many requests", "hint": "Wait a moment and try again." },
   "http": {
-    "error": { "title": "Error", "hint": "Try again. If the error persists, run 'p12 doctor'." }
+    "error": { "title": "Error", "hint": "Try again. If the error persists, run 'tapesmith doctor'." }
   },
   "integration": {
     "token_missing": { "title": "Token missing", "hint": "Add the token for this integration in the settings." },
@@ -88,7 +88,7 @@
   "aborted": { "title": "Canceled", "hint": "Start the action again." },
   "internal": { "title": "Error", "hint": "Unexpected error. Try again, otherwise create a support report." },
   "client": {
-    "offline": { "title": "Print service unavailable", "hint": "Is the print service running? Start it with \"p12 daemon start\"." },
+    "offline": { "title": "Print service unavailable", "hint": "Is the print service running? Start it with \"tapesmith daemon start\"." },
     "bad_response": { "title": "Unexpected response from the print service", "hint": "Reload the app. If the error persists, restart the print service." }
   }
 }

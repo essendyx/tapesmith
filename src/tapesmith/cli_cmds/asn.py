@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 asn': Paperless-ASN-Serien reservieren, drucken und verwerfen.
+"""Plugin-Befehl 'tapesmith asn': Paperless-ASN-Serien reservieren, drucken und verwerfen.
 
 Kein echter Netzzugriff standardmäßig: `TRANSPORT` ist injizierbar (Tests ersetzen es), Standard
 ist ein echter httpx-Transport über `PaperlessClient.from_settings`.

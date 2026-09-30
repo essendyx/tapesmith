@@ -64,7 +64,7 @@ def test_ensure_daemon_times_out_with_log_hint():
         now[0] += seconds
 
     spawned = []
-    with pytest.raises(DaemonUnavailable, match="p12d.log"):
+    with pytest.raises(DaemonUnavailable, match="daemon.log"):
         ensure_daemon({}, spawn=lambda argv: spawned.append(argv) or 1, connector=connector, sleep=sleep,
                       clock=lambda: now[0], timeout_s=1.0)
     assert len(spawned) == 1

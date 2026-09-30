@@ -1,12 +1,12 @@
 /** Karte „Home Assistant (MQTT)“: Broker-Verbindung, Discovery, Passwort, erlaubte Vorlagen. */
-import { useId, useState } from 'react';
-import { Badge, Button, Input, MessageBar, MessageBarBody } from '@fluentui/react-components';
+import { useId } from 'react';
+import { Input, MessageBar, MessageBarBody } from '@fluentui/react-components';
 import { useTranslation } from 'react-i18next';
 import { FieldRow, FieldRows, ToggleControl } from '../../components/FieldRow';
+import { SecretField } from '../../components/SecretField';
 import { Section } from '../../components/Section';
 import { CardActions } from './CardActions';
 import { NumberInput } from './NumberInput';
-import { SecretDialog } from './SecretDialog';
 import { TemplatePicker } from './TemplatePicker';
 import type { AccessJson, AccessMqtt } from './types';
 import { useSectionEdit } from './useSectionEdit';
@@ -16,7 +16,6 @@ export function MqttCard(props: { data: AccessJson }): JSX.Element {
   const { t } = useTranslation('zugriff');
   const edit = useSectionEdit<AccessMqtt>(props.data.mqtt);
   const { save, saving, error } = useAccessSave();
-  const [dialogOpen, setDialogOpen] = useState(false);
   const v = edit.values;
   const idBase = useId();
   const title = t('mqtt.title');
@@ -79,20 +78,7 @@ export function MqttCard(props: { data: AccessJson }): JSX.Element {
             />
           }
         />
-        <FieldRow
-          label={t('mqtt.passwordLabel')}
-          badges={
-            <Badge appearance="tint" size="small" color={v.password_set ? 'success' : 'warning'}>
-              {v.password_set ? t('mqtt.passwordSet') : t('mqtt.passwordMissing')}
-            </Badge>
-          }
-          help={t('secret.storage', { source: v.password_describe })}
-          control={
-            <Button appearance="secondary" onClick={() => setDialogOpen(true)}>
-              {t('mqtt.setPassword')}
-            </Button>
-          }
-        />
+        <SecretField slotId="mqtt" label={t('mqtt.passwordLabel')} help={t('mqtt.passwordHint')} />
         <FieldRow
           htmlFor={`${idBase}-topic`}
           label={t('mqtt.baseTopicLabel')}
@@ -136,13 +122,6 @@ export function MqttCard(props: { data: AccessJson }): JSX.Element {
           <MessageBarBody>{error}</MessageBarBody>
         </MessageBar>
       ) : null}
-      <SecretDialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        name="mqtt"
-        title={t('mqtt.secretDialogTitle')}
-        fieldLabel={t('mqtt.secretFieldLabel')}
-      />
     </Section>
   );
 }

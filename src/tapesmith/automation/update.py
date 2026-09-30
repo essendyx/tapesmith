@@ -103,7 +103,7 @@ class UpdateAddon:
             return
         if version == getattr(status, "previous", None):
             # Von dieser Version wurde zurückgestellt: nicht automatisch wieder installieren,
-            # nur noch von Hand (Einstellungen bzw. `p12 update install`).
+            # nur noch von Hand (Einstellungen bzw. `tapesmith update install`).
             self._detail = _t("Update {version} verfügbar (zurückgestellt, nur von Hand)", version=version)
             return
         try:

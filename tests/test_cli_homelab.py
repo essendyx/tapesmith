@@ -1,4 +1,4 @@
-"""CLI-Befehl `p12 homelab` (show, set, check, secret, path)."""
+"""CLI-Befehl `tapesmith homelab` (show, set, check, secret, path)."""
 
 import io
 import json

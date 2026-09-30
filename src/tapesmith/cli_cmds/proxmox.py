@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 proxmox': VMs und LXCs aus der Proxmox-API lesen und als Serie drucken.
+"""Plugin-Befehl 'tapesmith proxmox': VMs und LXCs aus der Proxmox-API lesen und als Serie drucken.
 
 Unterbefehle: `hosts` (eingerichtete Hosts, Token vorhanden), `list HOST` (Gäste mit IP bzw.
 Hinweis und durchgereichter Hardware) und `print HOST` (Serie über `vm-lxc`, mit `--links` über

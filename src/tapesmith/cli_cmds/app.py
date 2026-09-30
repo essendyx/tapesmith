@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 app': Web-Oberfläche im Standardbrowser öffnen.
+"""Plugin-Befehl 'tapesmith app': Web-Oberfläche im Standardbrowser öffnen.
 
 Ein eigenes lokales Fenster gibt es nicht mehr, die Oberfläche läuft nur im Browser. Startet den
 Druckdienst bei Bedarf (`webui.browser.open_app`). `webui.browser` wird erst in `run()` geladen."""

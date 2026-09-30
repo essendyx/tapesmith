@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 homelab': Einstellungen der Homelab-Integrationen (homelab.json).
+"""Plugin-Befehl 'tapesmith homelab': Einstellungen der Homelab-Integrationen (homelab.json).
 
 Unterbefehle: `show` (öffentliche Sicht ohne Token-Werte), `set KEY VALUE`, `check` (je Dienst
 eingerichtet und Token vorhanden, ohne Netz), `secret DIENST/BENUTZER` (Token verdeckt in den

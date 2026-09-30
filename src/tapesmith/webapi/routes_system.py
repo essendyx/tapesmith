@@ -24,7 +24,7 @@ from tapesmith.i18n import N_, _t
 
 router = APIRouter()
 
-_RESTORE_HINT = N_("Erst ‚p12 daemon stop‘, dann ‚p12 backup restore {name}‘ in der Konsole")
+_RESTORE_HINT = N_("Erst ‚tapesmith daemon stop‘, dann ‚tapesmith backup restore {name}‘ in der Konsole")
 
 
 class IntegrationChangeBody(BaseModel):

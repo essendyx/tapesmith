@@ -1,4 +1,4 @@
-"""CLI-Befehl `p12 sn-scan`."""
+"""CLI-Befehl `tapesmith sn-scan`."""
 
 from io import BytesIO
 

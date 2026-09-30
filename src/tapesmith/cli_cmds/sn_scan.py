@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 sn-scan': Seriennummer vom Foto des Herstelleraufklebers lesen."""
+"""Plugin-Befehl 'tapesmith sn-scan': Seriennummer vom Foto des Herstelleraufklebers lesen."""
 
 from __future__ import annotations
 

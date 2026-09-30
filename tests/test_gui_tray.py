@@ -471,7 +471,7 @@ def test_warteschlange_ohne_dienst_deaktiviert(env):
     ("trayQuick", "/schnelldruck"),
     ("trayHistory", "/verlauf"),
     ("trayStatus", "/einstellungen?abschnitt=verbindung"),
-    ("trayLog", "/einstellungen?abschnitt=support"),
+    ("trayLog", "/protokoll"),
     ("traySettings", "/einstellungen?abschnitt=tray"),
     ("trayUpdate", "/einstellungen?abschnitt=updates"),
 ])
@@ -615,7 +615,7 @@ def test_main_zweite_instanz_beendet_sich(monkeypatch):
         holder.release()
 
 
-# ---------- Dienst-Neustart: Hotkey druckt nach `p12 daemon restart` weiter ----------
+# ---------- Dienst-Neustart: Hotkey druckt nach `tapesmith daemon restart` weiter ----------
 
 def test_druck_nach_dienst_neustart(env, qtbot):
     from ipc_fakes import RestartableDaemon

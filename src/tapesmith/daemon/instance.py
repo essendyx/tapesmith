@@ -243,8 +243,11 @@ def _start_addons(addons_factory: Callable[[Any], Any], service, web: Any) -> An
 
 def _setup_logging(foreground: bool) -> list[logging.Handler]:
     fmt = logging.Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s")
+    from tapesmith import logfiles
+
+    logfiles.migrate_legacy_daemon_log()
     handlers: list[logging.Handler] = [
-        RotatingFileHandler(paths.log_dir() / "p12d.log", maxBytes=LOG_MAX_BYTES,
+        RotatingFileHandler(logfiles.daemon_log_path(), maxBytes=LOG_MAX_BYTES,
                             backupCount=LOG_BACKUPS, encoding="utf-8")]
     if foreground:
         handlers.append(logging.StreamHandler(sys.stderr))

@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 telegram': Testnachricht senden, Konfiguration und Zustand anzeigen."""
+"""Plugin-Befehl 'tapesmith telegram': Testnachricht senden, Konfiguration und Zustand anzeigen."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from tapesmith.i18n import N_, _t
 COMMAND = "telegram"
 HELP = N_("Telegram-Meldungen des Druckdienstes testen und anzeigen")
 
-# Poster für `p12 telegram test`, Standard httpx.post (Modul-Attribut, Tests ersetzen es per monkeypatch).
+# Poster für `tapesmith telegram test`, Standard httpx.post (Modul-Attribut, Tests ersetzen es per monkeypatch).
 HTTP_POST = None
 
 

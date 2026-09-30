@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 gui': heißt jetzt 'p12 app' und öffnet wie dieser die Web-Oberfläche im
+"""Plugin-Befehl 'tapesmith gui': heißt jetzt 'tapesmith app' und öffnet wie dieser die Web-Oberfläche im
 Standardbrowser.
 
 `--selftest`/`--selftest-out` rufen den Qt-freien Selbsttest (`tapesmith.selftest`). Browser- und
@@ -13,8 +13,8 @@ from pathlib import Path
 from tapesmith.i18n import N_, _t
 
 COMMAND = "gui"
-HELP = N_("Web-Oberfläche im Browser öffnen (wie 'p12 app') oder Selbsttest")
-RENAMED_HINT = N_("Hinweis: ‚p12 gui‘ heißt jetzt ‚p12 app‘.")
+HELP = N_("Web-Oberfläche im Browser öffnen (wie 'tapesmith app') oder Selbsttest")
+RENAMED_HINT = N_("Hinweis: ‚tapesmith gui‘ heißt jetzt ‚tapesmith app‘.")
 
 
 def register(parser: argparse.ArgumentParser) -> None:

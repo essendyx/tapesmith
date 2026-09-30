@@ -21,9 +21,8 @@
   },
   "tokenMissing": {
     "title": "Token missing",
-    "extra": "Create a token with the script deploy/infra/proxmox-tapesmith-role.sh and store it there.",
-    "extraTokenScript": "Create a token with the script deploy/infra/proxmox-tapesmith-role.sh on the Proxmox host.",
-    "reference": "Reference: {{describe}}."
+    "extra": "Save the token in the settings, section Proxmox. You can create it with the script deploy/infra/proxmox-tapesmith-role.sh on the Proxmox host.",
+    "extraTokenScript": "Create a token with the script deploy/infra/proxmox-tapesmith-role.sh on the Proxmox host and save it in the settings, section Proxmox."
   },
   "guests": {
     "title": "Guests on {{host}}",

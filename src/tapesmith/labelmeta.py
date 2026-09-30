@@ -16,7 +16,7 @@ from tapesmith.templates.model import Template
 
 
 def text_meta(spec: LabelSpec, source: str = "cli") -> JobMeta:
-    """Job-Metadaten für ein freies Textlabel (`p12 text`)."""
+    """Job-Metadaten für ein freies Textlabel (`tapesmith text`)."""
     title = " ".join(line for line in spec.lines if line.strip())
     if not title and spec.qr:
         title = spec.qr
@@ -43,7 +43,7 @@ WIFI_PASSWORD_KEY = "password"
 
 def qr_meta(content: QrContent, lines: Sequence[str] = (), source: str = "cli",
             spec: LabelSpec | None = None, *, kind: str = "qr", title_prefix: str = "") -> JobMeta:
-    """Job-Metadaten für ein QR-Label (`p12 qr`, QR-Assistent).
+    """Job-Metadaten für ein QR-Label (`tapesmith qr`, QR-Assistent).
 
     Ein WLAN-QR mit Passwort speichert weder Bild noch Spec. Damit „Erneut drucken“ trotzdem
     geht, landen SSID, Sicherheitsart, „versteckt“ und das Layout (Spec ohne QR-Inhalt) in
@@ -60,5 +60,5 @@ def qr_meta(content: QrContent, lines: Sequence[str] = (), source: str = "cli",
 
 
 def image_meta(name: str, source: str = "cli") -> JobMeta:
-    """Job-Metadaten für ein vorhandenes Bild (`p12 print --image`)."""
+    """Job-Metadaten für ein vorhandenes Bild (`tapesmith print --image`)."""
     return JobMeta(source=source, kind="image", title=name)

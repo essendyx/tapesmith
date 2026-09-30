@@ -41,7 +41,7 @@ from tapesmith.i18n import N_, _t
 
 EVENTS = ("state", "status", "queue", "job", "progress", "warning", "cut_pause")
 
-REASON_OTHER_VERSION = N_("Druckdienst hat eine andere Version, direkt gedruckt ('p12 daemon restart')")
+REASON_OTHER_VERSION = N_("Druckdienst hat eine andere Version, direkt gedruckt ('tapesmith daemon restart')")
 REASON_UNREACHABLE = N_("Druckdienst nicht erreichbar, drucke direkt")
 REASON_LOST = N_("Druckdienst nicht mehr erreichbar (beendet oder neu gestartet), drucke direkt")
 
@@ -150,7 +150,7 @@ class LocalBackend:
     """Druckt direkt im eigenen Prozess über die vorhandene Pipeline."""
 
     kind = "local"
-    listen_s = 0.15          # Nachzügler-Wartezeit bei der Statusabfrage (CLI: p12 status --listen)
+    listen_s = 0.15          # Nachzügler-Wartezeit bei der Statusabfrage (CLI: tapesmith status --listen)
 
     def __init__(self, pipeline: PrintPipeline, *, warning_relay: Relay, cut_pause_relay: Relay,
                  state_relay: Relay | None = None, manager: ConnectionManager | None = None,
@@ -328,8 +328,8 @@ class _DaemonQueueOps:
 class DaemonBackend:
     """Druckt über den Druckdienst p12d; der Plan entsteht lokal (Anzeige), der Dienst prüft verbindlich.
 
-    Mit `reconnect` überlebt das Backend einen Neustart des Dienstes (Absturz, `p12 daemon restart`,
-    `p12 daemon stop`): ist der Kanal schon zu, bevor eine Anfrage raus geht (`DaemonNotSent`), wird
+    Mit `reconnect` überlebt das Backend einen Neustart des Dienstes (Absturz, `tapesmith daemon restart`,
+    `tapesmith daemon stop`): ist der Kanal schon zu, bevor eine Anfrage raus geht (`DaemonNotSent`), wird
     einmal neu verbunden, die Listener werden neu angemeldet und die Anfrage wiederholt. Scheitert das
     Neuverbinden, wechselt das Backend mit `fallback` auf den Direktdruck (Hinweis als Warnung). Ging
     eine Anfrage schon raus und riss dann die Verbindung ab, wird nie wiederholt (`DaemonLost`).

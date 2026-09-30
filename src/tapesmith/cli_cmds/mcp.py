@@ -1,4 +1,4 @@
-"""`p12 mcp`: MCP-Server für Claude Code (stdio) und Anleitung zur Einrichtung.
+"""`tapesmith mcp`: MCP-Server für Claude Code (stdio) und Anleitung zur Einrichtung.
 
 Ohne Option läuft der stdio-Server; vorher wird nichts auf stdout geschrieben, weil dort nur das
 MCP-Protokoll stehen darf. Der Prozess druckt nie selbst, sondern über den lokalen Druckdienst.
@@ -41,9 +41,9 @@ def _show_config(ctx: CliContext) -> int:
     if setting(cfg, "mcp.http"):
         ctx.out(_t("Alternativ über HTTP (Druckdienst muss laufen):"))
         ctx.out(f"  {http_command(cfg)}")
-        ctx.out(_t("  <TOKEN> vorher anlegen mit: p12 token add Claude --rolle drucken"))
+        ctx.out(_t("  <TOKEN> vorher anlegen mit: tapesmith token add Claude --rolle drucken"))
     else:
-        ctx.out(_t("MCP über HTTP ist aus (mcp.http = false); einschalten mit: p12 config set mcp.http true"))
+        ctx.out(_t("MCP über HTTP ist aus (mcp.http = false); einschalten mit: tapesmith config set mcp.http true"))
     ctx.out("")
     ctx.out(_t("Gedruckt wird nur nach einer Vorschau (label_preview) und mit confirm=true (label_print)."))
     return 0

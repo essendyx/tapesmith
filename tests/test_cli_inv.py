@@ -1,4 +1,4 @@
-"""Tests für `p12 inv`: Boxen, Gegenstände, Suche, Verleih, Label-Druck, zentrale Zähler."""
+"""Tests für `tapesmith inv`: Boxen, Gegenstände, Suche, Verleih, Label-Druck, zentrale Zähler."""
 
 from PIL import Image
 

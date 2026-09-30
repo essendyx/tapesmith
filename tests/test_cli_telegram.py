@@ -1,4 +1,4 @@
-"""`p12 telegram status|test`, Versand nur über einen Fake-Poster."""
+"""`tapesmith telegram status|test`, Versand nur über einen Fake-Poster."""
 
 from __future__ import annotations
 

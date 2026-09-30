@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 asset': Asset-Nummern reservieren, verwalten und als `asset-kurz` drucken.
+"""Plugin-Befehl 'tapesmith asset': Asset-Nummern reservieren, verwalten und als `asset-kurz` drucken.
 
 Kein echter Netzzugriff standardmäßig: `TRANSPORT` ist injizierbar (Tests ersetzen es), Default
 ist der echte Kurz-Link-Dienst über `integrations.shortlink`. Nummern kommen aus dem

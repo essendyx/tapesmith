@@ -48,8 +48,8 @@ def test_backups_restore_ohne_dry_run_ist_409(api):
     assert r.status_code == 409
     err = r.json()["error"]
     assert err["kind"] == "Dienst läuft"
-    assert "p12 daemon stop" in err["message"]
-    assert "p12 backup restore" in err["message"]
+    assert "tapesmith daemon stop" in err["message"]
+    assert "tapesmith backup restore" in err["message"]
     assert created["name"] in err["message"]
 
 

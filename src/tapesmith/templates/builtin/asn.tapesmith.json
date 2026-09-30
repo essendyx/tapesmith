@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "name": "asn",
-  "description": "Paperless-ASN als Code128 mit Klartext (Paperless erkennt ASN-Barcodes beim Einlesen, wenn die ASN-Erkennung aktiv ist). Serien über `p12 batch`/Serien-Dialog.",
+  "description": "Paperless-ASN als Code128 mit Klartext (Paperless erkennt ASN-Barcodes beim Einlesen, wenn die ASN-Erkennung aktiv ist). Serien über `tapesmith batch`/Serien-Dialog.",
   "category": "Büro",
   "tags": ["paperless", "asn", "barcode"],
   "fields": [
@@ -19,7 +19,7 @@
   "translations": {
     "en": {
       "title": "asn",
-      "description": "Paperless ASN as Code128 with plain text (Paperless recognizes ASN barcodes on import when ASN detection is enabled). Series via `p12 batch` or the series dialog.",
+      "description": "Paperless ASN as Code128 with plain text (Paperless recognizes ASN barcodes on import when ASN detection is enabled). Series via `tapesmith batch` or the series dialog.",
       "category": "Office",
       "tags": ["paperless", "asn", "barcode"],
       "fields": {

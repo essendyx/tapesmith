@@ -13,42 +13,40 @@
     "tokenMissing": "Token fehlt",
     "failed": "Prüfung fehlgeschlagen"
   },
-  "tokenRef": {
-    "help": "Wo das Token liegt, nicht das Token selbst: keyring:<dienst>/<benutzer> (Windows-Anmeldeinformationen), file:<pfad> oder env:<NAME>. Prüfen zeigt, ob es gefunden wird.",
-    "present": "Token gefunden",
-    "missing": "Token fehlt"
+  "token": {
+    "help": "API-Token des Dienstes. Tapesmith speichert es in den Windows-Anmeldeinformationen, nie in einer Datei."
   },
   "hosts": {
     "tableAriaLabel": "Proxmox-Hosts",
     "columns": {
       "name": "Name",
       "url": "Adresse",
-      "tokenRef": "Token-Referenz",
       "verifyTls": "TLS prüfen",
       "token": "Token"
     },
     "nameAria": "Name Host {{n}}",
     "urlAria": "Adresse Host {{n}}",
-    "tokenRefAria": "Token-Referenz Host {{n}}",
     "verifyTlsAria": "TLS prüfen Host {{n}}",
     "removeAria": "Host {{n}} entfernen",
     "actionsColumn": "Aktionen",
     "new": "neu",
-    "empty": "Noch kein Proxmox-Host eingetragen. Füge einen Host mit Adresse und Token-Referenz hinzu.",
+    "empty": "Noch kein Proxmox-Host eingetragen. Füge einen Host mit Adresse hinzu und speichere danach sein Token.",
     "add": "Host hinzufügen",
     "urlPlaceholder": "https://192.0.2.60:8006",
-    "tokenRefPlaceholder": "keyring:tapesmith/pmx10"
+    "tokenLabel": "Token {{name}}",
+    "tokenHelp": "API-Token dieses Hosts mit Leserechten.",
+    "tokenAfterSave": "Token nach dem Speichern setzen"
   },
   "fields": {
     "paperlessUrl": { "label": "Adresse", "help": "Adresse von Paperless-ngx, z. B. http://192.0.2.12:8010 (ohne / am Ende)" },
-    "paperlessTokenRef": { "label": "Token-Referenz" },
+    "paperlessTokenRef": { "label": "Token" },
     "paperlessPublicUrl": { "label": "Adresse für QR-Codes", "help": "Nur nötig, wenn Paperless von außen unter einer anderen Adresse erreichbar ist" },
     "paperlessAsnRange": { "label": "Nummernkreis", "help": "Aus diesem Nummernkreis vergibt Tapesmith die ASN-Nummern" },
     "paperlessAsnPrefix": { "label": "Präfix", "help": "Steht vor der Nummer; Großbuchstaben, Ziffern und Bindestrich" },
     "paperlessAsnWidth": { "label": "Stellen", "help": "Anzahl Ziffern, mit Nullen aufgefüllt (5 ergibt ASN00042)" },
     "paperlessWarrantyFields": { "label": "Garantie-Felder", "help": "Namen der eigenen Felder in Paperless, aus denen das Garantie-Etikett liest" },
     "paperlessTimeoutS": { "label": "Zeitlimit", "help": "So lange wartet Tapesmith auf eine Antwort von Paperless" },
-    "proxmoxHosts": { "label": "Proxmox-Hosts", "help": "Je Host Name, Adresse und Token-Referenz eines API-Tokens mit Leserechten" },
+    "proxmoxHosts": { "label": "Proxmox-Hosts", "help": "Je Host Name und Adresse; das API-Token (mit Leserechten) nach dem Speichern darunter setzen" },
     "proxmoxTimeoutS": { "label": "Zeitlimit", "help": "So lange wartet Tapesmith auf eine Antwort von Proxmox" },
     "obsidianMcpUrl": { "label": "MCP-Adresse", "help": "Adresse des Obsidian-MCP-Servers, z. B. http://192.0.2.12:8092/mcp" },
     "obsidianVaultDir": { "label": "Vault-Ordner", "help": "Alternativ zum MCP-Server: der Vault-Ordner auf diesem PC" },
@@ -57,7 +55,7 @@
     "obsidianAppendAfterPrint": { "label": "Druck in der Notiz vermerken", "help": "Schreibt nach dem Druck eine Zeile mit Datum in die Notiz" },
     "obsidianTimeoutS": { "label": "Zeitlimit", "help": "So lange wartet Tapesmith auf eine Antwort des MCP-Servers" },
     "homeassistantUrl": { "label": "Adresse", "help": "Adresse von Home Assistant, z. B. http://192.0.2.9:8123" },
-    "homeassistantTokenRef": { "label": "Token-Referenz" },
+    "homeassistantTokenRef": { "label": "Token" },
     "homeassistantTodoEntity": { "label": "To-do-Liste", "help": "Liste für Wartungsaufgaben in der Form todo.<name>; leer = keine" },
     "homeassistantBatteryBelow": { "label": "Batterie unter", "help": "Zeigt Geräte unter diesem Batteriestand; 101 = alle Geräte" },
     "homeassistantTimeoutS": { "label": "Zeitlimit", "help": "So lange wartet Tapesmith auf eine Antwort von Home Assistant" },
@@ -66,7 +64,7 @@
     "assetsWidth": { "label": "Stellen", "help": "Anzahl Ziffern, mit Nullen aufgefüllt (4 ergibt HL-0042)" },
     "assetsCheckDigit": { "label": "Prüfziffer anhängen", "help": "Eine zusätzliche Ziffer macht Tippfehler beim Abschreiben erkennbar" },
     "shortlinkBaseUrl": { "label": "Kurz-Link-Adresse", "help": "Adresse des Kurz-Link-Dienstes, z. B. https://l.example.com; leer = QR-Code mit langer Adresse" },
-    "shortlinkTokenRef": { "label": "Token-Referenz" },
+    "shortlinkTokenRef": { "label": "Token" },
     "shortlinkAdminUrl": { "label": "Admin-Adresse", "help": "Nur nötig, wenn neue Kurz-Links über eine andere Adresse angelegt werden" },
     "shortlinkTimeoutS": { "label": "Zeitlimit", "help": "So lange wartet Tapesmith auf eine Antwort des Kurz-Link-Dienstes" },
     "kleinanzeigenRange": { "label": "Nummernkreis", "help": "Aus diesem Nummernkreis vergibt Tapesmith die Artikelnummern" },

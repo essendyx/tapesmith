@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 kabel': NetBox-CSV-Import, TIA-606-ID-Schema und Kabel-Register.
+"""Plugin-Befehl 'tapesmith kabel': NetBox-CSV-Import, TIA-606-ID-Schema und Kabel-Register.
 
 Zeigt standardmäßig nur die Tabelle bzw. die erzeugten IDs (nie ein automatischer Druck); ein
 echter Seriendruck läuft nur über `--dry-run`/`--preview`/`--contact-sheet` (Zusammenfassung bzw.

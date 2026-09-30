@@ -1,4 +1,4 @@
-"""CLI-Diagnosebefehle 'p12 ble scan' und 'p12 usb' (experimentell) sowie
+"""CLI-Diagnosebefehle 'tapesmith ble scan' und 'tapesmith usb' (experimentell) sowie
 doctor.run_checks(extra_checks=...)."""
 
 import json

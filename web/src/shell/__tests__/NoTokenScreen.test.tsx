@@ -64,10 +64,10 @@ describe('NoTokenScreen: Token-Eingabe außerhalb des App-Fensters', () => {
     expect(screen.getByRole('button', { name: 'Anmelden' })).toBeDisabled();
   });
 
-  it('zeigt den Hinweis auf p12 token add', () => {
+  it('zeigt den Hinweis auf tapesmith token add', () => {
     renderScreen();
     expect(screen.getByText(/Tokens legt die Verwaltung unter Zugriff an/)).toBeInTheDocument();
-    expect(screen.getByText(/p12 token add/)).toBeInTheDocument();
+    expect(screen.getByText(/tapesmith token add/)).toBeInTheDocument();
   });
 });
 
@@ -101,6 +101,6 @@ describe('NoTokenScreen: Englisch', () => {
     expect(screen.getByText('Sign-in required')).toBeInTheDocument();
     expect(screen.getByLabelText('Access token')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Sign in' })).toBeInTheDocument();
-    expect(screen.getByText(/p12 token add/)).toBeInTheDocument();
+    expect(screen.getByText(/tapesmith token add/)).toBeInTheDocument();
   });
 });

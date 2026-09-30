@@ -1,4 +1,4 @@
-"""CLI-Integration `p12 asn`: next/reserve/void. Kein echtes Netz: `TRANSPORT` ersetzt."""
+"""CLI-Integration `tapesmith asn`: next/reserve/void. Kein echtes Netz: `TRANSPORT` ersetzt."""
 
 from tapesmith import cli
 from tapesmith.cli_cmds import asn as asn_cmd

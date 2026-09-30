@@ -218,7 +218,7 @@ describe('Leere und fehlende Angaben', () => {
     expect(within(card('dienste')).getByText('Noch keine Zusatzdienste gestartet.')).toBeInTheDocument();
   });
 
-  it('Telegram ohne Token-Quelle: Plakette „Fehlt“ und Hinweis auf die Einstellung, kein Knopf', async () => {
+  it('Telegram ohne Token: Plakette „Nicht gesetzt“, Kennwortfeld, Speichern erst mit Eingabe, kein Entfernen', async () => {
     renderPage(
       baseAccessRoutes({
         'GET /api/v1/access': () =>
@@ -227,8 +227,9 @@ describe('Leere und fehlende Angaben', () => {
     );
     await screen.findByRole('heading', { name: 'Telegram' });
     const tg = card('telegram');
-    expect(within(tg).getByText('Fehlt')).toBeInTheDocument();
-    expect(within(tg).getByText('Keine Quelle festgelegt (Einstellung telegram.token_ref).')).toBeInTheDocument();
-    expect(within(tg).queryByRole('button', { name: 'Token setzen' })).toBeNull();
+    expect(await within(tg).findByText('Nicht gesetzt')).toBeInTheDocument();
+    expect(within(tg).getByLabelText('Bot-Token')).toHaveAttribute('type', 'password');
+    expect(within(tg).getByRole('button', { name: 'Wert für Telegram-Bot-Token speichern' })).toBeDisabled();
+    expect(within(tg).queryByRole('button', { name: /entfernen/ })).toBeNull();
   });
 });

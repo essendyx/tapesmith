@@ -322,6 +322,6 @@ def get_daemon(ctx: ApiContext = Depends(get_ctx)) -> dict:
         "uptime_s": time.monotonic() - _IMPORTED_AT,
         "web_port": ctx.port,
         "home_key": ctx.home_key,
-        "log_path": str(paths.log_dir() / "p12d.log"),
+        "log_path": str(paths.log_dir() / "daemon.log"),
         "app_dir": str(paths.app_dir()),
     }

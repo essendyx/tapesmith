@@ -1,4 +1,4 @@
-"""`p12 qr`: QR-Label aus URL, Text, WLAN oder vCard bauen und drucken."""
+"""`tapesmith qr`: QR-Label aus URL, Text, WLAN oder vCard bauen und drucken."""
 
 import argparse
 import dataclasses

@@ -217,6 +217,6 @@ def test_main_writes_log(monkeypatch, app_home):
     monkeypatch.setattr(instance_mod, "run_daemon", fake_run_daemon)
     assert main(["--foreground"]) == 0
     assert seen["called"]
-    log_file = app_home / "logs" / "p12d.log"
+    log_file = app_home / "logs" / "daemon.log"
     assert "Testlauf gestartet" in log_file.read_text(encoding="utf-8")
     assert not any(isinstance(h, logging.FileHandler) for h in logging.getLogger("tapesmith").handlers)

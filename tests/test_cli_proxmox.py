@@ -1,4 +1,4 @@
-"""CLI `p12 proxmox` (hosts, list, print). Nie echter Druck, nie echtes Netz."""
+"""CLI `tapesmith proxmox` (hosts, list, print). Nie echter Druck, nie echtes Netz."""
 
 import json
 

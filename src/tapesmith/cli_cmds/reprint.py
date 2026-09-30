@@ -1,4 +1,4 @@
-"""`p12 reprint`: ein Label aus dem Verlauf erneut drucken.
+"""`tapesmith reprint`: ein Label aus dem Verlauf erneut drucken.
 
 Nicht sensible Einträge werden aus dem gespeicherten Kopfbild gedruckt; Kopien, Kette und
 Jobaufteilung plant die Pipeline wieder genauso wie beim Original. Sensible Vorlagen-Einträge
@@ -25,7 +25,7 @@ GETPASS = getpass.getpass
 
 
 def register(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument("target", help=_t("'last' oder die ID aus 'p12 history'"))
+    parser.add_argument("target", help=_t("'last' oder die ID aus 'tapesmith history'"))
     parser.add_argument("--prompt", action="append", default=[], metavar=_t("FELD"),
                         help=_t("sensibles Feld verdeckt neu eingeben (empfohlen)"))
     parser.add_argument("--set", action="append", default=[], metavar=_t("FELD=WERT"),

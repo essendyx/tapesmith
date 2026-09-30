@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 tray': Tray-App (Infobereich, globale Tastenkürzel) starten.
+"""Plugin-Befehl 'tapesmith tray': Tray-App (Infobereich, globale Tastenkürzel) starten.
 
 Ohne `--foreground` wird die Tray-App losgelöst gestartet und der Befehl kehrt sofort zurück;
 eine bereits laufende Instanz beendet die neue sofort wieder (Einzelinstanz). PySide6 wird erst

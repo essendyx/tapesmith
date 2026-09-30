@@ -1,4 +1,4 @@
-"""CLI-Befehl `p12 asset`."""
+"""CLI-Befehl `tapesmith asset`."""
 
 import json
 

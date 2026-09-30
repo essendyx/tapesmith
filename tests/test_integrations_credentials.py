@@ -73,7 +73,7 @@ def test_keyring_with_fake():
     assert credentials.read_secret("keyring:tapesmith/paperless", what="Paperless", keyring_module=fake) == "k"
     with pytest.raises(TokenMissing) as info:
         credentials.read_secret("keyring:tapesmith/proxmox", what="Proxmox", keyring_module=fake)
-    assert "p12 homelab secret tapesmith/proxmox" in info.value.hint
+    assert "tapesmith homelab secret tapesmith/proxmox" in info.value.hint
     assert "Windows-Anmeldeinformationen tapesmith/proxmox" in str(info.value)
 
 

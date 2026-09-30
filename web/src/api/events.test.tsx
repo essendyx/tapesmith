@@ -56,7 +56,7 @@ describe('ServerEventsProvider', () => {
     act(() => FakeEventSource.latest()?.emit('queue', {}));
     act(() => FakeEventSource.latest()?.emit('config', { keys: ['tape'] }));
     const keys = spy.mock.calls.map((c) => c[0]?.queryKey);
-    expect(keys).toEqual([qk.status, qk.queue, qk.app, qk.settings, qk.tapes, ['access']]);
+    expect(keys).toEqual([qk.status, qk.queue, qk.app, qk.settings, qk.tapes, ['access'], ['secrets']]);
   });
 
   it('verbindet nach Fehler mit Backoff neu und invalidiert dann alles', () => {

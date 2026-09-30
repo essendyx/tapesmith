@@ -1,4 +1,4 @@
-"""`p12 token`: API-Tokens anlegen, auflisten und widerrufen."""
+"""`tapesmith token`: API-Tokens anlegen, auflisten und widerrufen."""
 
 import argparse
 import json
@@ -28,7 +28,7 @@ def register(parser: argparse.ArgumentParser) -> None:
 
 def _family_urls(ctx: CliContext, secret: str) -> list[str]:
     """Nur mit `lan.enabled = true`: sonst ist der Dienst nicht aus dem Heimnetz erreichbar, ein
-    Link waere irrefuehrend (funktioniert erst nach `lan.enabled = true` und `p12 daemon restart`)."""
+    Link waere irrefuehrend (funktioniert erst nach `lan.enabled = true` und `tapesmith daemon restart`)."""
     cfg = ctx.load_config()
     if not config.setting(cfg, "lan.enabled"):
         return []
@@ -57,7 +57,7 @@ def run(args: argparse.Namespace, ctx: CliContext) -> int:
                 for url in family_urls:
                     ctx.out(_t("Familienseite: {url}", url=url))
             else:
-                ctx.out(_t("LAN ist aus: lan.enabled = true setzen, dann p12 daemon restart"))
+                ctx.out(_t("LAN ist aus: lan.enabled = true setzen, dann tapesmith daemon restart"))
         return 0
 
     if args.token_cmd == "list":

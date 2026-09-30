@@ -96,7 +96,7 @@ def read_secret(ref: str, *, keyring_module=None, environ=None) -> str:
         value = module.get_password(service, user)
         if not value:
             raise SecretMissing(
-                _t("Kein Wert in den Windows-Anmeldeinformationen für {service}/{user} (p12 secret set …)", service=service, user=user))
+                _t("Kein Wert in den Windows-Anmeldeinformationen für {service}/{user} (tapesmith secret set …)", service=service, user=user))
         return value
     if ref.startswith("file:"):
         path = ref[len("file:"):]

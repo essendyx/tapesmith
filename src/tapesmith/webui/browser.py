@@ -1,4 +1,4 @@
-"""Web-Oberfläche im Standardbrowser öffnen (`p12 app`, Tray „Öffnen“, Startmenü, Kontextmenü, URI).
+"""Web-Oberfläche im Standardbrowser öffnen (`tapesmith app`, Tray „Öffnen“, Startmenü, Kontextmenü, URI).
 
 Es gibt kein eigenes Fenster: die Oberfläche läuft ausschließlich im Standardbrowser des Users,
 nativ bleibt nur das Tray-Symbol mit seinem Kontextmenü.
@@ -163,9 +163,9 @@ def connect_session(cfg: dict, *, ensure: Callable[..., Any] = ensure_daemon,
         if clock() >= deadline:
             break
         sleep(_POLL_S)
-    log_path = paths.log_dir() / "p12d.log"
+    log_path = paths.log_dir() / "daemon.log"
     if not started and session is None:
-        raise RuntimeError(_t("Der Druckdienst läuft ohne Web-Oberfläche (keine Sitzung gefunden). Dienst neu starten mit 'p12 daemon restart' (Log: {log_path})", log_path=log_path))
+        raise RuntimeError(_t("Der Druckdienst läuft ohne Web-Oberfläche (keine Sitzung gefunden). Dienst neu starten mit 'tapesmith daemon restart' (Log: {log_path})", log_path=log_path))
     raise RuntimeError(_t("Web-Oberfläche des Druckdienstes antwortet nicht (Log: {log_path})", log_path=log_path))
 
 
@@ -225,7 +225,7 @@ def log_error(text: str) -> None:
         pass
 
 
-def build_parser(prog: str = "p12 app") -> argparse.ArgumentParser:
+def build_parser(prog: str = "tapesmith app") -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog=prog, description=_t("Web-Oberfläche im Standardbrowser öffnen"))
     add_arguments(parser)
     return parser
@@ -242,7 +242,7 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
 
 def main(argv: list[str] | None = None, *, opener: Callable[[str], Any] | None = None,
          log: Callable[[str], None] | None = None) -> int:
-    """`p12 app` bzw. `pythonw -m tapesmith.webui.browser ...`: öffnet die Oberfläche im Browser und beendet sich.
+    """`tapesmith app` bzw. `pythonw -m tapesmith.webui.browser ...`: öffnet die Oberfläche im Browser und beendet sich.
     Exit 0 ok, 1 Fehler (Meldung auf stderr und ins Log `logs/app.log`, nie als Fenster)."""
     args = build_parser().parse_args(argv)
     route = build_route(route=args.route, uri=args.uri, open_action=args.open_action, path=args.path)

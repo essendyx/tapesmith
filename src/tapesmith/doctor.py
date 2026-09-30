@@ -39,12 +39,12 @@ def run_checks(mac: str, port_finder, connect=None, lock_factory=PrintLock,
     if port_error is not None:
         checks.append(Check(_t("Bluetooth-Port"), False,
                             _t("Bluetooth-Geräte nicht lesbar: {exc}", exc=port_error),
-                            _t("Drucker einschalten, in Windows unter Bluetooth-Geräte koppeln und p12 setup ausführen")))
+                            _t("Drucker einschalten, in Windows unter Bluetooth-Geräte koppeln und tapesmith setup ausführen")))
     elif port:
         checks.append(Check(_t("Bluetooth-Port"), True, _t("{port} (ausgehend, {mac_text})", port=port, mac_text=mac_text)))
     else:
         checks.append(Check(_t("Bluetooth-Port"), False, _t("kein ausgehender COM-Port ({mac_text})", mac_text=mac_text),
-                            _t("Drucker einschalten, in Windows unter Bluetooth-Geräte koppeln und p12 setup ausführen")))
+                            _t("Drucker einschalten, in Windows unter Bluetooth-Geräte koppeln und tapesmith setup ausführen")))
 
     try:
         with lock_factory():

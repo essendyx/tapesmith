@@ -1,4 +1,4 @@
-"""`p12 drives`: Fake-Backend, kein echtes Laufwerk."""
+"""`tapesmith drives`: Fake-Backend, kein echtes Laufwerk."""
 
 import json
 

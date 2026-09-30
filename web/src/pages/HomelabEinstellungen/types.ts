@@ -4,7 +4,7 @@
 export interface ProxmoxHostJson {
   name: string;
   url: string;
-  token_ref: string;
+  token_ref: string | null;
   verify_tls?: boolean;
   token_describe?: string;
   token_set?: boolean;

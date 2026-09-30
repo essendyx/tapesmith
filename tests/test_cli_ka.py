@@ -1,4 +1,4 @@
-"""CLI-Befehl `p12 ka` (neu, list, reserviert, verkauft, frei, print)."""
+"""CLI-Befehl `tapesmith ka` (neu, list, reserviert, verkauft, frei, print)."""
 
 import json
 

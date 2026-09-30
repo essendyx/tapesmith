@@ -93,7 +93,7 @@ def _transport_advice(text: str) -> Advice:
                  "cannot find the file", "could not open port"):
         return Advice(
             _t("COM-Port fehlt"),
-            _t("Drucker in Windows unter Bluetooth koppeln oder 'p12 setup' ausführen."),
+            _t("Drucker in Windows unter Bluetooth koppeln oder 'tapesmith setup' ausführen."),
             EXIT_UNREACHABLE,
             "port.missing",
         )
@@ -107,11 +107,11 @@ def _transport_advice(text: str) -> Advice:
     if _contains(text, "kein ausgehender bluetooth-com-port", "no outgoing bluetooth com port"):
         return Advice(
             _t("Drucker nicht gekoppelt"),
-            _t("Drucker in Windows unter Bluetooth koppeln, dann 'p12 setup'."),
+            _t("Drucker in Windows unter Bluetooth koppeln, dann 'tapesmith setup'."),
             EXIT_UNREACHABLE,
             "printer.not_paired",
         )
-    return Advice(_t("Verbindungsfehler"), _t("'p12 doctor' ausführen."), EXIT_UNREACHABLE, "transport.error")
+    return Advice(_t("Verbindungsfehler"), _t("'tapesmith doctor' ausführen."), EXIT_UNREACHABLE, "transport.error")
 
 
 def explain(exc: BaseException) -> Advice:
@@ -133,7 +133,7 @@ def explain(exc: BaseException) -> Advice:
     if isinstance(exc, IncompletePrint):
         return Advice(
             _t("Druck unvollständig"),
-            _t("Verbindung während des Drucks verloren (Akku leer? Drucker aus?). Drucker prüfen und das Label erneut drucken (p12 reprint last)."),
+            _t("Verbindung während des Drucks verloren (Akku leer? Drucker aus?). Drucker prüfen und das Label erneut drucken (tapesmith reprint last)."),
             EXIT_UNREACHABLE,
             "print.incomplete",
         )
@@ -151,7 +151,7 @@ def explain(exc: BaseException) -> Advice:
             advice = Advice(advice.title, advice.hint, advice.exit_code, code)
         return advice
     if isinstance(exc, TemplateError):
-        return Advice(_t("Vorlage oder Variable ungültig"), _t("'p12 template show <name>' zeigt die Felder."),
+        return Advice(_t("Vorlage oder Variable ungültig"), _t("'tapesmith template show <name>' zeigt die Felder."),
                       EXIT_TEMPLATE, "template.invalid")
     if isinstance(exc, FontMissing):
         return Advice(_t("Schrift fehlt"), _t("Installation prüfen (tools/fetch_fonts.py)."), EXIT_ERROR,

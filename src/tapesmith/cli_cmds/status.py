@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 status': Druckerstatus abfragen, anzeigen, nie blockieren.
+"""Plugin-Befehl 'tapesmith status': Druckerstatus abfragen, anzeigen, nie blockieren.
 
 Läuft über das Druck-Backend: mit Druckdienst fragt der Dienst ab (er hält die Verbindung),
 sonst direkt. `--cached` liefert nur den letzten bekannten Stand des Dienstes ohne Druckerkontakt.

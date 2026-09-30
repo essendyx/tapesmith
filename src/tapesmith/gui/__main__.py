@@ -1,4 +1,4 @@
-"""`python -m tapesmith.gui` öffnet die Web-Oberfläche im Standardbrowser (wie `p12 app` und `tapesmith`)."""
+"""`python -m tapesmith.gui` öffnet die Web-Oberfläche im Standardbrowser (wie `tapesmith app` und `tapesmith`)."""
 
 import sys
 

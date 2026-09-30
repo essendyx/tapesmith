@@ -1,4 +1,4 @@
-"""Bildeingaben für 'p12 print': Bilddateien/-bytes zu einem druckfertigen Kopfbild wandeln,
+"""Bildeingaben für 'tapesmith print': Bilddateien/-bytes zu einem druckfertigen Kopfbild wandeln,
 sowie robustes Einlesen von Textzeilen aus stdin.
 
 Konvention wie im übrigen Projekt: Pillow-Modus "1", 0 = schwarz, weiße Flächen mit 255.

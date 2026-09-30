@@ -1,4 +1,4 @@
-"""Tests für `p12 token add|list|revoke` (über `tapesmith.cli.main`)."""
+"""Tests für `tapesmith token add|list|revoke` (über `tapesmith.cli.main`)."""
 
 import json
 

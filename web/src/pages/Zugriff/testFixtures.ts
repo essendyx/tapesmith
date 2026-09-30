@@ -1,6 +1,7 @@
 /** Test-Fixtures der Zugriffsseite (nur für Vitest, kein Laufzeitcode). */
 import type { MockHandler } from '../../test/utils';
 import type { AccessJson } from './types';
+import { makeSecrets } from '../../test/secretFixtures';
 
 export function makeAccess(overrides?: Partial<AccessJson>): AccessJson {
   const base: AccessJson = {
@@ -91,6 +92,7 @@ export function makeAccess(overrides?: Partial<AccessJson>): AccessJson {
 export function baseAccessRoutes(overrides?: Record<string, MockHandler>): Record<string, MockHandler> {
   return {
     'GET /api/v1/access': () => makeAccess(),
+    'GET /api/v1/secrets': () => makeSecrets(),
     ...overrides,
   };
 }

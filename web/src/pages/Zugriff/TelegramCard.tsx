@@ -1,14 +1,14 @@
 /** Karte „Telegram“: Meldungen, Schwellen, Ruhezeiten, Token, Testnachricht. */
 import { useId, useState } from 'react';
-import { Badge, Button, Input, MessageBar, MessageBarBody, Spinner } from '@fluentui/react-components';
+import { Button, Input, MessageBar, MessageBarBody, Spinner } from '@fluentui/react-components';
 import { useTranslation } from 'react-i18next';
 import { FieldRow, FieldRows, ToggleControl } from '../../components/FieldRow';
 import { Section } from '../../components/Section';
 import { useNotify } from '../../components/NotifyProvider';
+import { SecretField } from '../../components/SecretField';
 import { ApiError } from '../../api/client';
 import { CardActions } from './CardActions';
 import { NumberInput } from './NumberInput';
-import { SecretDialog } from './SecretDialog';
 import { telegramTest } from './api';
 import type { AccessJson, AccessTelegram } from './types';
 import { useSectionEdit } from './useSectionEdit';
@@ -27,13 +27,11 @@ export function TelegramCard(props: { data: AccessJson }): JSX.Element {
   const notify = useNotify();
   const edit = useSectionEdit<AccessTelegram>(props.data.telegram);
   const { save, saving, error } = useAccessSave();
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [testing, setTesting] = useState(false);
   const idBase = useId();
   const v = edit.values;
   const quiet = splitQuietHours(v.quiet_hours);
   const quietActive = v.quiet_hours !== null;
-  const canSetToken = (v.token_ref ?? '').startsWith('keyring:');
   const title = t('telegram.title');
 
   const onSave = async () => {
@@ -94,28 +92,7 @@ export function TelegramCard(props: { data: AccessJson }): JSX.Element {
           align="end"
           control={<ToggleControl id={`${idBase}-enabled`} checked={v.enabled} onChange={(on) => edit.set('enabled', on)} />}
         />
-        <FieldRow
-          label={t('telegram.tokenLabel')}
-          badges={
-            <Badge appearance="tint" size="small" color={v.token_set ? 'success' : 'warning'}>
-              {v.token_set ? t('telegram.tokenSet') : t('telegram.tokenMissing')}
-            </Badge>
-          }
-          help={
-            canSetToken
-              ? t('secret.storage', { source: v.token_describe })
-              : v.token_ref
-                ? t('telegram.tokenFromSource', { source: v.token_describe })
-                : t('telegram.tokenNoSource')
-          }
-          control={
-            canSetToken ? (
-              <Button appearance="secondary" onClick={() => setDialogOpen(true)}>
-                {t('telegram.setToken')}
-              </Button>
-            ) : undefined
-          }
-        />
+        <SecretField slotId="telegram" label={t('telegram.tokenLabel')} help={t('telegram.tokenHint')} />
         <FieldRow
           htmlFor={`${idBase}-chat`}
           label={t('telegram.chatIdLabel')}
@@ -226,13 +203,6 @@ export function TelegramCard(props: { data: AccessJson }): JSX.Element {
           <MessageBarBody>{error}</MessageBarBody>
         </MessageBar>
       ) : null}
-      <SecretDialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        name="telegram"
-        title={t('telegram.secretDialogTitle')}
-        fieldLabel={t('telegram.secretFieldLabel')}
-      />
     </Section>
   );
 }

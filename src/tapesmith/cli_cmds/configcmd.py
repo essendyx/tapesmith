@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 config': Einstellungen anzeigen, lesen, setzen; Export/Import als Code."""
+"""Plugin-Befehl 'tapesmith config': Einstellungen anzeigen, lesen, setzen; Export/Import als Code."""
 
 import argparse
 import json

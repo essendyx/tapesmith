@@ -71,7 +71,7 @@ class FakeRegistry:
 class WinRegBackend:
     """Echtes HKEY_CURRENT_USER über `winreg`. Schreibmethoden verweigern sich während
     `pytest` bzw. mit `TAPESMITH_NO_REGISTRY=1` (Sicherheitsnetz); `get` bleibt erlaubt,
-    damit `p12 integrate status` immer funktioniert."""
+    damit `tapesmith integrate status` immer funktioniert."""
 
     def _guard(self) -> None:
         if "PYTEST_CURRENT_TEST" in os.environ or os.environ.get("TAPESMITH_NO_REGISTRY") == "1":

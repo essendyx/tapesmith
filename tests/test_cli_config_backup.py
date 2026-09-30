@@ -1,4 +1,4 @@
-"""Tests für die CLI-Plugins 'p12 config', 'p12 backup', 'p12 nummern'."""
+"""Tests für die CLI-Plugins 'tapesmith config', 'tapesmith backup', 'tapesmith nummern'."""
 
 import json
 

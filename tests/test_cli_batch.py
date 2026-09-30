@@ -1,4 +1,4 @@
-"""CLI-Integration `p12 batch`: Import/Serie, Trockenlauf, Kontaktabzug, Druck."""
+"""CLI-Integration `tapesmith batch`: Import/Serie, Trockenlauf, Kontaktabzug, Druck."""
 
 import json
 

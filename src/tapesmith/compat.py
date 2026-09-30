@@ -23,8 +23,8 @@ from tapesmith.transport.base import TransportError
 from tapesmith.transport.resolve import open_transport
 from tapesmith.i18n import N_, _t
 
-HINT_PRINT = N_("Hinweis: phomemo_print_p12 ist ein Kompatibilitätsbefehl, künftig: p12 print --image DATEI")
-HINT_RENDER = N_('Hinweis: phomemo_render_label ist ein Kompatibilitätsbefehl, künftig: p12 text "…" --preview datei.png')
+HINT_PRINT = N_("Hinweis: phomemo_print_p12 ist ein Kompatibilitätsbefehl, künftig: tapesmith print --image DATEI")
+HINT_RENDER = N_('Hinweis: phomemo_render_label ist ein Kompatibilitätsbefehl, künftig: tapesmith text "…" --preview datei.png')
 SLEEP = time.sleep
 
 

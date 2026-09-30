@@ -10,7 +10,7 @@
     },
     "not_paired": {
       "title": "Printer not paired",
-      "hint": "Pair the printer in the Windows Bluetooth settings, then run 'p12 setup'."
+      "hint": "Pair the printer in the Windows Bluetooth settings, then run 'tapesmith setup'."
     }
   },
   "file": {
@@ -22,7 +22,7 @@
   "print": {
     "incomplete": {
       "title": "Print incomplete",
-      "hint": "The connection was lost while printing (battery empty? printer off?). Check the printer and print the label again (p12 reprint last)."
+      "hint": "The connection was lost while printing (battery empty? printer off?). Check the printer and print the label again (tapesmith reprint last)."
     }
   },
   "port": {
@@ -32,7 +32,7 @@
     },
     "missing": {
       "title": "COM port missing",
-      "hint": "Pair the printer in the Windows Bluetooth settings or run 'p12 setup'."
+      "hint": "Pair the printer in the Windows Bluetooth settings or run 'tapesmith setup'."
     }
   },
   "bluetooth": {
@@ -44,7 +44,7 @@
   "transport": {
     "error": {
       "title": "Connection error",
-      "hint": "Run 'p12 doctor'."
+      "hint": "Run 'tapesmith doctor'."
     }
   },
   "ipc": {
@@ -56,7 +56,7 @@
   "template": {
     "invalid": {
       "title": "Invalid template or variable",
-      "hint": "'p12 template show <name>' lists the fields."
+      "hint": "'tapesmith template show <name>' lists the fields."
     }
   },
   "document": {

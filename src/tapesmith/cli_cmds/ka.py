@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 ka': Kleinanzeigen-Artikel-Tracking.
+"""Plugin-Befehl 'tapesmith ka': Kleinanzeigen-Artikel-Tracking.
 
 Unterbefehle: `neu`, `list`, `reserviert`, `verkauft`, `frei`, `print`. Gedruckt wird nur über
 `integrations.cliprint.print_one` (Etikett `ka-artikel` bzw. das vorhandene `reserviert`).

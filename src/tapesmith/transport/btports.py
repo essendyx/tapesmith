@@ -58,7 +58,7 @@ def list_bt_ports(reader=None) -> list[BtPort]:
 
 
 def find_outgoing_port(mac: str | None, reader=None) -> str | None:
-    """COM-Port des Druckers. Ohne MAC (Standard, solange `p12 setup` keine gespeichert hat):
+    """COM-Port des Druckers. Ohne MAC (Standard, solange `tapesmith setup` keine gespeichert hat):
     der einzige ausgehende Bluetooth-COM-Port, bei mehreren keiner (dann MAC setzen)."""
     if mac is None:
         outgoing = [p for p in list_bt_ports(reader) if p.outgoing]

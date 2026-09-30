@@ -13,6 +13,7 @@
     "datentraeger": "Drives",
     "homelab": "Homelab",
     "statistik": "Statistics",
+    "protokoll": "Log",
     "zugriff": "Access",
     "einstellungen": "Settings",
     "kompakt": "Compact",
@@ -104,25 +105,25 @@
     "reload": "Reload"
   },
   "noToken": {
-    "openViaApp": "Please open with “p12 app”",
+    "openViaApp": "Please open with “tapesmith app”",
     "expired": "Session expired",
     "loginNeeded": "Sign-in required",
     "reconnect": "Reconnect",
     "appExpired": "The print service was restarted, so this page is no longer signed in.",
     "appNeedsSession": "This interface needs the print service's session.",
-    "appStart": "Start it with <code>p12 app</code> or from the tray icon to open the window with a valid session.",
+    "appStart": "Start it with <code>tapesmith app</code> or from the tray icon to open the window with a valid session.",
     "tokenInvalid": "The token is invalid or has been revoked.",
     "otherToken": "Enter a different token",
     "needsToken": "This interface needs an access token from the admin.",
     "tokenField": "Access token",
     "remember": "Remember on this device",
     "login": "Sign in",
-    "tokenHint": "Tokens are created under Access (<code>p12 token add</code>)."
+    "tokenHint": "Tokens are created under Access (<code>tapesmith token add</code>)."
   },
   "offline": {
     "title": "Print service unavailable",
     "retry": "Try again",
     "appHint": "“Try again” starts the service and reconnects this window.",
-    "browserHint": "The service is not running. Start it with <code>p12 daemon start</code>; the page reconnects every 3 seconds."
+    "browserHint": "The service is not running. Start it with <code>tapesmith daemon start</code>; the page reconnects every 3 seconds."
   }
 }

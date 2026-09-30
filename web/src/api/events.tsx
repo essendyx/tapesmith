@@ -25,7 +25,7 @@ function invalidateFor(client: QueryClient, name: ServerEventName, data: unknown
   else if (name === 'job' && (data as { phase?: string } | null)?.phase === 'fertig') {
     keys.push(qk.history, qk.recentTexts, qk.queue, qk.stats, qk.rolls);
   } else if (name === 'config') {
-    keys.push(qk.app, qk.settings, qk.tapes, ['access']);
+    keys.push(qk.app, qk.settings, qk.tapes, ['access'], ['secrets']);
     // Module ein- oder ausgeschaltet: Modulliste, Vorlagen und Galerie folgen (Modulvorlagen).
     const changed = (data as { keys?: unknown } | null)?.keys;
     if (Array.isArray(changed) && (changed.includes('modules.enabled') || changed.includes('*'))) {

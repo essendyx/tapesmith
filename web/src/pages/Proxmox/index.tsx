@@ -93,11 +93,9 @@ export default function ProxmoxPage(): JSX.Element {
     lxc: t('filters.kindLxc'),
   };
 
-  function tokenHint(err: ErrorInfo, host: PveHostJson | undefined): string | undefined {
+  function tokenHint(err: ErrorInfo): string | undefined {
     if (!err.title.includes('Token fehlt')) return err.hint; // i18n-ignore (Server-Wert)
-    const extra = t('tokenMissing.extraTokenScript');
-    const where = host ? ` ${t('tokenMissing.reference', { describe: host.token_describe })}` : '';
-    return [err.hint, extra + where].filter(Boolean).join(' ');
+    return [err.hint, t('tokenMissing.extraTokenScript')].filter(Boolean).join(' ');
   }
 
   useEffect(() => {
@@ -204,7 +202,7 @@ export default function ProxmoxPage(): JSX.Element {
         <MessageBar intent="error" layout="multiline">
           <MessageBarBody>
             <MessageBarTitle>{error.title}</MessageBarTitle>
-            {tokenHint(error, currentHost)}
+            {tokenHint(error)}
           </MessageBarBody>
         </MessageBar>
       ) : null}
@@ -270,7 +268,7 @@ export default function ProxmoxPage(): JSX.Element {
             <MessageBar intent="warning" layout="multiline">
               <MessageBarBody>
                 <MessageBarTitle>{t('tokenMissing.title')}</MessageBarTitle>
-                {currentHost.token_describe}. {t('tokenMissing.extra')}
+                {t('tokenMissing.extra')}
               </MessageBarBody>
             </MessageBar>
           ) : null}

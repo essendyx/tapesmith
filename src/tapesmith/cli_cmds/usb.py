@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 usb': USB-Diagnose (experimentell), P12 am USB erkennen."""
+"""Plugin-Befehl 'tapesmith usb': USB-Diagnose (experimentell), P12 am USB erkennen."""
 
 import argparse
 import json

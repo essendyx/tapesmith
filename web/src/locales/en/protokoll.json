@@ -1,0 +1,38 @@
+{
+  "title": "Log",
+  "subtitle": "Log files of the print service, the installation and the updates. Tokens and passwords are hidden.",
+  "refresh": "Refresh",
+  "copy": "Copy",
+  "download": "Download",
+  "copied": "Shown lines copied",
+  "copyFailed": "Copying is not possible",
+  "downloadFailed": "Download failed",
+  "listFailed": "Logs cannot be read",
+  "readFailed": "Log cannot be read",
+  "toolbarLabel": "Filter log",
+  "file": "File",
+  "levelLabel": "Level",
+  "level": {
+    "all": "All",
+    "debug": "Debug and above",
+    "info": "Info and above",
+    "warning": "Warnings and errors",
+    "error": "Errors only",
+    "critical": "Critical errors only"
+  },
+  "lines": "Lines",
+  "linesValue": "Last {{count}}",
+  "search": "Search",
+  "searchPlaceholder": "Text in the lines",
+  "live": "Live",
+  "liveActive": "Live, loading continuously",
+  "meta": "{{size}}, changed {{time}}",
+  "truncated": "Last {{count}} lines",
+  "viewLabel": "Content of {{name}}",
+  "noMatch": "No line matches the level or search.",
+  "fileEmpty": "The file is empty.",
+  "empty": {
+    "title": "No logs yet",
+    "body": "Logs appear as soon as the print service runs or an installation or update takes place."
+  }
+}

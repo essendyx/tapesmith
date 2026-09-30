@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 garantie': Garantie-Etikett aus Paperless-Rechnungen suchen und drucken.
+"""Plugin-Befehl 'tapesmith garantie': Garantie-Etikett aus Paperless-Rechnungen suchen und drucken.
 
 Kein echter Netzzugriff standardmäßig: `TRANSPORT`/`SHORTLINK_TRANSPORT` sind injizierbar (Tests
 ersetzen sie).

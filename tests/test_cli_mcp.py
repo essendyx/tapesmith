@@ -1,4 +1,4 @@
-"""Tests für `p12 mcp` (stdio-Server für Claude Code) und `p12 mcp --config`."""
+"""Tests für `tapesmith mcp` (stdio-Server für Claude Code) und `tapesmith mcp --config`."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ def test_mcp_config_zeigt_einrichtung(capsys):
     assert sys.executable in out
     assert "--transport http p12-http http://127.0.0.1:8712/mcp" in out
     assert "Bearer <TOKEN>" in out
-    assert "p12 token add Claude --rolle drucken" in out
+    assert "tapesmith token add Claude --rolle drucken" in out
     assert "p12_" not in out
 
 

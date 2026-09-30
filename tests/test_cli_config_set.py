@@ -1,4 +1,4 @@
-"""CLI-Tests für 'p12 config set' ohne Punkt, Sektions-/Transport-Fehler und den
+"""CLI-Tests für 'tapesmith config set' ohne Punkt, Sektions-/Transport-Fehler und den
 Hinweis auf den laufenden Druckdienst."""
 
 import json

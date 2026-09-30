@@ -13,42 +13,40 @@
     "tokenMissing": "Token missing",
     "failed": "Check failed"
   },
-  "tokenRef": {
-    "help": "Where the token is stored, not the token itself: keyring:<service>/<user> (Windows credentials), file:<path> or env:<NAME>. Check shows whether it is found.",
-    "present": "Token found",
-    "missing": "Token missing"
+  "token": {
+    "help": "API token of the service. Tapesmith stores it in Windows Credential Manager, never in a file."
   },
   "hosts": {
     "tableAriaLabel": "Proxmox hosts",
     "columns": {
       "name": "Name",
       "url": "Address",
-      "tokenRef": "Token reference",
       "verifyTls": "Verify TLS",
       "token": "Token"
     },
     "nameAria": "Name host {{n}}",
     "urlAria": "Address host {{n}}",
-    "tokenRefAria": "Token reference host {{n}}",
     "verifyTlsAria": "Verify TLS host {{n}}",
     "removeAria": "Remove host {{n}}",
     "actionsColumn": "Actions",
     "new": "new",
-    "empty": "No Proxmox host yet. Add a host with address and token reference.",
+    "empty": "No Proxmox host yet. Add a host with its address and save its token afterwards.",
     "add": "Add host",
     "urlPlaceholder": "https://192.0.2.60:8006",
-    "tokenRefPlaceholder": "keyring:tapesmith/pmx10"
+    "tokenLabel": "Token {{name}}",
+    "tokenHelp": "API token of this host with read access.",
+    "tokenAfterSave": "Set the token after saving"
   },
   "fields": {
     "paperlessUrl": { "label": "Address", "help": "Address of Paperless-ngx, e.g. http://192.0.2.12:8010 (without / at the end)" },
-    "paperlessTokenRef": { "label": "Token reference" },
+    "paperlessTokenRef": { "label": "Token" },
     "paperlessPublicUrl": { "label": "Address for QR codes", "help": "Only needed if Paperless is reachable from outside under a different address" },
     "paperlessAsnRange": { "label": "Number range", "help": "Tapesmith assigns the ASN numbers from this number range" },
     "paperlessAsnPrefix": { "label": "Prefix", "help": "Comes before the number; capital letters, digits and hyphen" },
     "paperlessAsnWidth": { "label": "Digits", "help": "Number of digits, padded with zeros (5 gives ASN00042)" },
     "paperlessWarrantyFields": { "label": "Warranty fields", "help": "Names of the custom fields in Paperless the warranty label reads from" },
     "paperlessTimeoutS": { "label": "Timeout", "help": "How long Tapesmith waits for an answer from Paperless" },
-    "proxmoxHosts": { "label": "Proxmox hosts", "help": "Per host a name, address and token reference of an API token with read access" },
+    "proxmoxHosts": { "label": "Proxmox hosts", "help": "Per host a name and address; set the API token (with read access) below after saving" },
     "proxmoxTimeoutS": { "label": "Timeout", "help": "How long Tapesmith waits for an answer from Proxmox" },
     "obsidianMcpUrl": { "label": "MCP address", "help": "Address of the Obsidian MCP server, e.g. http://192.0.2.12:8092/mcp" },
     "obsidianVaultDir": { "label": "Vault folder", "help": "Instead of the MCP server: the vault folder on this PC" },
@@ -57,7 +55,7 @@
     "obsidianAppendAfterPrint": { "label": "Record the print in the note", "help": "Writes a line with the date into the note after printing" },
     "obsidianTimeoutS": { "label": "Timeout", "help": "How long Tapesmith waits for an answer from the MCP server" },
     "homeassistantUrl": { "label": "Address", "help": "Address of Home Assistant, e.g. http://192.0.2.9:8123" },
-    "homeassistantTokenRef": { "label": "Token reference" },
+    "homeassistantTokenRef": { "label": "Token" },
     "homeassistantTodoEntity": { "label": "To-do list", "help": "List for maintenance tasks in the form todo.<name>; empty = none" },
     "homeassistantBatteryBelow": { "label": "Battery below", "help": "Shows devices below this battery level; 101 = all devices" },
     "homeassistantTimeoutS": { "label": "Timeout", "help": "How long Tapesmith waits for an answer from Home Assistant" },
@@ -66,7 +64,7 @@
     "assetsWidth": { "label": "Digits", "help": "Number of digits, padded with zeros (4 gives HL-0042)" },
     "assetsCheckDigit": { "label": "Append check digit", "help": "An extra digit makes typos visible when copying the number" },
     "shortlinkBaseUrl": { "label": "Short link address", "help": "Address of the short link service, e.g. https://l.example.com; empty = QR code with the long address" },
-    "shortlinkTokenRef": { "label": "Token reference" },
+    "shortlinkTokenRef": { "label": "Token" },
     "shortlinkAdminUrl": { "label": "Admin address", "help": "Only needed if new short links are created through a different address" },
     "shortlinkTimeoutS": { "label": "Timeout", "help": "How long Tapesmith waits for an answer from the short link service" },
     "kleinanzeigenRange": { "label": "Number range", "help": "Tapesmith assigns the item numbers from this number range" },

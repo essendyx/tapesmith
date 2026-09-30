@@ -1,4 +1,4 @@
-"""Tests für `p12 gui`: leitet auf `p12 app` um (Hinweis auf stderr, `webui.browser.main`),
+"""Tests für `tapesmith gui`: leitet auf `tapesmith app` um (Hinweis auf stderr, `webui.browser.main`),
 `--selftest`/`--selftest-out` rufen den Qt-freien Selbsttest. Kein Browser, kein Qt beim Laden."""
 
 import os
@@ -34,7 +34,7 @@ def test_gui_leitet_auf_app_um(monkeypatch, capsys):
     assert cli.main(["gui"]) == 0
     assert calls == [[]]
     captured = capsys.readouterr()
-    assert "Hinweis: ‚p12 gui‘ heißt jetzt ‚p12 app‘." in captured.err
+    assert "Hinweis: ‚tapesmith gui‘ heißt jetzt ‚tapesmith app‘." in captured.err
     assert captured.out == ""
 
 

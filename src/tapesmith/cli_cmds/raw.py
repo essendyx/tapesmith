@@ -1,6 +1,6 @@
-"""Plugin-Befehl 'p12 raw': Rohbefehl senden und Antwort dekodieren (mit Schutzliste).
+"""Plugin-Befehl 'tapesmith raw': Rohbefehl senden und Antwort dekodieren (mit Schutzliste).
 
-Rohbefehle laufen bewusst nicht durch die Druck-Pipeline (kein Verlauf), wie 'p12 probe'/'verify'.
+Rohbefehle laufen bewusst nicht durch die Druck-Pipeline (kein Verlauf), wie 'tapesmith probe'/'verify'.
 Jeder Befehl wird vor dem Öffnen der Sitzung gegen die Schutzliste geprüft: gesperrte Befehle werden
 nie gesendet, Rückfrage-Befehle nur mit --unsafe und ausdrücklicher Bestätigung ('JA').
 """

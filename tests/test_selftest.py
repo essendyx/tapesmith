@@ -1,5 +1,5 @@
 """Qt-freier Selbsttest (`tapesmith.selftest`) für `Tapesmith.exe --selftest` und
-`p12 gui --selftest`. Kein Port, kein Fenster, keine Nutzerdaten, druckt nie."""
+`tapesmith gui --selftest`. Kein Port, kein Fenster, keine Nutzerdaten, druckt nie."""
 
 import io
 import os

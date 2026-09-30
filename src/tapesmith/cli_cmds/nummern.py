@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 nummern': zentrale Nummernkreise anlegen, reservieren, verwerfen,
+"""Plugin-Befehl 'tapesmith nummern': zentrale Nummernkreise anlegen, reservieren, verwerfen,
 exportieren/importieren."""
 
 import argparse

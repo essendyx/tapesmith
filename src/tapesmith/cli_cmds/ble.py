@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 ble': BLE-Diagnose (experimentell), Geräte suchen."""
+"""Plugin-Befehl 'tapesmith ble': BLE-Diagnose (experimentell), Geräte suchen."""
 
 import argparse
 import json

@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 batch': Vorlage über viele Datensätze drucken, aus
+"""Plugin-Befehl 'tapesmith batch': Vorlage über viele Datensätze drucken, aus
 CSV/XLSX, Zwischenablage (stdin, siehe `--clipboard`), Zeilenliste oder Serien/Zählern."""
 
 from __future__ import annotations
@@ -40,7 +40,7 @@ def register(parser: argparse.ArgumentParser) -> None:
     src = parser.add_mutually_exclusive_group(required=True)
     src.add_argument("--data", type=Path, metavar=_t("DATEI"), help=_t("CSV/TSV/XLSX-Datei"))
     src.add_argument("--clipboard", action="store_true",
-                     help=_t("Zeilen von stdin lesen, z. B.: Get-Clipboard | p12 batch vorlage --clipboard"))
+                     help=_t("Zeilen von stdin lesen, z. B.: Get-Clipboard | tapesmith batch vorlage --clipboard"))
     src.add_argument("--lines", metavar=_t("DATEI|-"), help=_t("Datei oder '-' (stdin): eine Zeile pro Label"))
     src.add_argument("--series", action="append", default=[], metavar=_t("FELD=SPEZ"),
                      help=_t("Kurzsyntax: port=1..24, box=A1..3x3, id=K-{}-X:1..5; mehrfach für parallele Serien"))

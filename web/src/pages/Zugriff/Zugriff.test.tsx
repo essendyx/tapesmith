@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
 import { findDialog, findDialogByRole, mockApi, MockResponse, renderWithProviders, SLOW_UI_MS } from '../../test/utils';
 import { baseAccessRoutes, makeAccess } from './testFixtures';
+import { makeSecrets } from '../../test/secretFixtures';
 import ZugriffPage from './index';
 
 function renderPage(overrides?: Parameters<typeof baseAccessRoutes>[0]) {
@@ -218,20 +219,21 @@ describe('Familie', () => {
 });
 
 describe('MQTT', () => {
-  it('Passwort setzen: Dialog, Eingabe, PUT /access/secrets/mqtt {"value": "pw"}; Passwort erscheint danach nirgends im DOM', async () => {
+  it('Passwort speichern: Kennwortfeld, PUT /secrets/mqtt {"value": "pw"}; Passwort erscheint danach nirgends im DOM', async () => {
     const { api, user } = renderPage({
-      'PUT /api/v1/access/secrets/mqtt': () => ({ set: true, describe: 'Windows-Anmeldeinformationen tapesmith/mqtt' }),
+      'PUT /api/v1/secrets/:id': () => ({ id: 'mqtt', label: 'MQTT-Passwort', source: 'tapesmith', set: true }),
     });
     await screen.findByRole('heading', { name: 'Home Assistant (MQTT)' });
-    await user.click(screen.getByRole('button', { name: 'Passwort setzen' }));
-    const dialog = await findDialog('MQTT-Passwort setzen');
-    await user.type(within(dialog).getByLabelText('Passwort'), 'pw');
-    await user.click(within(dialog).getByRole('button', { name: 'Speichern', hidden: true }));
+    const card = screen.getByRole('region', { name: 'Home Assistant (MQTT)' });
+    const field = within(card).getByLabelText('Passwort');
+    expect(field).toHaveAttribute('type', 'password');
+    await user.type(field, 'pw');
+    await user.click(within(card).getByRole('button', { name: 'Wert für MQTT-Passwort speichern' }));
 
-    await waitFor(() => expect(api.calls.some((c) => c.method === 'PUT' && c.path === '/api/v1/access/secrets/mqtt')).toBe(true));
-    const call = api.calls.find((c) => c.method === 'PUT' && c.path === '/api/v1/access/secrets/mqtt');
+    await waitFor(() => expect(api.calls.some((c) => c.method === 'PUT' && c.path === '/api/v1/secrets/mqtt')).toBe(true));
+    const call = api.calls.find((c) => c.method === 'PUT' && c.path === '/api/v1/secrets/mqtt');
     expect(call?.body).toEqual({ value: 'pw' });
-    expect(screen.queryByDisplayValue('pw')).toBeNull();
+    await waitFor(() => expect(screen.queryByDisplayValue('pw')).toBeNull());
     expect(screen.queryByText('pw')).toBeNull();
   }, SLOW_UI_MS);
 });
@@ -246,8 +248,8 @@ describe('Telegram', () => {
     expect(await screen.findByText('Chat-ID fehlt')).toBeInTheDocument();
   });
 
-  it('token_ref file:… : kein Knopf „Token setzen“, stattdessen Hinweis mit token_describe', async () => {
-    renderPage({
+  it('externe Quelle: Plakette, kein Pfad sichtbar, „In Tapesmith übernehmen“ sendet POST /secrets/telegram/adopt', async () => {
+    const { api, user } = renderPage({
       'GET /api/v1/access': () =>
         makeAccess({
           telegram: {
@@ -256,9 +258,16 @@ describe('Telegram', () => {
             token_describe: 'Datei C:\\Tokens\\.telegram_bot_token',
           },
         }),
+      'GET /api/v1/secrets': () => makeSecrets([{ id: 'telegram', source: 'extern', set: true }]),
+      'POST /api/v1/secrets/:id/adopt': () => ({ id: 'telegram', label: 'Telegram-Bot-Token', source: 'tapesmith', set: true }),
     });
     await screen.findByRole('heading', { name: 'Telegram' });
-    expect(screen.queryByRole('button', { name: 'Token setzen' })).toBeNull();
-    expect(screen.getByText(/Token kommt aus Datei/)).toBeInTheDocument();
+    const card = screen.getByRole('region', { name: 'Telegram' });
+    expect(await within(card).findByText('Aus externer Quelle')).toBeInTheDocument();
+    expect(screen.queryByText(/telegram_bot_token/)).toBeNull();
+    await user.click(within(card).getByRole('button', { name: 'Wert für Telegram-Bot-Token in Tapesmith übernehmen' }));
+    await waitFor(() =>
+      expect(api.calls.some((c) => c.method === 'POST' && c.path === '/api/v1/secrets/telegram/adopt')).toBe(true),
+    );
   });
 });

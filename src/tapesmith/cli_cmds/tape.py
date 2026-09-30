@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 tape': Band wählen, Bandliste anzeigen, Restmeter verwalten.
+"""Plugin-Befehl 'tapesmith tape': Band wählen, Bandliste anzeigen, Restmeter verwalten.
 
 Rollen gelten je Band: `roll`/`new-roll`/`empty` beziehen sich immer auf das aktuell gewählte Band."""
 

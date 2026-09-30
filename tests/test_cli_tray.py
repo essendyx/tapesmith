@@ -1,4 +1,4 @@
-"""Tests für `p12 tray`: startet die Tray-App losgelöst oder im Vordergrund. Nie echte
+"""Tests für `tapesmith tray`: startet die Tray-App losgelöst oder im Vordergrund. Nie echte
 Prozesse: `SPAWN` und `gui.tray.main` werden ersetzt."""
 
 import os

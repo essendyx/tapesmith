@@ -403,7 +403,7 @@ def _print(ctx: CliContext, backend: PrintBackend, request: PrintRequest, labels
         outcome = _execute(ctx, backend, request, enqueue_on_offline=enqueue)
 
     if outcome.status == "wartet":
-        ctx.out(_t("Drucker nicht erreichbar, Auftrag wartet in der Warteschlange (#{queue_id}) (p12 queue list)", queue_id=outcome.queue_id))
+        ctx.out(_t("Drucker nicht erreichbar, Auftrag wartet in der Warteschlange (#{queue_id}) (tapesmith queue list)", queue_id=outcome.queue_id))
         return True
     if outcome.status == "abgelehnt":
         if not outcome.plan.decision.allowed:

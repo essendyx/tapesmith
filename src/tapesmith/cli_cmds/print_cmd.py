@@ -1,4 +1,4 @@
-"""'p12 print': Text (Argumente oder stdin) oder ein vorhandenes Bild (--image) drucken."""
+"""'tapesmith print': Text (Argumente oder stdin) oder ein vorhandenes Bild (--image) drucken."""
 
 from pathlib import Path
 

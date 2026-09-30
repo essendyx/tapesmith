@@ -2,29 +2,29 @@
   "printer": {
     "busy": { "title": "Drucker belegt", "hint": "Ein anderes P12-Programm druckt gerade. Kurz warten oder das andere Programm beenden." },
     "unreachable": { "title": "Drucker nicht erreichbar", "hint": "Drucker aus oder eingeschlafen? Einschalten. Handy-App verbunden? Nur ein Host gleichzeitig, dort trennen." },
-    "not_paired": { "title": "Drucker nicht gekoppelt", "hint": "Drucker in Windows unter Bluetooth koppeln, dann 'p12 setup'." }
+    "not_paired": { "title": "Drucker nicht gekoppelt", "hint": "Drucker in Windows unter Bluetooth koppeln, dann 'tapesmith setup'." }
   },
   "file": {
     "locked": { "title": "Datei gesperrt", "hint": "Ein anderes P12-Programm schreibt gerade. Kurz warten und erneut versuchen." }
   },
   "print": {
-    "incomplete": { "title": "Druck unvollständig", "hint": "Verbindung während des Drucks verloren (Akku leer? Drucker aus?). Drucker prüfen und das Label erneut drucken (p12 reprint last)." }
+    "incomplete": { "title": "Druck unvollständig", "hint": "Verbindung während des Drucks verloren (Akku leer? Drucker aus?). Drucker prüfen und das Label erneut drucken (tapesmith reprint last)." }
   },
   "port": {
     "busy": { "title": "COM-Port belegt", "hint": "Ein anderes Programm hält den Port (Handy-App, altes phomemo-Tool, Terminal). Programm schließen oder Drucker aus- und einschalten." },
-    "missing": { "title": "COM-Port fehlt", "hint": "Drucker in Windows unter Bluetooth koppeln oder 'p12 setup' ausführen." }
+    "missing": { "title": "COM-Port fehlt", "hint": "Drucker in Windows unter Bluetooth koppeln oder 'tapesmith setup' ausführen." }
   },
   "bluetooth": {
     "lost": { "title": "Bluetooth-Verbindung abgebrochen", "hint": "Drucker aus oder außer Reichweite. Einschalten, näher heran und erneut versuchen." }
   },
   "transport": {
-    "error": { "title": "Verbindungsfehler", "hint": "'p12 doctor' ausführen." }
+    "error": { "title": "Verbindungsfehler", "hint": "'tapesmith doctor' ausführen." }
   },
   "ipc": {
-    "error": { "title": "Druckdienst antwortet nicht", "hint": "Druckdienst neu starten (p12 daemon restart) und erneut versuchen." }
+    "error": { "title": "Druckdienst antwortet nicht", "hint": "Druckdienst neu starten (tapesmith daemon restart) und erneut versuchen." }
   },
   "template": {
-    "invalid": { "title": "Vorlage oder Variable ungültig", "hint": "'p12 template show <name>' zeigt die Felder." }
+    "invalid": { "title": "Vorlage oder Variable ungültig", "hint": "'tapesmith template show <name>' zeigt die Felder." }
   },
   "document": {
     "invalid": { "title": "Etikett ungültig", "hint": "Das Etikett enthält ungültige Angaben. Objekte prüfen und erneut versuchen." }
@@ -49,7 +49,7 @@
   },
   "not_found": { "title": "Nicht gefunden", "hint": "Der Eintrag existiert nicht mehr. Liste neu laden." },
   "auth": {
-    "required": { "title": "Anmeldung nötig", "hint": "Oberfläche über das Tray-Symbol oder 'p12 web' neu öffnen." },
+    "required": { "title": "Anmeldung nötig", "hint": "Oberfläche über das Tray-Symbol oder 'tapesmith web' neu öffnen." },
     "forbidden": { "title": "Keine Berechtigung", "hint": "Diese Funktion ist für diesen Zugang gesperrt." }
   },
   "method": {
@@ -59,7 +59,7 @@
   "too_large": { "title": "Zu groß", "hint": "Datei oder Inhalt verkleinern und erneut versuchen." },
   "rate_limited": { "title": "Zu viele Anfragen", "hint": "Kurz warten und erneut versuchen." },
   "http": {
-    "error": { "title": "Fehler", "hint": "Erneut versuchen. Bleibt der Fehler, 'p12 doctor' ausführen." }
+    "error": { "title": "Fehler", "hint": "Erneut versuchen. Bleibt der Fehler, 'tapesmith doctor' ausführen." }
   },
   "integration": {
     "token_missing": { "title": "Token fehlt", "hint": "Token für die Integration in den Einstellungen hinterlegen." },
@@ -88,7 +88,7 @@
   "aborted": { "title": "Abgebrochen", "hint": "Vorgang erneut starten." },
   "internal": { "title": "Fehler", "hint": "Unerwarteter Fehler. Erneut versuchen, sonst Support-Bericht erstellen." },
   "client": {
-    "offline": { "title": "Druckdienst nicht erreichbar", "hint": "Läuft der Druckdienst? Mit „p12 daemon start“ starten." },
+    "offline": { "title": "Druckdienst nicht erreichbar", "hint": "Läuft der Druckdienst? Mit „tapesmith daemon start“ starten." },
     "bad_response": { "title": "Unerwartete Antwort vom Druckdienst", "hint": "Oberfläche neu laden. Bleibt der Fehler, Druckdienst neu starten." }
   }
 }

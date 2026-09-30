@@ -1,4 +1,4 @@
-"""`p12 mqtt`: Home-Assistant-Discovery anzeigen und die MQTT-Konfiguration prüfen."""
+"""`tapesmith mqtt`: Home-Assistant-Discovery anzeigen und die MQTT-Konfiguration prüfen."""
 
 import argparse
 import json

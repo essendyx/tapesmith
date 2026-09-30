@@ -10,7 +10,7 @@
     },
     "not_paired": {
       "title": "Drucker nicht gekoppelt",
-      "hint": "Drucker in Windows unter Bluetooth koppeln, dann 'p12 setup'."
+      "hint": "Drucker in Windows unter Bluetooth koppeln, dann 'tapesmith setup'."
     }
   },
   "file": {
@@ -22,7 +22,7 @@
   "print": {
     "incomplete": {
       "title": "Druck unvollständig",
-      "hint": "Verbindung während des Drucks verloren (Akku leer? Drucker aus?). Drucker prüfen und das Label erneut drucken (p12 reprint last)."
+      "hint": "Verbindung während des Drucks verloren (Akku leer? Drucker aus?). Drucker prüfen und das Label erneut drucken (tapesmith reprint last)."
     }
   },
   "port": {
@@ -32,7 +32,7 @@
     },
     "missing": {
       "title": "COM-Port fehlt",
-      "hint": "Drucker in Windows unter Bluetooth koppeln oder 'p12 setup' ausführen."
+      "hint": "Drucker in Windows unter Bluetooth koppeln oder 'tapesmith setup' ausführen."
     }
   },
   "bluetooth": {
@@ -44,7 +44,7 @@
   "transport": {
     "error": {
       "title": "Verbindungsfehler",
-      "hint": "'p12 doctor' ausführen."
+      "hint": "'tapesmith doctor' ausführen."
     }
   },
   "ipc": {
@@ -56,7 +56,7 @@
   "template": {
     "invalid": {
       "title": "Vorlage oder Variable ungültig",
-      "hint": "'p12 template show <name>' zeigt die Felder."
+      "hint": "'tapesmith template show <name>' zeigt die Felder."
     }
   },
   "document": {

@@ -37,7 +37,7 @@ def _token_hint(ref: str | None) -> str:
         path = os.path.expanduser(os.path.expandvars(rest.strip()))
         return _t("Token als Datei {path} ablegen (eine Zeile, nur das Token)", path=path)
     if kind == "keyring":
-        return (_t("Token mit p12 homelab secret {strip} im Windows-Anmeldeinformationsspeicher hinterlegen", strip=rest.strip()))
+        return (_t("Token mit tapesmith homelab secret {strip} im Windows-Anmeldeinformationsspeicher hinterlegen", strip=rest.strip()))
     if kind == "env":
         return _t("Umgebungsvariable {strip} setzen", strip=rest.strip())
     return _t("In homelab.json eine gültige token_ref eintragen")

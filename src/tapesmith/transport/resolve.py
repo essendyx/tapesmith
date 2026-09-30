@@ -22,7 +22,7 @@ def open_transport(spec: str, mac: str | None, hexlog: Path | None = None, reade
         port = find_outgoing_port(mac, reader)
         if port is None and mac is None:
             raise TransportError(
-                _t("Kein eindeutiger Bluetooth-COM-Port: ist der Drucker in Windows gekoppelt? Dann `p12 setup` ausführen (oder `p12 config set mac <MAC>`)"))
+                _t("Kein eindeutiger Bluetooth-COM-Port: ist der Drucker in Windows gekoppelt? Dann `tapesmith setup` ausführen (oder `tapesmith config set mac <MAC>`)"))
         if port is None:
             raise TransportError(
                 _t("Kein ausgehender Bluetooth-COM-Port für {mac}: Drucker in Windows gekoppelt?", mac=mac))
@@ -38,7 +38,7 @@ def open_transport(spec: str, mac: str | None, hexlog: Path | None = None, reade
     elif spec == "usb" or spec.lower().startswith("usb:"):
         if "usb" not in experimental:
             raise ValueError(
-                _t("USB-Transport ist experimentell: in calibration.json \"experimental\": [\"usb\"] eintragen (siehe p12 usb)"))
+                _t("USB-Transport ist experimentell: in calibration.json \"experimental\": [\"usb\"] eintragen (siehe tapesmith usb)"))
         path = spec[4:] if spec.lower().startswith("usb:") else None
         kwargs = {"open_timeout": open_timeout}
         if usb_opener is not None:

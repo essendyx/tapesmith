@@ -3,7 +3,7 @@
 Nicht sensible Einträge werden aus dem gespeicherten Kopfbild gedruckt; Kopien, Kette und
 Jobaufteilung plant die Pipeline wieder genauso wie beim Original. Sensible Vorlagen-Einträge
 haben kein Kopfbild; ihre verdeckten Felder müssen neu eingegeben werden (`sets`). Dasselbe gilt
-für WLAN-QRs mit Passwort ohne Vorlage (QR-Seite, `p12 qr wifi`): SSID, Sicherheitsart und Layout
+für WLAN-QRs mit Passwort ohne Vorlage (QR-Seite, `tapesmith qr wifi`): SSID, Sicherheitsart und Layout
 stehen im Verlauf, das Passwort wird als Feld `password` neu eingegeben.
 
 Kein Qt, kein argparse, kein `cli_cmds`: die CLI (`cli_cmds/reprint.py`) und die Web-API

@@ -1,4 +1,4 @@
-"""Tests für `p12 stats` und `p12 archive`."""
+"""Tests für `tapesmith stats` und `tapesmith archive`."""
 
 import json
 
@@ -24,7 +24,7 @@ def _seed_history():
                     length_mm=10.0, tape_mm=18.0, copies=1, status="ok")
 
 
-# ---------- p12 stats ----------
+# ---------- tapesmith stats ----------
 
 def test_stats_by_monat_tabelle_mit_summenzeile(app_home, capsys):
     _seed_history()
@@ -67,7 +67,7 @@ def test_stats_since_ungueltig_ist_fehler(app_home, capsys):
     assert "Fehler" in capsys.readouterr().err
 
 
-# ---------- p12 archive scan ----------
+# ---------- tapesmith archive scan ----------
 
 def test_archive_scan_findet_secret_exit_1(app_home, capsys, tmp_path):
     secret_file = tmp_path / "secrets.txt"
@@ -84,7 +84,7 @@ def test_archive_scan_ohne_secret_exit_0(app_home, capsys, tmp_path):
     assert "keine Secrets gefunden" in capsys.readouterr().out
 
 
-# ---------- p12 archive add ----------
+# ---------- tapesmith archive add ----------
 
 def test_archive_add_last_mit_dir(app_home, capsys, tmp_path):
     with _store() as store:

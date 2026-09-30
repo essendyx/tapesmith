@@ -16,7 +16,7 @@ from tapesmith import fileutil, paths
 from tapesmith.i18n import _t
 
 DEFAULTS = {
-    "mac": None,  # MAC des Druckers; None = einziger gekoppelter Bluetooth-Drucker (p12 setup setzt sie)
+    "mac": None,  # MAC des Druckers; None = einziger gekoppelter Bluetooth-Drucker (tapesmith setup setzt sie)
     "transport": "auto",
     "idle_timeout_s": 300,
     "connect_timeout_s": 5,
@@ -220,7 +220,7 @@ def _set_top_level(dotted: str, value, save: Callable[[dict], dict]) -> dict:
             _t("'{dotted}' ist eine Sektion: bitte '{dotted}.<schlüssel>' angeben, z. B. {dotted}.{example}", dotted=dotted, example=example))
     known = ", ".join(TOP_LEVEL_KEYS)
     raise UnknownSetting(
-        _t("Unbekannter Schlüssel '{dotted}'. Bekannt: {known} sowie <sektion>.<schlüssel> (siehe 'p12 config show')", dotted=dotted, known=known))
+        _t("Unbekannter Schlüssel '{dotted}'. Bekannt: {known} sowie <sektion>.<schlüssel> (siehe 'tapesmith config show')", dotted=dotted, known=known))
 
 
 def _check_dotted_known(section_name: str, key: str) -> None:
@@ -248,7 +248,7 @@ def _check_dotted_known(section_name: str, key: str) -> None:
             raise UnknownSetting(_t("Unbekannter Schlüssel 'tape.{key}'. Bekannt in 'tape': current", key=key))
         return
     raise UnknownSetting(
-        _t("Unbekannter Schlüssel '{section_name}.{key}'. Unbekannte Sektion '{section_name}' (siehe 'p12 config show')", section_name=section_name, key=key))
+        _t("Unbekannter Schlüssel '{section_name}.{key}'. Unbekannte Sektion '{section_name}' (siehe 'tapesmith config show')", section_name=section_name, key=key))
 
 
 def set_setting(dotted: str, value, *, save: Callable[[dict], dict] = None) -> dict:

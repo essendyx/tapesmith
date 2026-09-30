@@ -1,6 +1,6 @@
-"""Plugin-Befehl 'p12 integrate': Explorer-Kontextmenü, URI-Schema, Autostart.
+"""Plugin-Befehl 'tapesmith integrate': Explorer-Kontextmenü, URI-Schema, Autostart.
 
-`p12 integrate install` schreibt in die echte Registry (HKCU). Das führt der Benutzer selbst
+`tapesmith integrate install` schreibt in die echte Registry (HKCU). Das führt der Benutzer selbst
 aus; automatisierte Abläufe und Tests nutzen höchstens `status` oder
 `--dry-run`."""
 

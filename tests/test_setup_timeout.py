@@ -1,4 +1,4 @@
-"""connect_timeout_s in `p12 setup`, unabhängig von tests/test_setup.py.
+"""connect_timeout_s in `tapesmith setup`, unabhängig von tests/test_setup.py.
 
 Registry-Zeilen und RESPONSES hier absichtlich dupliziert, damit dieses
 Modul nicht von den Hilfen einer anderen Testdatei abhängt.

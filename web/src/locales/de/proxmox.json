@@ -21,9 +21,8 @@
   },
   "tokenMissing": {
     "title": "Token fehlt",
-    "extra": "Token mit dem Skript deploy/infra/proxmox-tapesmith-role.sh anlegen und dort ablegen.",
-    "extraTokenScript": "Token mit dem Skript deploy/infra/proxmox-tapesmith-role.sh auf dem Proxmox-Host anlegen.",
-    "reference": "Referenz: {{describe}}."
+    "extra": "Token in den Einstellungen im Abschnitt Proxmox speichern. Anlegen lässt es sich mit dem Skript deploy/infra/proxmox-tapesmith-role.sh auf dem Proxmox-Host.",
+    "extraTokenScript": "Token mit dem Skript deploy/infra/proxmox-tapesmith-role.sh auf dem Proxmox-Host anlegen und in den Einstellungen im Abschnitt Proxmox speichern."
   },
   "guests": {
     "title": "Gäste auf {{host}}",

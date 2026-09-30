@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 density': Dichte-Teststreifen (experimentell).
+"""Plugin-Befehl 'tapesmith density': Dichte-Teststreifen (experimentell).
 
 Druckt je Dichte-Kandidat einen Teststreifen (Kandidatenbefehl als `prelude`, wird nie ohne diese
 Aktion gesendet). Der gewählte Wert wird nur im Bandprofil gespeichert, nicht automatisch

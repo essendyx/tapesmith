@@ -1,4 +1,4 @@
-"""CLI-Integration `p12 platte`: `status`/`plan`/`label`, `SshError` -> Exit 5.
+"""CLI-Integration `tapesmith platte`: `status`/`plan`/`label`, `SshError` -> Exit 5.
 
 Kein echter SSH-Aufruf: `RUNNER` wird durch einen Fake ersetzt (Muster `test_cli_disks.py`).
 """

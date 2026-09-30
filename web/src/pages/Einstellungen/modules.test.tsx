@@ -101,8 +101,10 @@ describe('Karte Module', () => {
     expect(width).toHaveValue('5');
     expect(within(width.closest('.fui-Input') as HTMLElement).getByText('Stellen')).toBeInTheDocument();
     expect(within(card).getByRole('textbox', { name: 'Adresse' })).toHaveAttribute('placeholder', 'Nicht gesetzt');
-    expect(within(card).getByText(/Wo das Token liegt, nicht das Token selbst/)).toBeInTheDocument();
-    expect(within(card).getByText('Token fehlt')).toBeInTheDocument();
+    expect(within(card).getByText(/Tapesmith speichert es in den Windows-Anmeldeinformationen/)).toBeInTheDocument();
+    expect(await within(card).findByText('Nicht gesetzt', { selector: '.fui-Badge' })).toBeInTheDocument();
+    expect(within(card).getByLabelText('Token')).toHaveAttribute('type', 'password');
+    expect(within(card).queryByDisplayValue(/keyring:|file:/)).toBeNull();
     await user.click(within(card).getByRole('button', { name: 'Prüfen' }));
     await waitFor(() => expect(api.calls.some((c) => c.path === '/api/v1/homelab/check')).toBe(true));
     const state = await within(card).findByRole('status');

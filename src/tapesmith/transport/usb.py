@@ -251,7 +251,7 @@ class UsbPrintTransport:
             paths = list_usbprint_paths(self._enumerator)
             if not paths:
                 raise ConnectTimeout(
-                    _t("Kein P12 per USB (usbprint) gefunden. `p12 usb` zeigt, was Windows anbietet"))
+                    _t("Kein P12 per USB (usbprint) gefunden. `tapesmith usb` zeigt, was Windows anbietet"))
             path = paths[0]
         try:
             handle = self._opener(path)

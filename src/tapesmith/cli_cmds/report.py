@@ -1,4 +1,4 @@
-"""`p12 report`: Support-Bericht „Problem melden“ als Zip speichern (CLI bleibt Deutsch).
+"""`tapesmith report`: Support-Bericht „Problem melden“ als Zip speichern (CLI bleibt Deutsch).
 
 Läuft der Druckdienst, kommen Druckerstatus (letzter bekannter Stand, kein Druckerkontakt) und
 Warteschlange von ihm; sonst entsteht der Bericht ohne Status. Der Dienst wird nie gestartet.

@@ -1,4 +1,4 @@
-"""CLI-Befehl 'p12 setup': Verbindungsassistent. Port finden, testen, speichern."""
+"""CLI-Befehl 'tapesmith setup': Verbindungsassistent. Port finden, testen, speichern."""
 
 import json
 import time

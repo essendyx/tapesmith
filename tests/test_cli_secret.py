@@ -1,4 +1,4 @@
-"""Tests für `p12 secret set|check` (über `tapesmith.cli.main`)."""
+"""Tests für `tapesmith secret set|check` (über `tapesmith.cli.main`)."""
 
 import io
 

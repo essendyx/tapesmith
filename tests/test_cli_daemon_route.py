@@ -125,7 +125,7 @@ def test_waiting_with_queue_flag(monkeypatch, capsys):
     monkeypatch.setattr(cmd_base, "BACKEND_FACTORY", lambda ctx, history: backend)
     assert cli.main(["text", "Hallo", "--queue"]) == 0
     out = capsys.readouterr().out
-    assert "#4" in out and "Warteschlange" in out and "p12 queue list" in out
+    assert "#4" in out and "Warteschlange" in out and "tapesmith queue list" in out
     assert backend.enqueue == [True]
 
 

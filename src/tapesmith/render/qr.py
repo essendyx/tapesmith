@@ -1,8 +1,8 @@
 """QR-Code in 1 Bit mit Größenlogik und Selbsttest (Rücklesen per zxing-cpp, falls ladbar; sonst
 Warnung `render.zxing.NOT_READ_WARNING` statt Fehler).
 
-Einheitliche Lesbarkeitsregel (gilt für alle Aufrufer: `p12 text --qr`, Vorlagen über
-`render_label`, `p12 qr` über `qrcontent.capacity_report`; geprüft an dieser einen Stelle):
+Einheitliche Lesbarkeitsregel (gilt für alle Aufrufer: `tapesmith text --qr`, Vorlagen über
+`render_label`, `tapesmith qr` über `qrcontent.capacity_report`; geprüft an dieser einen Stelle):
 Modul >= WARN_MODULE_DOTS und Selbsttest ok -> ok (evtl. Warnung ab Version 3). Modul
 < WARN_MODULE_DOTS -> Warnung. Modul < MIN_MODULE_DOTS oder Selbsttest fehlgeschlagen ->
 Ablehnung (`unreadable_error`).

@@ -1,0 +1,38 @@
+{
+  "title": "Protokoll",
+  "subtitle": "Protokolldateien des Druckdienstes, der Installation und der Updates. Tokens und Passwörter sind ausgeblendet.",
+  "refresh": "Aktualisieren",
+  "copy": "Kopieren",
+  "download": "Herunterladen",
+  "copied": "Angezeigte Zeilen kopiert",
+  "copyFailed": "Kopieren nicht möglich",
+  "downloadFailed": "Herunterladen fehlgeschlagen",
+  "listFailed": "Protokolle nicht lesbar",
+  "readFailed": "Protokoll nicht lesbar",
+  "toolbarLabel": "Protokoll filtern",
+  "file": "Datei",
+  "levelLabel": "Stufe",
+  "level": {
+    "all": "Alle",
+    "debug": "Debug und höher",
+    "info": "Info und höher",
+    "warning": "Warnungen und Fehler",
+    "error": "Nur Fehler",
+    "critical": "Nur kritische Fehler"
+  },
+  "lines": "Zeilen",
+  "linesValue": "Letzte {{count}}",
+  "search": "Suche",
+  "searchPlaceholder": "Text in den Zeilen",
+  "live": "Live",
+  "liveActive": "Live, lädt laufend nach",
+  "meta": "{{size}}, geändert {{time}}",
+  "truncated": "Letzte {{count}} Zeilen",
+  "viewLabel": "Inhalt von {{name}}",
+  "noMatch": "Keine Zeile passt zu Stufe oder Suche.",
+  "fileEmpty": "Die Datei ist leer.",
+  "empty": {
+    "title": "Noch keine Protokolle",
+    "body": "Protokolle entstehen, sobald der Druckdienst läuft oder eine Installation bzw. ein Update stattfindet."
+  }
+}

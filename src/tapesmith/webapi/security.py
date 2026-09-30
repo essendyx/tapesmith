@@ -37,7 +37,7 @@ log = logging.getLogger(__name__)
 TOKEN_HEADER = b"x-p12-token"
 SOURCE_HEADER = b"x-p12-source"
 # Ein Token/Aufrufer darf die Quelle eines Auftrags per Kopfzeile auf genau diese Werte setzen
-# (keine freie Quelle): "hotfolder" fuer "p12 hotfolder run-once" (HttpPrinter), damit dessen
+# (keine freie Quelle): "hotfolder" fuer "tapesmith hotfolder run-once" (HttpPrinter), damit dessen
 # Auftraege im Verlauf auch als Quelle "hotfolder" erscheinen statt als "api".
 SWITCHABLE_SOURCES = ("api", "mcp", "hotfolder")
 TEXT_ADDRESS = N_("Zugriff verweigert: Adresse nicht freigegeben")
@@ -45,7 +45,7 @@ TEXT_HOST = N_("Zugriff verweigert: unbekannter Host")
 TEXT_ORIGIN = N_("Zugriff verweigert: fremde Herkunft")
 TEXT_CROSS_SITE = N_("Zugriff verweigert: seitenübergreifende Anfrage")
 TEXT_LOGIN = N_("Nicht angemeldet: Token fehlt oder ist falsch")
-HINT_LOGIN_LOCAL = N_("Oberfläche über ‚p12 app‘ öffnen")
+HINT_LOGIN_LOCAL = N_("Oberfläche über ‚tapesmith app‘ öffnen")
 TEXT_LOCKED = N_("Zu viele Fehlversuche, bitte später erneut versuchen")
 _COMMON_HEADERS = [
     (b"x-content-type-options", b"nosniff"),

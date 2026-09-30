@@ -1,4 +1,4 @@
-"""`p12 daemon …` und `p12 queue …`: nur Fakes, kein echter Dienst, kein Prozess."""
+"""`tapesmith daemon …` und `tapesmith queue …`: nur Fakes, kein echter Dienst, kein Prozess."""
 
 import json
 
@@ -159,7 +159,7 @@ def test_queue_cancel_unknown_is_exit_1(monkeypatch, server, capsys):
 def test_queue_without_daemon_is_exit_1(capsys):
     # conftest setzt TAPESMITH_NO_DAEMON=1 -> lokales Backend, keine Warteschlange
     assert cli.main(["queue", "list"]) == 1
-    assert "Warteschlange braucht den Druckdienst (p12 daemon start)" in capsys.readouterr().err
+    assert "Warteschlange braucht den Druckdienst (tapesmith daemon start)" in capsys.readouterr().err
 
 
 def test_queue_move_rejects_position_zero(capsys):

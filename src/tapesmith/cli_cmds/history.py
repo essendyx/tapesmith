@@ -1,4 +1,4 @@
-"""`p12 history`: Druckverlauf anzeigen, durchsuchen und einzelne Einträge einsehen."""
+"""`tapesmith history`: Druckverlauf anzeigen, durchsuchen und einzelne Einträge einsehen."""
 
 import argparse
 import json

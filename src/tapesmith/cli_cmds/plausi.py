@@ -1,6 +1,6 @@
-"""Plugin-Befehl 'p12 plausi': Plausibilitätsprüfung vor dem Druck.
+"""Plugin-Befehl 'tapesmith plausi': Plausibilitätsprüfung vor dem Druck.
 
-`p12 plausi VORLAGE feld=wert … [--vault] [--json] [--streng]`. Der Server blockiert nie
+`tapesmith plausi VORLAGE feld=wert … [--vault] [--json] [--streng]`. Der Server blockiert nie
 (Warnung statt Sperre): normaler Exit-Code 0 auch bei einem Konflikt, `--streng` liefert dafür
 Exit 1 (für Skripte). `TRANSPORT` und `RESOLVER` ersetzen Tests.
 """

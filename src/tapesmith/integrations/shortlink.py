@@ -146,7 +146,7 @@ def link_for(data: dict, link_id: str, target: str | None, *, note: str = "", sy
     `sync=False` (Vorschau, Trockenlauf, Label-Abruf): nur die Kurz-URL ausrechnen, ohne Netz und
     ohne Token. `sync=True` (echter Druck, Zieländerung): Link im Dienst setzen. Ohne lokales Ziel
     (`target=None`) wird ein vorhandener Link nie überschrieben, nur ein fehlender angelegt, damit ein
-    per `p12 kurz set` gesetztes Ziel erhalten bleibt.
+    per `tapesmith kurz set` gesetztes Ziel erhalten bleibt.
     """
     if not configured(data):
         if target is None:

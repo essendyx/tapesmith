@@ -1,4 +1,4 @@
-"""`p12 update …` über `tapesmith.cli.main` (Fake-Keyring, Fake-Dienst, Temp-Home)."""
+"""`tapesmith update …` über `tapesmith.cli.main` (Fake-Keyring, Fake-Dienst, Temp-Home)."""
 
 from __future__ import annotations
 

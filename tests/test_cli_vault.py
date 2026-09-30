@@ -1,4 +1,4 @@
-"""CLI-Befehl `p12 vault` (list, show, print, table, snippet). Nie echter Druck, nie echtes MCP."""
+"""CLI-Befehl `tapesmith vault` (list, show, print, table, snippet). Nie echter Druck, nie echtes MCP."""
 
 import json
 

@@ -72,7 +72,7 @@ export function BackupCard(props: { section?: SettingsSection }): JSX.Element {
     }
   };
 
-  const command = restorePreview ? `p12 daemon stop && p12 backup restore ${restorePreview.name}` : '';
+  const command = restorePreview ? `tapesmith daemon stop && tapesmith backup restore ${restorePreview.name}` : '';
 
   return (
     <div id="sicherung">

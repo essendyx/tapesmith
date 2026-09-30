@@ -1,6 +1,6 @@
 """Selbsttest für neue Versionsumgebungen (Updater, Installer) und die Entwicklung, ohne Qt.
 
-Aufruf: `python -m tapesmith.selftest [--selftest-out DATEI]` bzw. `p12 gui --selftest`. Geprüft werden
+Aufruf: `python -m tapesmith.selftest [--selftest-out DATEI]` bzw. `tapesmith gui --selftest`. Geprüft werden
 Paketdaten, Schriften, Renderer, Vorlagen, ein Dokument mit allen Objektarten, Codes, Barcode-Decoder
 (zxing-cpp optional: fehlt er, meldet der Schritt nur `WARNUNG`, der Selbsttest bleibt ok), Icons,
 Band-Invertierung, Lint aller mitgelieferten Vorlagen, IPC mit Speicher-Kanälen, der

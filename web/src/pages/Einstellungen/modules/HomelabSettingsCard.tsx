@@ -2,7 +2,8 @@
  * Einstellungskarte eines Moduls aus homelab.json im Raster der Einstellungsseite (FieldRow mit
  * fester Steuerspalte, Einheiten, Platzhalter „Nicht gesetzt“ bzw. „Standard: …“). Speichern und
  * Verwerfen je Karte, „Prüfen“ zeigt ohne Netzzugriff, ob der Dienst eingetragen ist und das Token
- * gefunden wird.
+ * gefunden wird. Tokens stehen als Kennwortfelder (`SecretField`) direkt in der Karte und werden
+ * sofort in den Windows-Anmeldeinformationen gespeichert, nie in homelab.json.
  */
 import { useId, useMemo, useState, type ReactNode } from 'react';
 import {
@@ -28,6 +29,8 @@ import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { ApiError } from '../../../api/client';
 import { Section } from '../../../components/Section';
+import { SecretField, SecretStateBadge } from '../../../components/SecretField';
+import { useSecrets } from '../../../api/secrets';
 import { useNotify } from '../../../components/NotifyProvider';
 import { homelabKeys, patchHomelabSettings, useHomelabCheck } from '../../HomelabEinstellungen/api';
 import type { HomelabSettings, ProxmoxHostJson, ServiceCheckJson } from '../../HomelabEinstellungen/types';
@@ -44,7 +47,6 @@ const WARRANTY_KEYS: { id: string; labelKey: string }[] = [
 
 const useStyles = makeStyles({
   actions: { display: 'flex', columnGap: tokens.spacingHorizontalS, alignItems: 'center', flexWrap: 'wrap' },
-  mono: { fontFamily: tokens.fontFamilyMonospace },
   tableWrap: { overflowX: 'auto', maxWidth: '100%' },
   hostInput: { minWidth: '140px', width: '100%' },
   hostActions: { display: 'flex', columnGap: tokens.spacingHorizontalS, paddingTop: tokens.spacingVerticalS },
@@ -89,26 +91,13 @@ function toValue(field: HomelabFieldDef, raw: unknown): unknown {
 }
 
 function cleanHost(host: ProxmoxHostJson): ProxmoxHostJson {
-  return { name: host.name, url: host.url, token_ref: host.token_ref, verify_tls: Boolean(host.verify_tls) };
+  return { name: host.name, url: host.url, token_ref: host.token_ref ?? null, verify_tls: Boolean(host.verify_tls) };
 }
 
 function placeholderFor(field: HomelabFieldDef, t: TFunction<'einstellungen'>, lang: string): string {
   if (field.default === undefined) return t('field.notSet');
   const value = typeof field.default === 'number' ? formatNumberText(field.default, lang) : field.default;
   return t('field.defaultValue', { value });
-}
-
-function TokenBadge(props: { set: unknown }): JSX.Element {
-  const { t } = useTranslation('homelabEinstellungen');
-  return props.set ? (
-    <Badge appearance="tint" color="success">
-      {t('tokenRef.present')}
-    </Badge>
-  ) : (
-    <Badge appearance="tint" color="warning">
-      {t('tokenRef.missing')}
-    </Badge>
-  );
 }
 
 function ServiceState(props: { service: ServiceCheckJson }): JSX.Element {
@@ -156,6 +145,7 @@ export function HomelabSettingsCard(props: {
   const [generalError, setGeneralError] = useState<string | null>(null);
   const [checked, setChecked] = useState(false);
   const check = useHomelabCheck({ enabled: checked });
+  const secrets = useSecrets();
 
   const fields = useMemo(() => props.sections.flatMap((section) => HOMELAB_FIELDS[section] ?? []), [props.sections]);
   const hasHosts = fields.some((f) => f.kind === 'hosts');
@@ -242,7 +232,6 @@ export function HomelabSettingsCard(props: {
                 <TableRow>
                   <TableHeaderCell>{t('hosts.columns.name')}</TableHeaderCell>
                   <TableHeaderCell>{t('hosts.columns.url')}</TableHeaderCell>
-                  <TableHeaderCell>{t('hosts.columns.tokenRef')}</TableHeaderCell>
                   <TableHeaderCell>{t('hosts.columns.verifyTls')}</TableHeaderCell>
                   <TableHeaderCell>{t('hosts.columns.token')}</TableHeaderCell>
                   <TableHeaderCell>
@@ -252,7 +241,8 @@ export function HomelabSettingsCard(props: {
               </TableHeader>
               <TableBody>
                 {hosts.map((host, index) => {
-                  const info = infos.find((entry) => entry.name === host.name && entry.token_ref === host.token_ref);
+                  const saved = infos.some((entry) => entry.name === host.name);
+                  const slot = saved ? secrets.data?.slots.find((s) => s.id === `proxmox:${host.name}`) : undefined;
                   const n = index + 1;
                   const update = (patch: Partial<ProxmoxHostJson>) =>
                     setHostsDraft(hosts.map((h, i) => (i === index ? { ...h, ...patch } : h)));
@@ -271,22 +261,15 @@ export function HomelabSettingsCard(props: {
                         />
                       </TableCell>
                       <TableCell>
-                        <Input
-                          className={`${styles.hostInput} ${styles.mono}`}
-                          aria-label={t('hosts.tokenRefAria', { n })}
-                          placeholder={t('hosts.tokenRefPlaceholder')}
-                          value={host.token_ref}
-                          onChange={(_e, d) => update({ token_ref: d.value })}
-                        />
-                      </TableCell>
-                      <TableCell>
                         <Checkbox
                           aria-label={t('hosts.verifyTlsAria', { n })}
                           checked={Boolean(host.verify_tls)}
                           onChange={(_e, d) => update({ verify_tls: d.checked === true })}
                         />
                       </TableCell>
-                      <TableCell>{info ? <TokenBadge set={info.token_set} /> : <span className={styles.muted}>{t('hosts.new')}</span>}</TableCell>
+                      <TableCell>
+                        {saved ? <SecretStateBadge slot={slot} /> : <span className={styles.muted}>{t('hosts.tokenAfterSave')}</span>}
+                      </TableCell>
                       <TableCell>
                         <Button
                           appearance="subtle"
@@ -310,7 +293,7 @@ export function HomelabSettingsCard(props: {
           </MessageBar>
         ) : null}
         <div className={styles.hostActions}>
-          <Button icon={<Add20Regular />} onClick={() => setHostsDraft([...hosts, { name: '', url: '', token_ref: '', verify_tls: false }])}>
+          <Button icon={<Add20Regular />} onClick={() => setHostsDraft([...hosts, { name: '', url: '', token_ref: null, verify_tls: false }])}>
             {t('hosts.add')}
           </Button>
         </div>
@@ -321,10 +304,13 @@ export function HomelabSettingsCard(props: {
   const renderField = (field: HomelabFieldDef): JSX.Element => {
     if (field.kind === 'hosts') return renderHosts(field);
     const i18nId = fieldI18nId(field.key);
+    if (field.kind === 'tokenRef') {
+      return <SecretField key={field.key} slotId={field.key.split('.')[0] ?? ''} label={t(`fields.${i18nId}.label`)} help={t('token.help')} />;
+    }
     const domId = `${reactId}-${i18nId}`;
     const label = t(`fields.${i18nId}.label`);
     const errors = fieldErrors[field.key];
-    const help = field.kind === 'tokenRef' ? t('tokenRef.help') : t(`fields.${i18nId}.help`);
+    const help = t(`fields.${i18nId}.help`);
     const details = errors?.length ? (
       <MessageBar intent="error">
         <MessageBarBody>{errors.join(' ')}</MessageBarBody>
@@ -370,8 +356,6 @@ export function HomelabSettingsCard(props: {
     }
     const isNumber = field.kind === 'number' || field.kind === 'int';
     const text = field.key in draft ? String(draft[field.key] ?? '') : isNumber ? formatNumberText(typeof value === 'number' ? value : null, lang) : toText(value);
-    const section = field.key.split('.')[0] ?? '';
-    const tokenInfo = field.kind === 'tokenRef' ? settings?.[section] : undefined;
     return (
       <FieldRow
         key={field.key}
@@ -379,11 +363,9 @@ export function HomelabSettingsCard(props: {
         label={label}
         help={help}
         details={details}
-        badges={tokenInfo && tokenInfo.token_ref ? <TokenBadge set={tokenInfo.token_set} /> : undefined}
         control={
           <Input
             id={domId}
-            className={field.kind === 'tokenRef' && text !== '' ? styles.mono : undefined}
             inputMode={isNumber ? 'decimal' : undefined}
             value={text}
             placeholder={placeholderFor(field, tSettings, lang)}
@@ -400,7 +382,21 @@ export function HomelabSettingsCard(props: {
     if (props.sections.length > 1) {
       rows.push(<FieldRow key={`h-${section}`} labelAs="h3" label={t(`subheadings.${section}`)} />);
     }
-    for (const field of HOMELAB_FIELDS[section] ?? []) rows.push(renderField(field));
+    for (const field of HOMELAB_FIELDS[section] ?? []) {
+      rows.push(renderField(field));
+      if (field.kind === 'hosts') {
+        for (const host of originalHosts) {
+          rows.push(
+            <SecretField
+              key={`token-${host.name}`}
+              slotId={`proxmox:${host.name}`}
+              label={t('hosts.tokenLabel', { name: host.name })}
+              help={t('hosts.tokenHelp')}
+            />,
+          );
+        }
+      }
+    }
   }
   if (props.services.length) {
     rows.push(

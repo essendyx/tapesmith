@@ -38,7 +38,7 @@ def ensure_daemon(cfg: dict, *, client: str = "cli",
         if clock() >= deadline:
             break
         sleep(poll_s)
-    raise DaemonUnavailable(_t("Druckdienst startet nicht. Log: {value}", value=paths.log_dir() / 'p12d.log'))
+    raise DaemonUnavailable(_t("Druckdienst startet nicht. Log: {value}", value=paths.log_dir() / 'daemon.log'))
 
 
 def daemon_running(*, connector: Callable[..., DaemonClient] = DaemonClient.connect,

@@ -25,7 +25,7 @@ describe('Karte Sicherung', () => {
     await user.click(await within(card).findByRole('button', { name: 'Wiederherstellen…' }));
 
     expect(sentBody).toEqual({ name: '2026-09-27_1200', dry_run: true });
-    expect(await within(card).findByText(/p12 daemon stop/)).toBeInTheDocument();
+    expect(await within(card).findByText(/tapesmith daemon stop/)).toBeInTheDocument();
     expect(within(card).getByText(/config.json wird ersetzt/)).toBeInTheDocument();
   });
 });

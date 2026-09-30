@@ -9,7 +9,7 @@ neuen Tab im Standardbrowser (`webui.browser.open_app` mit Route, im Hintergrund
 * „Zwischenablage in Schnelldruck“ und Tastenkürzel `hotkey.clipboard`: `/schnelldruck?text=...`
   mit dem Text der Zwischenablage (begrenzt, URL-kodiert, `browser.quick_route`), nie Direktdruck
 * „Verlauf“: `/verlauf`, „Druckerstatus“: `/einstellungen?abschnitt=verbindung`,
-  „Log und Diagnose“: `/einstellungen?abschnitt=support`,
+  „Protokoll“: `/protokoll`,
   „Einstellungen“: `/einstellungen?abschnitt=tray`, Update-Hinweis: `/einstellungen?abschnitt=updates`
 * Favorit mit fehlenden Eingaben: `/aktion?uri=tapesmith://print?...`
 
@@ -26,7 +26,7 @@ siehe `gui.hotkey`). Jeder Druck läuft mit Quelle "hotkey" über das Druck-Back
 direkt). HiDPI-Symbole mit Statusabzeichen (`gui.icons`), Dunkelmodus des Menüs
 nach `app.theme`, alle Texte über `tapesmith.i18n` (Sprache aus `app.language`).
 
-Start: `python -m tapesmith.gui.tray`, `pythonw -m tapesmith.gui.tray` (installierte App) oder `p12 tray`; eine Instanz je
+Start: `python -m tapesmith.gui.tray`, `pythonw -m tapesmith.gui.tray` (installierte App) oder `tapesmith tray`; eine Instanz je
 Benutzer und App-Verzeichnis (ein eigenes `TAPESMITH_HOME` gibt also eine eigene Instanz).
 """
 
@@ -79,7 +79,7 @@ COMMIT_STATUSES = ("ok", "wartet")
 QUICK_ROUTE = browser.QUICK_ROUTE
 HISTORY_ROUTE = "/verlauf"
 STATUS_ROUTE = "/einstellungen?abschnitt=verbindung"
-LOG_ROUTE = "/einstellungen?abschnitt=support"
+LOG_ROUTE = "/protokoll"
 SETTINGS_ROUTE = "/einstellungen?abschnitt=tray"
 UPDATE_ROUTE = "/einstellungen?abschnitt=updates"
 _HOTKEY_KEYS = ("hotkey.enabled", "hotkey.quick", "hotkey.clipboard")
@@ -749,7 +749,7 @@ class TrayApp(QObject):
                   lambda exc: self._notify(self._tr("notify.openFailed.title"), str(exc)))
 
     def open_log(self) -> None:
-        """„Log und Diagnose“: Abschnitt Hilfe und Diagnose der Einstellungen im Browser."""
+        """„Protokoll“: Seite Protokoll der Web-Oberfläche im Browser."""
         self.open_web(LOG_ROUTE)
 
     def open_settings(self) -> None:
@@ -764,7 +764,7 @@ class TrayApp(QObject):
 
     def check_config(self) -> bool:
         """Alle `CONFIG_CHECK_MS`: hat sich die Konfigurationsdatei geändert (Web-Einstellungen,
-        `p12 config`), gelten die neuen Werte sofort (`apply_settings`). True bei Änderung."""
+        `tapesmith config`), gelten die neuen Werte sofort (`apply_settings`). True bei Änderung."""
         stamp = self._read_stamp()
         if stamp == self._last_stamp:
             return False

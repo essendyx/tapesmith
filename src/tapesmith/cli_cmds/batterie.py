@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 batterie': Batteriestände aus Home Assistant auflisten, lokale
+"""Plugin-Befehl 'tapesmith batterie': Batteriestände aus Home Assistant auflisten, lokale
 Typzuordnung pflegen, Batterie- und Wartungsetiketten drucken, optional ein HA-To-do anlegen.
 
 Kein echter HA-Aufruf standardmäßig: `TRANSPORT` ist injizierbar (Tests ersetzen es).

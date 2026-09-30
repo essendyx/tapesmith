@@ -1,4 +1,4 @@
-"""`p12 report --out DATEI.zip` (Support-Bericht, CLI bleibt Deutsch)."""
+"""`tapesmith report --out DATEI.zip` (Support-Bericht, CLI bleibt Deutsch)."""
 
 from __future__ import annotations
 

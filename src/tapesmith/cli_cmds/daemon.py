@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 daemon': Druckdienst p12d starten, stoppen, neu starten, Zustand zeigen."""
+"""Plugin-Befehl 'tapesmith daemon': Druckdienst p12d starten, stoppen, neu starten, Zustand zeigen."""
 
 from __future__ import annotations
 

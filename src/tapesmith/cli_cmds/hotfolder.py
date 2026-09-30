@@ -1,4 +1,4 @@
-"""`p12 hotfolder`: Status des überwachten Ordners und ein Durchlauf ohne den Druckdienst-Prozess
+"""`tapesmith hotfolder`: Status des überwachten Ordners und ein Durchlauf ohne den Druckdienst-Prozess
 selbst zu sein.
 
 `run-once` druckt über den laufenden Druckdienst p12d: eine Fassade gibt es in der CLI nicht,
@@ -20,7 +20,7 @@ from tapesmith.cli_cmds.base import CliContext
 from tapesmith.i18n import N_, LANGUAGES, _t, translate
 
 COMMAND = "hotfolder"
-HELP = N_("Hotfolder-Ordner prüfen und einmal verarbeiten (p12 hotfolder status | run-once)")
+HELP = N_("Hotfolder-Ordner prüfen und einmal verarbeiten (tapesmith hotfolder status | run-once)")
 
 # Ein Druck über p12d wartet, bis der Drucker fertig ist; allein das Öffnen des COM-Ports dauert am
 # echten P12 10 bis 20 s. httpx' Standard (5 s) würde fast jeden Druck als Fehler melden, obwohl er
@@ -34,7 +34,7 @@ UNKNOWN_MESSAGE = (N_("Status unbekannt, bitte Verlauf prüfen (keine Antwort de
 
 
 class HttpPrinter:
-    """Adapter über die REST-API für `p12 hotfolder run-once` (alle Fassaden-Methoden, die
+    """Adapter über die REST-API für `tapesmith hotfolder run-once` (alle Fassaden-Methoden, die
     `Hotfolder` benutzt). Sitzung (Port, Token) über `webui.browser.connect_session`; Quelle im
     Verlauf `hotfolder` (Kopfzeile `X-P12-Source: hotfolder`, dieselbe Kopiengrenze wie das
     Addon `tapesmith.automation.hotfolder`)."""

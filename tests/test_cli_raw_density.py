@@ -1,4 +1,4 @@
-"""Tests für 'p12 raw' und 'p12 density' über die CLI (nie echte Hardware, MemoryTransport)."""
+"""Tests für 'tapesmith raw' und 'tapesmith density' über die CLI (nie echte Hardware, MemoryTransport)."""
 
 import io
 import sys

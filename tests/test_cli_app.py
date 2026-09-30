@@ -1,4 +1,4 @@
-"""Tests für `p12 app`: ruft `webui.browser.main` mit passenden Argumenten und öffnet die
+"""Tests für `tapesmith app`: ruft `webui.browser.main` mit passenden Argumenten und öffnet die
 Oberfläche im Standardbrowser (hier gemockt, nie ein echter Browser)."""
 
 import inspect

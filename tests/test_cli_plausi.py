@@ -1,4 +1,4 @@
-"""CLI-Befehle `p12 plausi` und `p12 asset-notiz`."""
+"""CLI-Befehle `tapesmith plausi` und `tapesmith asset-notiz`."""
 
 import json
 import threading

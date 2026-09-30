@@ -30,7 +30,7 @@ describe('Rahmen', () => {
     window.pywebview = { api: { retry: vi.fn(() => Promise.resolve()) } };
     baseApi();
     renderWithProviders(<LocationProbe />, { withShell: true, token: null, route: '/schnelldruck' });
-    expect(screen.getByText('Bitte über „p12 app“ öffnen')).toBeInTheDocument();
+    expect(screen.getByText('Bitte über „tapesmith app“ öffnen')).toBeInTheDocument();
     expect(screen.queryByRole('navigation')).toBeNull();
     delete window.pywebview;
   });
@@ -43,12 +43,12 @@ describe('Rahmen', () => {
     expect(screen.queryByRole('navigation')).toBeNull();
   });
 
-  it('mit Token: Seitenleiste mit 13 Einträgen (alle Module an), aktive Route markiert', async () => {
+  it('mit Token: Seitenleiste mit 14 Einträgen (alle Module an), aktive Route markiert', async () => {
     baseApi();
     renderWithProviders(<LocationProbe />, { withShell: true, route: '/verlauf' });
     const nav = await screen.findByRole('navigation', { name: 'Seiten' });
     const routeItems = () => within(nav).getAllByRole('button').filter((b) => b.hasAttribute('data-route'));
-    await waitFor(() => expect(routeItems()).toHaveLength(13));
+    await waitFor(() => expect(routeItems()).toHaveLength(14));
     const items = routeItems();
     const current = items.filter((b) => b.getAttribute('aria-current') === 'page');
     expect(current).toHaveLength(1);
@@ -189,7 +189,7 @@ describe('Wiederverbinden nach Dienst-Ende', () => {
     await waitFor(() => expect(retry).toHaveBeenCalledWith('/inventar?tab=verleih'));
   });
 
-  it('Sitzung abgelaufen im Browser: kein „Neu verbinden“, nur der Hinweis auf p12 app', async () => {
+  it('Sitzung abgelaufen im Browser: kein „Neu verbinden“, nur der Hinweis auf tapesmith app', async () => {
     appThen(() => new MockResponse(401, { error: { kind: 'Token', message: 'Token ungültig', hint: '', exit_code: 1, details: null } }));
     renderWithProviders(<LocationProbe />, { withShell: true, route: '/schnelldruck' });
     await screen.findByRole('navigation', { name: 'Seiten' });

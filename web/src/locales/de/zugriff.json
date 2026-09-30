@@ -54,7 +54,7 @@
     "enableLabel": "Im Heimnetz freigeben",
     "activeStatus": "Aktiv: lauscht auf {{listen}}",
     "localOnlyStatus": "Nur lokal (lauscht auf 127.0.0.1)",
-    "restartNeeded": "Neustart des Druckdienstes nötig, damit die Freigabe wirkt (<code>p12 daemon restart</code>).",
+    "restartNeeded": "Neustart des Druckdienstes nötig, damit die Freigabe wirkt (<code>tapesmith daemon restart</code>).",
     "bindLabel": "Adresse, an die gebunden wird",
     "bindHint": "0.0.0.0 = alle Netzwerkkarten",
     "networksLabel": "Erlaubte Netze",
@@ -119,11 +119,6 @@
     "templatesLabel": "Erlaubte Vorlagen",
     "templatesHint": "Diese Vorlagen lassen sich über MQTT drucken. Ohne Auswahl sind alle erlaubt.",
     "passwordLabel": "Passwort",
-    "passwordSet": "Hinterlegt",
-    "passwordMissing": "Fehlt",
-    "setPassword": "Passwort setzen",
-    "secretDialogTitle": "MQTT-Passwort setzen",
-    "secretFieldLabel": "Passwort",
     "saveSuccess": "Home Assistant (MQTT): gespeichert",
     "enableHint": "Meldet Drucker und Vorlagen an Home Assistant.",
     "hostHint": "Hostname oder IP-Adresse des Brokers.",
@@ -132,7 +127,8 @@
     "userHint": "Leer lassen für eine Verbindung ohne Anmeldung.",
     "baseTopicHint": "Präfix aller Topics von Tapesmith.",
     "discoveryHint": "Home Assistant erwartet meist homeassistant.",
-    "templatesAll": "Keine gewählt, alle erlaubt"
+    "templatesAll": "Keine gewählt, alle erlaubt",
+    "passwordHint": "Passwort des Brokers. Wird in den Windows-Anmeldeinformationen gespeichert."
   },
   "telegram": {
     "title": "Telegram",
@@ -151,12 +147,6 @@
     "notifyError": "Druckfehler",
     "notifyRoll": "Restmeter niedrig",
     "tokenLabel": "Bot-Token",
-    "tokenSet": "Hinterlegt",
-    "tokenMissing": "Fehlt",
-    "setToken": "Token setzen",
-    "tokenFromSource": "Token kommt aus {{source}}",
-    "secretDialogTitle": "Telegram-Token setzen",
-    "secretFieldLabel": "Token",
     "sendTest": "Testnachricht senden",
     "testSuccess": "Testnachricht gesendet",
     "testErrorTitle": "Testnachricht fehlgeschlagen",
@@ -174,10 +164,7 @@
     "notifyOfflineHint": "Der Drucker ist nicht mehr erreichbar.",
     "notifyQueueHint": "Aufträge kommen nicht voran.",
     "notifyRollHint": "Die Bandrolle geht zur Neige.",
-    "tokenNoSource": "Keine Quelle festgelegt (Einstellung telegram.token_ref)."
-  },
-  "secretDialog": {
-    "saved": "{{title}}: gespeichert"
+    "tokenHint": "Token des Bots vom BotFather. Wird in den Windows-Anmeldeinformationen gespeichert."
   },
   "addons": {
     "title": "Zusatzdienste",
@@ -209,8 +196,5 @@
     "clear": "Alle abwählen",
     "clearAria": "Alle abwählen: {{label}}",
     "noMatch": "Keine Vorlage passt zu „{{query}}“"
-  },
-  "secret": {
-    "storage": "Ablage: {{source}}"
   }
 }

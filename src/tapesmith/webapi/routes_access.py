@@ -169,7 +169,7 @@ def post_access_tokens(body: CreateTokenBody, ctx: ApiContext = Depends(get_ctx)
     if info.role == ROLE_FAMILY:
         cfg = ctx.config()
         # Ohne lan.enabled ist der Dienst aus dem Heimnetz nicht erreichbar, ein Link waere
-        # irrefuehrend (dasselbe gilt fuer "p12 token add", cli_cmds/token.py).
+        # irrefuehrend (dasselbe gilt fuer "tapesmith token add", cli_cmds/token.py).
         if config_mod.setting(cfg, "lan.enabled"):
             addresses = ctx.extras.get("addresses")
             family_urls = [f"{base}/familie#t={secret}" for base in netinfo.lan_base_urls(cfg, addresses)]

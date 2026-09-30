@@ -1,4 +1,4 @@
-"""Plugin-Befehl 'p12 queue': Druckwarteschlange des Druckdienstes anzeigen und steuern."""
+"""Plugin-Befehl 'tapesmith queue': Druckwarteschlange des Druckdienstes anzeigen und steuern."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from tapesmith.i18n import N_, _t
 COMMAND = "queue"
 HELP = N_("Druckwarteschlange des Druckdienstes anzeigen und steuern")
 
-NEEDS_DAEMON = N_("Warteschlange braucht den Druckdienst (p12 daemon start)")
+NEEDS_DAEMON = N_("Warteschlange braucht den Druckdienst (tapesmith daemon start)")
 
 
 class _NoDaemon:

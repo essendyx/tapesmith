@@ -73,6 +73,7 @@ describe('Seitenleiste und Befehlspalette', () => {
       'verlauf',
       'warteschlange',
       'statistik',
+      'protokoll',
       'zugriff',
       'einstellungen',
     ]);

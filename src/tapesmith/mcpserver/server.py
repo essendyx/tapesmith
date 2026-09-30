@@ -1,7 +1,7 @@
 """MCP-Server mit dem offiziellen Python-SDK (`mcp` 2.x, `MCPServer`).
 
 Zwei Wege mit denselben Werkzeugen:
-- stdio (`p12 mcp`): `run_stdio()` mit `HttpBackend` gegen den lokalen Druckdienst. Auf stdout
+- stdio (`tapesmith mcp`): `run_stdio()` mit `HttpBackend` gegen den lokalen Druckdienst. Auf stdout
   steht nur das Protokoll, Logs gehen nach `<App-Verzeichnis>\\logs\\mcp.log` und stderr.
 - Streamable HTTP (`/mcp` im Dienst): `http_app(backend_getter)` liefert eine ASGI-App ohne eigene
   Weiterleitung und eine Lifespan-Fabrik für `app.state.lifespans`.

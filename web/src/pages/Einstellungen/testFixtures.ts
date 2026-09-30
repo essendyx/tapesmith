@@ -2,6 +2,7 @@
 import type { MockHandler } from '../../test/utils';
 import type { SettingsJson } from '../../api/types';
 import type { UpdateStatus } from '../../api/update';
+import { makeSecrets } from '../../test/secretFixtures';
 
 /** Ruhiger Standardzustand für `GET /update/status` (installierte, aktuelle Version, kein Update verfügbar). */
 export function makeUpdateStatus(overrides?: Partial<UpdateStatus>): UpdateStatus {
@@ -201,12 +202,13 @@ export function baseSettingsRoutes(overrides?: Record<string, MockHandler>): Rec
     'GET /api/v1/tapes': () => ({ tapes: [], current: '' }),
     'GET /api/v1/rolls': () => ({ current: null, all: [] }),
     'GET /api/v1/calibration': () => ({ length_factor: 1, leader_mm: 5, trailer_mm: 5, content_offset: 8, content_dots: 80, verified: [], path: '' }),
-    'GET /api/v1/daemon': () => ({ pid: 1, version: '0.9.0', uptime_s: 60, web_port: 8712, home_key: 'test', log_path: 'p12d.log', app_dir: 'C:/App' }),
+    'GET /api/v1/daemon': () => ({ pid: 1, version: '0.9.0', uptime_s: 60, web_port: 8712, home_key: 'test', log_path: 'daemon.log', app_dir: 'C:/App' }),
     'GET /api/v1/integration': () => ({ status: { context: 'nicht installiert', uri: 'nicht installiert', autostart: 'nicht installiert' }, lines: [] }),
     'GET /api/v1/backups': () => ({ dir: 'C:/Sicherung', backups: [] }),
     'GET /api/v1/templates': () => ({ templates: [] }),
     'GET /api/v1/update/status': () => makeUpdateStatus(),
     'GET /api/v1/homelab/settings': () => ({ settings: {}, path: 'C:/App/homelab.json' }),
+    'GET /api/v1/secrets': () => makeSecrets(),
     ...overrides,
   };
 }
