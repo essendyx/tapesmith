@@ -24,7 +24,7 @@
   },
   "notify": {
     "connecting": "Druckdienst wird noch verbunden",
-    "connectingTooltip": "Tapesmith · verbinde mit Druckdienst …",
+    "connectingTooltip": "Verbinde mit Druckdienst …",
     "printingTooltip": "Druckt … {percent} % · {status}",
     "hint": {
       "title": "Hinweis"

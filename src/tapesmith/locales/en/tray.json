@@ -24,7 +24,7 @@
   },
   "notify": {
     "connecting": "Print service still connecting",
-    "connectingTooltip": "Tapesmith · connecting to print service…",
+    "connectingTooltip": "Connecting to print service…",
     "printingTooltip": "Printing… {percent} % · {status}",
     "hint": {
       "title": "Note"

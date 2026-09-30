@@ -524,6 +524,18 @@ def test_status_tooltip_und_fortschritt(env, qtbot):
     qtbot.waitUntil(lambda: "Druckt" not in app.tooltip())
 
 
+def test_version_in_menue_und_tooltip(env):
+    from tapesmith import __version__
+
+    app = env.make()
+    version = app.menu_actions()["trayVersion"]
+    assert version.text() == f"Tapesmith {__version__}"
+    assert not version.isEnabled()
+    assert app._menu.actions()[0] is version
+    assert app.tooltip().splitlines()[0] == f"Tapesmith {__version__}"
+    assert len(app.tooltip()) <= 127
+
+
 def test_status_abfragen(env, qtbot):
     app = env.make()
     app.query_status()

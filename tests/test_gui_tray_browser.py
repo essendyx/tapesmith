@@ -144,14 +144,14 @@ def test_start_kehrt_zurueck_bevor_backend_fertig_ist(env, qtbot):
 
     assert app.backend_pending() is True
     assert app.backend is None
-    assert "verbinde" in app.tooltip()
+    assert "Verbinde" in app.tooltip()
 
     gate.set()
     qtbot.waitUntil(lambda: not app.backend_pending(), timeout=5000)
 
     assert app.backend is env.backend
     assert env.backend.listeners.keys() >= {"state", "status", "progress", "queue"}
-    assert "verbinde" not in app.tooltip()
+    assert "Verbinde" not in app.tooltip()
 
 
 def test_druck_waehrend_verbindung_meldet_hinweis_ohne_absturz(env, qtbot):

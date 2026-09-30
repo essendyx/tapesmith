@@ -45,7 +45,7 @@ from PySide6.QtCore import QObject, QTimer, Signal
 from PySide6.QtGui import QAction, QGuiApplication, QIcon
 from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
 
-from tapesmith import config, i18n, integration, modules, numbering, paths
+from tapesmith import __version__, config, i18n, integration, modules, numbering, paths
 from tapesmith.device.profile import DeviceProfile, load_profile
 from tapesmith.document.render import render_spec
 from tapesmith.errors import explain
@@ -434,6 +434,9 @@ class TrayApp(QObject):
         menu = QMenu()
         menu.setObjectName("trayMenu")
         self._menu = menu
+        version = self._action(menu, "trayVersion", f"Tapesmith {__version__}")
+        version.setEnabled(False)
+        menu.addSeparator()
         self._action(menu, "trayUpdate", self._tr("menu.updateCheck"), self.open_update_route)
         menu.addSeparator()
         main_action = self._action(menu, "trayMain", self._tr("menu.main"), self.open_app_window)
@@ -918,13 +921,17 @@ class TrayApp(QObject):
         self.update_status()
 
     def tooltip(self) -> str:
+        """Erste Zeile Name und Version, darunter der Status (Windows: höchstens 127 Zeichen)."""
+        return f"Tapesmith {__version__}\n{self._status_tooltip()}"[:127]
+
+    def _status_tooltip(self) -> str:
         if self._connecting and self.backend is None:
             return self._tr("notify.connectingTooltip")
         with i18n.use_language(self._lang()):
             view = status_view(self._state, self._report, now=self._now(), mac=self._cfg.get("mac"))
         if self._progress is not None:
             done, total = self._progress
-            return self._tr("notify.printingTooltip", percent=int(done * 100 / total), status=view.tooltip)[:127]
+            return self._tr("notify.printingTooltip", percent=int(done * 100 / total), status=view.tooltip)
         return view.tooltip
 
     def update_status(self) -> None:

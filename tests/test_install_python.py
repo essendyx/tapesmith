@@ -162,6 +162,16 @@ def test_list_command_lines_liest_cim_ausgabe():
     assert processes.list_command_lines(runner=failing) == []
 
 
+@pytest.mark.skipif(sys.platform != "win32", reason="CIM nur unter Windows")
+def test_list_command_lines_echt_findet_eigenen_prozess():
+    """Echter PowerShell-Aufruf: Spalten per Tabulator getrennt, eigener Prozess mit Pfad dabei."""
+    rows = {pid: (exe, cmd) for pid, exe, cmd in processes.list_command_lines()}
+    assert os.getpid() in rows
+    exe, cmd = rows[os.getpid()]
+    assert exe and Path(exe).name.lower().startswith("python")
+    assert "pytest" in cmd.lower()
+
+
 def test_own_pids_enthaelt_eltern_prozess():
     pids = processes.own_pids()
     assert pids[0] == os.getpid() and os.getppid() in pids

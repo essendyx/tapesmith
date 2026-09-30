@@ -57,7 +57,7 @@ HANDLED_ERRORS = (KeyboardInterrupt, EOFError, PrinterBusy, FileLockTimeout, Tra
 
 
 def _parser(plugins: dict | None = None) -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="p12", description=_t("Phomemo P12 Labeldrucker"))
+    p = argparse.ArgumentParser(prog="tapesmith", description=_t("Phomemo P12 Labeldrucker"))
     p.add_argument("--transport", help=_t("auto | COMn | file:pfad (Default aus config.json)"))
     p.add_argument("--hexlog", type=Path, help=_t("alle Bytes mit Zeitstempel in diese Datei schreiben"))
     p.add_argument("--no-daemon", action="store_true",

@@ -257,7 +257,7 @@ def _setup_logging(foreground: bool) -> list[logging.Handler]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="p12d", description=_t("Druckdienst für den Phomemo P12"))
+    parser = argparse.ArgumentParser(prog="tapesmith-daemon", description=_t("Druckdienst für den Phomemo P12"))
     parser.add_argument("--foreground", action="store_true", help=_t("Log zusätzlich auf stderr ausgeben"))
     args = parser.parse_args(argv)
     root = logging.getLogger("tapesmith")

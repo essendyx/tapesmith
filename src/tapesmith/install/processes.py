@@ -115,7 +115,8 @@ def processes_under(root: Path, *, lister: Callable[[], list[ProcessInfo]] = lis
 _CIM_SCRIPT = (
     "$ErrorActionPreference='SilentlyContinue';[Console]::OutputEncoding=[Text.Encoding]::UTF8;"
     "Get-CimInstance Win32_Process | ForEach-Object {"
-    " '{0}`t{1}`t{2}' -f $_.ProcessId, $_.ExecutablePath, ($_.CommandLine -replace '\\s+', ' ') }"
+    # Tabulator per [char]9: in einfachen Anführungszeichen wäre `t kein Tabulator
+    " ($_.ProcessId, $_.ExecutablePath, ($_.CommandLine -replace '\\s+', ' ')) -join [char]9 }"
 )
 
 
