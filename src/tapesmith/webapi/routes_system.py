@@ -7,10 +7,11 @@ etwaigen `/backups/{name}`-Pfaden)."""
 
 from __future__ import annotations
 
+import os
 from datetime import datetime
 from pathlib import Path
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, StrictBool
 
@@ -18,6 +19,7 @@ from tapesmith import backup as backup_mod
 from tapesmith import configcode, integration
 from tapesmith.errors import EXIT_BUSY
 from tapesmith.webapi import actions
+from tapesmith.webapi.access import ROLE_ADMIN, principal
 from tapesmith.webapi.context import ApiContext, get_ctx
 from tapesmith.webapi.errors import NotFound, error_json
 from tapesmith.i18n import N_, _t
@@ -177,3 +179,25 @@ def config_import(body: ConfigImportBody, ctx: ApiContext = Depends(get_ctx)) ->
         "warnings": list(plan.warnings),
         "backup_dir": str(plan.backup_dir) if plan.backup_dir is not None else None,
     }
+
+
+# ---------- Windows-Bluetooth-Einstellungen ----------
+
+BLUETOOTH_SETTINGS_URI = "ms-settings:bluetooth"
+LOCAL_ONLY_TEXT = N_("Nur am PC selbst möglich, nicht über das Netzwerk")
+
+
+def _default_opener(uri: str) -> None:
+    os.startfile(uri)  # noqa: S606 (fester URI, keine Benutzereingabe)
+
+
+@router.post("/system/open-bluetooth-settings")
+def open_bluetooth_settings(request: Request, ctx: ApiContext = Depends(get_ctx)) -> dict:
+    """Öffnet die Bluetooth-Geräte in den Windows-Einstellungen, damit der Drucker dort mit einem
+    Klick verbunden werden kann. Nur von diesem PC aus (Loopback) und nur für die Rolle admin."""
+    found = principal(request)
+    if not found.loopback or found.role != ROLE_ADMIN:
+        raise HTTPException(status_code=403, detail=_t(LOCAL_ONLY_TEXT))
+    opener = ctx.uri_opener or _default_opener
+    opener(BLUETOOTH_SETTINGS_URI)
+    return {"opened": BLUETOOTH_SETTINGS_URI}

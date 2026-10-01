@@ -125,5 +125,9 @@
     "retry": "Erneut versuchen",
     "appHint": "„Erneut versuchen“ startet den Dienst und verbindet dieses Fenster neu.",
     "browserHint": "Der Dienst läuft gerade nicht. Starte ihn mit <code>tapesmith daemon start</code>, die Seite verbindet sich alle 3 Sekunden neu."
+  },
+  "bluetooth": {
+    "open": "Bluetooth-Einstellungen",
+    "hint": "Öffnet die Bluetooth-Geräte in den Windows-Einstellungen. Dort den P12 auswählen und „Verbinden“ klicken."
   }
 }

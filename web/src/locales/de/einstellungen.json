@@ -94,7 +94,9 @@
         "checked": "Zuletzt abgefragt",
         "lastError": "Letzter Fehler"
       }
-    }
+    },
+    "bluetoothLabel": "Bluetooth-Verbindung",
+    "bluetoothHelp": "Verbindet sich der Drucker nicht von selbst: Bluetooth-Geräte in Windows öffnen, den P12 auswählen und „Verbinden“ klicken."
   },
   "tape": {
     "title": "Band und Rolle",

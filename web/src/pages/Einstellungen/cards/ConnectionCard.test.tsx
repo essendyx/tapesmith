@@ -25,7 +25,7 @@ describe('Karte Drucker und Verbindung', () => {
     const card = document.getElementById('verbindung') as HTMLElement;
     await user.click(within(card).getByRole('button', { name: 'Drucker suchen und testen' }));
 
-    expect(await within(card).findByText('Verbinden', { exact: false })).toBeInTheDocument();
+    expect(await within(card).findByText('Verbinden')).toBeInTheDocument();
     expect(within(card).getByText('Band prüfen')).toBeInTheDocument();
   });
 

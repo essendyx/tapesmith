@@ -12,6 +12,7 @@ import { ApiError } from '../../../api/client';
 import { usePrint } from '../../../components/usePrint';
 import { postSetup, useSettingsPorts } from '../api';
 import { StatusDetailList } from './StatusDetailList';
+import { BluetoothSettingsButton } from '../../../components/BluetoothSettingsButton';
 import { FieldRow, FieldRows, ToggleControl } from '../../../components/FieldRow';
 import type { SetupJson } from '../../../api/types';
 
@@ -161,6 +162,11 @@ export function ConnectionCard(): JSX.Element {
               ) : null}
             </div>
           ) : null}
+          <FieldRow
+            label={t('connection.bluetoothLabel')}
+            help={t('connection.bluetoothHelp')}
+            control={<BluetoothSettingsButton />}
+          />
           <FieldRow
             label={t('connection.printTestLabel')}
             help={t('connection.printTestHelp')}

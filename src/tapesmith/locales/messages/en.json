@@ -2600,5 +2600,6 @@
  "an": "on",
  "Version {version} ist auf PyPI noch nicht abrufbar": "Version {version} is not yet available on PyPI",
  "Das Release ist wohl gerade erst erschienen; in ein paar Minuten erneut versuchen.": "The release was probably just published; try again in a few minutes.",
- "Übernahme fehlgeschlagen ({kind})": "Take over failed ({kind})"
+ "Übernahme fehlgeschlagen ({kind})": "Take over failed ({kind})",
+ "Nur am PC selbst möglich, nicht über das Netzwerk": "Only possible on this PC, not over the network"
 }

@@ -94,7 +94,9 @@
         "checked": "Last checked",
         "lastError": "Last error"
       }
-    }
+    },
+    "bluetoothLabel": "Bluetooth connection",
+    "bluetoothHelp": "If the printer does not connect by itself: open the Bluetooth devices in Windows, select the P12 and click Connect."
   },
   "tape": {
     "title": "Tape and roll",

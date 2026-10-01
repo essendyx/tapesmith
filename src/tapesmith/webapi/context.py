@@ -60,6 +60,8 @@ class ApiContext:
     ssh_runner: Callable[[list[str], float], tuple[int, str, str]] | None = None
     drives_backend: DrivesBackend | None = None
     accent_reader: Callable[[], str | None] = accent.read_accent
+    # Öffnet einen Windows-URI wie ms-settings:bluetooth (Tests ersetzen ihn)
+    uri_opener: Callable[[str], None] | None = None
     extras: dict = field(default_factory=dict)
     tokens: Any = field(default_factory=_default_tokens)
     lan: LanPolicy = field(default_factory=LanPolicy.disabled)

@@ -125,5 +125,9 @@
     "retry": "Try again",
     "appHint": "“Try again” starts the service and reconnects this window.",
     "browserHint": "The service is not running. Start it with <code>tapesmith daemon start</code>; the page reconnects every 3 seconds."
+  },
+  "bluetooth": {
+    "open": "Bluetooth settings",
+    "hint": "Opens the Bluetooth devices in Windows Settings. Select the P12 there and click Connect."
   }
 }
