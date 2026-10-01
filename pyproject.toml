@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tapesmith"
-version = "0.4.3"
+version = "0.4.4"
 description = "Label studio for the Phomemo P12 label printer: templates, QR codes, homelab labels, web UI, print service and automation for Windows"
 readme = "README.md"
 license = "MIT"
