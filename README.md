@@ -108,6 +108,10 @@ release manifest lists every package with its SHA-256, pip installs only wheels 
 checksum (`pip install --require-hashes --only-binary=:all:`), the self test of the new version must
 pass, and Tapesmith switches over while idle, with automatic rollback if the new version does not
 start. Manually: Settings > Updates, or `py -m tapesmith update check` and `py -m tapesmith update install`.
+You can also pick any published version (0.4.0 and later), newer or older, under Settings > Updates >
+Specific version, or with `py -m tapesmith update list` and `py -m tapesmith update install <version>`.
+Going back to an older version is only done on your explicit request, after a confirmation and an
+automatic backup of your data.
 
 **Uninstall:** Settings > Apps > Installed apps > Tapesmith, the start menu entry "Tapesmith
 deinstallieren", or `py -m tapesmith uninstall`. This removes the program folder, start menu entries,
