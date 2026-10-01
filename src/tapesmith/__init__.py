@@ -2,7 +2,7 @@
 
 import os
 
-__version__ = "0.4.2"
+__version__ = "0.4.3"
 
 # Bis 0.2.x hieß die App "P12 Label" und las Umgebungsvariablen mit dem Präfix P12LABEL_.
 # Alte Namen gelten weiter als Rückfall: ist TAPESMITH_X nicht gesetzt, übernimmt es den Wert
