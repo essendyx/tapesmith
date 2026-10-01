@@ -80,6 +80,21 @@ def test_document_template_fills_placeholders():
     assert "pmx10.home.lan" in meta.title
 
 
+def test_titel_nur_aus_textobjekten_ohne_icon_und_qr():
+    """Verlaufstitel: „Earl Grey“, nicht „tabler:milk Earl Grey“; QR-Inhalt nicht doppelt."""
+    template = template_from_dict({
+        "schema_version": 2, "name": "t-icon", "description": "",
+        "fields": [{"id": "inhalt", "label": "Inhalt", "type": "input", "default": "Earl Grey"}],
+        "document": {"objects": [
+            {"kind": "icon", "id": "i1", "x": 0, "y": 0, "w": 40, "h": 40, "icon": "tabler:milk"},
+            {"kind": "text", "id": "t1", "x": 50, "y": 0, "w": 200, "h": 40, "text": "{inhalt}"},
+            {"kind": "qr", "id": "q1", "x": 260, "y": 0, "w": 88, "h": 88, "data": "{inhalt}", "error": "l"},
+        ]},
+    })
+    tr = render_template(template, {"inhalt": "Earl Grey"}, PROFILE)
+    assert render_meta(tr).title == "Earl Grey"
+
+
 # 3. Generator-Vorlage (Fake-Generator) ----------------------------------------------------
 
 @pytest.fixture

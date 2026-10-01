@@ -7,18 +7,24 @@ replaces the phone app with a fast local print service, a browser based editor, 
 a command line and optional integrations for home labs and home automation. Everything runs on your
 own PC; nothing is sent to a cloud service.
 
-![Quick print (light)](https://github.com/essendyx/tapesmith/raw/main/docs/screenshots/schnelldruck-hell-desktop-en.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/essendyx/tapesmith/raw/main/docs/readme/quick-print-dark.png">
+  <img alt="Quick print: type a text, see the label at real size, print" src="https://github.com/essendyx/tapesmith/raw/main/docs/readme/quick-print.png">
+</picture>
 
 ## Screenshots
 
-| Editor | Template gallery |
+| Templates with a live preview | Label editor |
 |---|---|
-| ![Editor](https://github.com/essendyx/tapesmith/raw/main/docs/screenshots/editor-hell-desktop-en.png) | ![Gallery](https://github.com/essendyx/tapesmith/raw/main/docs/screenshots/galerie-hell-desktop-en.png) |
-| **Print history** | **Settings (dark)** |
-| ![History](https://github.com/essendyx/tapesmith/raw/main/docs/screenshots/verlauf-hell-desktop-en.png) | ![Settings](https://github.com/essendyx/tapesmith/raw/main/docs/screenshots/einstellungen-dunkel-desktop-en.png) |
+| ![Templates](https://github.com/essendyx/tapesmith/raw/main/docs/readme/templates.png) | ![Editor](https://github.com/essendyx/tapesmith/raw/main/docs/readme/editor.png) |
+| **Template gallery** | **Print history with reprint** |
+| ![Gallery](https://github.com/essendyx/tapesmith/raw/main/docs/readme/gallery.png) | ![History](https://github.com/essendyx/tapesmith/raw/main/docs/readme/history.png) |
+| **Log viewer** | **Dark mode** |
+| ![Log](https://github.com/essendyx/tapesmith/raw/main/docs/readme/log.png) | ![Dark mode](https://github.com/essendyx/tapesmith/raw/main/docs/readme/quick-print-dark.png) |
 
-More screenshots (German and English, light and dark, desktop and phone):
-[docs/screenshots](https://github.com/essendyx/tapesmith/blob/main/docs/screenshots/index.md). All screenshots are taken from neutral demo data.
+All screenshots use made up demo data and are produced by `tools/readme_shots.py`. The full set
+(German and English, light and dark, desktop and phone) is in
+[docs/screenshots](https://github.com/essendyx/tapesmith/blob/main/docs/screenshots/index.md).
 
 ## Features
 
@@ -26,12 +32,17 @@ More screenshots (German and English, light and dark, desktop and phone):
   text fitting and a live preview at real size.
 - **Editor** with text, QR codes, Code128, DataMatrix, icons, shapes and images, multiple tabs,
   undo, autosave and crash recovery.
-- **Template gallery** with more than 30 built in templates (storage, kitchen, office, network
+- **Templates** with more than 30 built in designs (pantry, freezer, storage boxes, office, network
   and power labels, cable flags, grid strips for patch panels and fuse boxes) and your own
-  templates as JSON files.
+  templates as JSON files. The preview fills empty fields with example content, so you always see
+  the label before you type, and printing unlocks once the required fields are filled.
 - **Series printing** from CSV, Excel or the clipboard, numbering ranges and counters.
 - **Print service** that owns the printer connection: queue with automatic retry, print history,
-  statistics, tape roll tracking and misprint protection.
+  statistics, tape roll tracking and misprint protection. If the printer does not answer,
+  **Reconnect** in the status dialog rebuilds the Bluetooth connection with a longer wait.
+- **Everything in the browser:** all settings, including tokens and passwords for integrations,
+  and a **log viewer** with level filter, search, live view and download. The tray icon only opens
+  browser tabs and shows the running version.
 - **Command line** (`tapesmith`, short alias `p12`) for scripts, plus a PowerShell module.
 - **Accessibility and languages:** keyboard operation, screen reader labels, high contrast, dark
   mode. English and German throughout: web interface, tray, print service messages, built in
@@ -82,6 +93,12 @@ does not block it, although Tapesmith itself carries no code signing certificate
 3. Pair the printer in Windows Bluetooth settings, then pick it in the web interface under Settings
    (or run `py -m tapesmith setup`).
 
+**Connection tips:** the P12 talks to Tapesmith over the Bluetooth serial port (for example COM3).
+Windows lists it as "Driver unavailable"; that is expected, no printer driver is needed, and the
+connection opens by itself whenever Tapesmith prints. If the status shows the printer as
+unreachable: switch it on (it turns itself off after a while), disconnect the phone app (the P12
+accepts one connection at a time) and click **Reconnect** in the status dialog.
+
 Your settings and history live in `%APPDATA%\Tapesmith`. Installing, updating and uninstalling never
 touch them.
 
@@ -121,8 +138,12 @@ still work as a fallback for `TAPESMITH_*`.
   limited to configured private networks and always requires an API token (roles: admin, print,
   family). Tokens are stored as SHA-256 hashes only.
 - Host and Origin headers are checked (DNS rebinding protection), failed logins are rate limited.
-- Secrets never go into configuration files: settings hold references such as
-  `keyring:tapesmith/mqtt` (Windows Credential Manager), `file:<path>` or `env:<NAME>`.
+- Secrets never go into configuration files. Tokens and passwords are entered in the web interface
+  (Settings > Tokens and passwords) and stored in the Windows Credential Manager; the API never
+  sends them back. Settings only hold a reference such as `keyring:tapesmith/mqtt`. References to
+  `file:<path>` or `env:<NAME>` keep working and can be moved into the Credential Manager with one
+  click ("Take over into Tapesmith").
+- Log files never contain tokens or passwords, and the log viewer masks them as well.
 - Updates are only installed if the manifest carries a valid Ed25519 signature from a key listed
   in `src/tapesmith/update/trusted_keys.json`, and pip installs only wheels whose SHA-256 is listed
   in that manifest.

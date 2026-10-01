@@ -238,7 +238,9 @@ def render_meta(tr: TemplateRender, *, kind: str = "template", title_prefix: str
     if tr.template.kind == "layout":
         return template_meta(tr.template, tr.values, tr.spec, kind=kind,
                              title_prefix=title_prefix, source=source)
-    texte = document_texts(tr.document)
+    # Titel aus den sichtbaren Textobjekten; Icon-Namen und QR-Inhalte gehören nicht hinein
+    # (sonst „tabler:milk Earl Grey“ oder doppelte Angaben). Ohne Textobjekt: alle Inhalte.
+    texte = [o.text for o in tr.document.objects if o.kind == "text" and o.text] or document_texts(tr.document)
     sensitive = any(f.secret for f in tr.template.fields)
     title = title_prefix + redact_text(" ".join(t for t in texte if t), tr.template, tr.values)
     return JobMeta(source=source, kind=kind, template=tr.template.name, title=title,
