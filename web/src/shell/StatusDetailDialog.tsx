@@ -22,7 +22,9 @@ import { formatDateTime } from '../i18n/format';
 import { StatusDot } from './StatusDot';
 
 const useStyles = makeStyles({
-  surface: { maxWidth: '620px', borderRadius: tokens.borderRadiusXLarge },
+  surface: { maxWidth: '620px', width: 'calc(100vw - 32px)', borderRadius: tokens.borderRadiusXLarge },
+  // Knöpfe einzeilig; auf schmalen Bildschirmen umbrechen die Gruppen, nicht die Beschriftungen
+  actions: { flexWrap: 'wrap', '& button': { whiteSpace: 'nowrap' } },
   head: { display: 'flex', alignItems: 'center', columnGap: tokens.spacingHorizontalS },
   list: {
     display: 'grid',
@@ -110,8 +112,10 @@ export function StatusDetailDialog(props: { open: boolean; onOpenChange: (open: 
             {checkedAt ? <span className={styles.checked}>{t('status.checked', { time: formatDateTime(checkedAt) })}</span> : null}
             {error ? <ErrorMessage error={error} /> : null}
           </DialogContent>
-          <DialogActions>
+          <DialogActions position="start" className={styles.actions}>
             <BluetoothSettingsButton onError={setError} />
+          </DialogActions>
+          <DialogActions className={styles.actions}>
             <Button
               appearance="primary"
               icon={busy ? <Spinner size="tiny" /> : <ArrowSync20Regular />}
