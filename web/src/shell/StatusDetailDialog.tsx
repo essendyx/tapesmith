@@ -12,11 +12,10 @@ import {
   makeStyles,
   tokens,
 } from '@fluentui/react-components';
-import { ArrowSync20Regular } from '@fluentui/react-icons';
+import { ArrowSync20Regular, PlugConnected20Regular } from '@fluentui/react-icons';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { qk, refreshStatus, useStatus } from '../api/core';
-import { BluetoothSettingsButton } from '../components/BluetoothSettingsButton';
+import { qk, reconnectPrinter, refreshStatus, useStatus } from '../api/core';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { formatDateTime } from '../i18n/format';
 import { StatusDot } from './StatusDot';
@@ -73,11 +72,15 @@ export function StatusDetailDialog(props: { open: boolean; onOpenChange: (open: 
   const view = status.data?.view;
   const checkedAt = status.data?.report.checked_at;
 
-  const refresh = async () => {
+  // „Erneut verbinden“ nur bei einem echten Verbindungsproblem; „getrennt“ ohne Fehler ist der
+  // normale Ruhezustand (Verbindung nach Leerlauf freigegeben)
+  const state = status.data?.report.state;
+  const connected = !state || !(state.state === 'offline' || state.state === 'fehler' || (state.state === 'getrennt' && state.last_error));
+  const refresh = async (reconnect = false) => {
     setBusy(true);
     setError(null);
     try {
-      const fresh = await refreshStatus();
+      const fresh = reconnect ? await reconnectPrinter() : await refreshStatus();
       queryClient.setQueryData(qk.status, fresh);
     } catch (err) {
       setError(err);
@@ -112,15 +115,24 @@ export function StatusDetailDialog(props: { open: boolean; onOpenChange: (open: 
             {checkedAt ? <span className={styles.checked}>{t('status.checked', { time: formatDateTime(checkedAt) })}</span> : null}
             {error ? <ErrorMessage error={error} /> : null}
           </DialogContent>
-          <DialogActions position="start" className={styles.actions}>
-            <BluetoothSettingsButton onError={setError} />
-          </DialogActions>
           <DialogActions className={styles.actions}>
+            {connected ? null : (
+              <Button
+                appearance="primary"
+                icon={busy ? <Spinner size="tiny" /> : <PlugConnected20Regular />}
+                disabled={busy}
+                aria-busy={busy}
+                title={t('status.reconnectHint')}
+                onClick={() => void refresh(true)}
+              >
+                {busy ? t('status.reconnecting') : t('status.reconnect')}
+              </Button>
+            )}
             <Button
-              appearance="primary"
-              icon={busy ? <Spinner size="tiny" /> : <ArrowSync20Regular />}
+              appearance={connected ? 'primary' : 'secondary'}
+              icon={busy && connected ? <Spinner size="tiny" /> : <ArrowSync20Regular />}
               disabled={busy}
-              aria-busy={busy}
+              aria-busy={busy && connected}
               onClick={() => void refresh()}
             >
               {t('status.refresh')}

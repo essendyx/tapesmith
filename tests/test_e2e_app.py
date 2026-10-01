@@ -402,3 +402,18 @@ def test_installer_und_deinstallation_mit_fakes(tmp_path, app_home, monkeypatch)
     assert junction.read_junction(layout.current_link(root)) is None
     assert any("Benutzerdaten" in line for line in lines)
     assert _tree(app_home) == home_before
+
+
+def test_status_erneut_verbinden(api, monkeypatch):
+    client, ctx = api
+    seen = {}
+    real = ctx.service.status
+
+    def spy(**kw):
+        seen.update(kw)
+        return real(fresh=False)
+
+    monkeypatch.setattr(ctx.service, "status", spy)
+    r = client.post("/api/v1/status/refresh", json={"reconnect": True})
+    assert r.status_code == 200, r.text
+    assert seen == {"fresh": True, "reconnect": True}

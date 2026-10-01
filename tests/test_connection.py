@@ -510,3 +510,13 @@ def test_on_state_offline_from_preconnect_timeout_is_reported_from_worker(manage
     time.sleep(0.05)
     assert seen == [(ConnectionState.CONNECTING, "P12-Verbindung"),
                     (ConnectionState.OFFLINE, "P12-Verbindung")]
+
+
+def test_connect_mit_eigener_fabrik_nur_fuer_diesen_aufbau(managers):
+    """„Erneut verbinden“: eigene Fabrik (z. B. längere Wartezeit) nur für diesen einen Aufbau."""
+    normal = Factory(lambda: FakeTransport())
+    other = Factory(lambda: FakeTransport())
+    m = managers(normal, connect_timeout_s=1.0)
+    m.connect(force=True, timeout=5.0, factory=other)
+    assert m.state is ConnectionState.CONNECTED
+    assert len(other.made) == 1 and normal.made == []

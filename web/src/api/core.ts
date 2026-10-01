@@ -42,6 +42,11 @@ export function refreshStatus(quick?: boolean): Promise<StatusJson> {
   return apiPost<StatusJson>('/api/v1/status/refresh', quick === undefined ? {} : { quick });
 }
 
+/** „Erneut verbinden“: umgeht die Offline-Sperre und wartet länger auf den Bluetooth-Aufbau. */
+export function reconnectPrinter(): Promise<StatusJson> {
+  return apiPost<StatusJson>('/api/v1/status/refresh', { reconnect: true });
+}
+
 export function fetchTapes(signal?: AbortSignal): Promise<{ tapes: TapeInfo[]; current: string }> {
   return apiGet<{ tapes: TapeInfo[]; current: string }>('/api/v1/tapes', signal);
 }

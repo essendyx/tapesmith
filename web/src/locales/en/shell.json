@@ -69,7 +69,10 @@
     "detailLabel": "Status values",
     "loadingDetail": "Loading status …",
     "checked": "Last checked: {{time}}",
-    "refresh": "Check status"
+    "refresh": "Check status",
+    "reconnect": "Reconnect",
+    "reconnecting": "Connecting…",
+    "reconnectHint": "Rebuilds the Bluetooth connection and waits up to 15 seconds. Switch the printer on and disconnect the phone app first."
   },
   "recovery": {
     "title_one": "Found {{count}} unsaved draft",

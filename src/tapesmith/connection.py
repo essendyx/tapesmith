@@ -139,12 +139,15 @@ class ConnectionManager:
                 return
         threading.Thread(target=self._preconnect_bg, name="P12-Vorverbinden", daemon=True).start()
 
-    def connect(self, timeout: float | None = None, force: bool = False) -> None:
+    def connect(self, timeout: float | None = None, force: bool = False,
+                factory: Callable[[], Transport] | None = None) -> None:
+        """Verbindung aufbauen. `factory` ersetzt für diesen einen Aufbau die Transport-Fabrik
+        (z. B. mit längerer Wartezeit für „Erneut verbinden“)."""
         if not force:
             self._raise_if_backoff()
         started = Future()
         connected = Future()
-        self._submit(lambda: self._job_connect(started, connected))
+        self._submit(lambda: self._job_connect(started, connected, factory))
         self._await_connect(started, connected, timeout, job=None)
 
     def run(self, fn: Callable[[PrinterSession], T], timeout: float | None = None) -> T:
@@ -302,7 +305,7 @@ class ConnectionManager:
             except BaseException:  # pragma: no cover (Aufträge setzen ihre Futures selbst)
                 pass
 
-    def _ensure_connected(self) -> None:
+    def _ensure_connected(self, factory: Callable[[], Transport] | None = None) -> None:
         if self._transport is not None:
             return
         self._set_state(ConnectionState.CONNECTING)
@@ -316,7 +319,7 @@ class ConnectionManager:
             self._set_state(ConnectionState.ERROR, exc)
             raise
         try:
-            transport = self._factory()
+            transport = (factory or self._factory)()
             transport.open()
         except BaseException as exc:
             try:
@@ -358,11 +361,12 @@ class ConnectionManager:
                 pass
             self._set_state(ConnectionState.DISCONNECTED)
 
-    def _job_connect(self, started: Future, connected: Future) -> None:
+    def _job_connect(self, started: Future, connected: Future,
+                     factory: Callable[[], Transport] | None = None) -> None:
         if not started.set_running_or_notify_cancel():
             return
         try:
-            self._ensure_connected()
+            self._ensure_connected(factory)
         except BaseException as exc:
             started.set_result(None)
             connected.set_exception(exc)

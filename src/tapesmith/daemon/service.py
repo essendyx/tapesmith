@@ -55,6 +55,7 @@ PROGRESS_INTERVAL_S = 0.1
 _LOCK_POLL_S = 0.05
 
 # Änderungen an diesen Schlüsseln erfordern einen neuen Verbindungsmanager.
+RECONNECT_TIMEOUT_S = 15.0
 _CONNECTION_KEYS = ("transport", "mac", "connect_timeout_s", "idle_timeout_s")
 
 TransportFactory = Callable[[dict, DeviceProfile], Callable[[], Transport]]
@@ -474,8 +475,11 @@ class PrintService:
         status, checked = cache if cache is not None else (None, None)
         return StatusReport(self.state(), status, checked)
 
-    def status(self, *, quick: bool = False, fresh: bool = True, force: bool = False) -> StatusReport:
-        """Druckerstatus. `force` (Läufer): Offline-Sperre des Managers umgehen."""
+    def status(self, *, quick: bool = False, fresh: bool = True, force: bool = False,
+               reconnect: bool = False) -> StatusReport:
+        """Druckerstatus. `force` (Läufer): Offline-Sperre des Managers umgehen. `reconnect`
+        („Erneut verbinden“): Sperre umgehen und mit längerer Wartezeit verbinden, weil ein gerade
+        aufgewachter Drucker für den Bluetooth-Aufbau oft länger braucht."""
         if not fresh:
             return self._report()
         if self.leased:
@@ -490,7 +494,11 @@ class PrintService:
                 self._maybe_reload()
                 profile = self._profile
                 queries = PREFLIGHT_QUERIES if quick else FULL_QUERIES
-                if force:
+                if reconnect:
+                    wait_s = max(float(self._cfg["connect_timeout_s"]), RECONNECT_TIMEOUT_S)
+                    factory = self._transport_factory({**self._cfg, "connect_timeout_s": wait_s}, profile)
+                    self._manager.connect(timeout=wait_s + 5.0, force=True, factory=factory)
+                elif force:
                     self._manager.connect(force=True)
                 status = self._manager.run(lambda s: read_status(s, profile, queries))
             finally:

@@ -374,3 +374,21 @@ def test_queue_operations_emit_events(svc):
     assert service.queue_cancel(q1) is True
     assert len(service.queue_snapshot(include_done=True)["jobs"]) == 2
     assert len(events.of("queue")) >= 6
+
+
+def test_erneut_verbinden_umgeht_backoff_mit_laengerer_wartezeit(svc):
+    seen: list[float] = []
+    inner = TransportFactory(MemoryTransport(STATUS_OK), errors=[ConnectTimeout("weg")])
+
+    def factory(cfg, profile):
+        seen.append(float(cfg["connect_timeout_s"]))
+        return inner(cfg, profile)
+
+    service, _t = svc(transport_factory=factory)
+    with pytest.raises(ConnectTimeout):
+        service.status()
+    with pytest.raises(PrinterOffline):
+        service.status()                      # Backoff: sofort offline
+    report = service.status(reconnect=True)   # „Erneut verbinden“: eigener Aufbau, 15 s
+    assert report.status is not None and report.checked_at is not None
+    assert seen[-1] == 15.0

@@ -29,6 +29,7 @@ router = APIRouter()
 class RefreshBody(BaseModel):
     model_config = ConfigDict(extra="ignore")
     quick: StrictBool = False
+    reconnect: StrictBool = False
 
 
 class CancelBody(BaseModel):
@@ -86,6 +87,8 @@ def status(ctx: ApiContext = Depends(get_ctx)) -> dict:
 @router.post("/status/refresh")
 def status_refresh(body: RefreshBody | None = None, ctx: ApiContext = Depends(get_ctx)) -> dict:
     quick = body.quick if body is not None else False
+    if body is not None and body.reconnect:
+        return _status(ctx, ctx.service.status(fresh=True, reconnect=True))
     return _status(ctx, ctx.service.status(quick=quick, fresh=True))
 
 

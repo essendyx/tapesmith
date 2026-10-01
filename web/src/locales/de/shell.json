@@ -69,7 +69,10 @@
     "detailLabel": "Statuswerte",
     "loadingDetail": "Status wird geladen …",
     "checked": "Zuletzt abgefragt: {{time}}",
-    "refresh": "Status abfragen"
+    "refresh": "Status abfragen",
+    "reconnect": "Erneut verbinden",
+    "reconnecting": "Verbinde …",
+    "reconnectHint": "Baut die Bluetooth-Verbindung neu auf und wartet dabei bis zu 15 Sekunden. Drucker vorher einschalten, Handy-App trennen."
   },
   "recovery": {
     "title_one": "{{count}} nicht gespeicherter Entwurf gefunden",

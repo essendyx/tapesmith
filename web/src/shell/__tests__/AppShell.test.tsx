@@ -325,6 +325,29 @@ describe('StatusChip', () => {
     await waitFor(() => expect(screen.getByTestId('status-chip')).toHaveTextContent('Frisch'));
   });
 
+  it('getrennt: „Erneut verbinden“ sendet reconnect, verbunden: kein Knopf', async () => {
+    const offline = {
+      ...fixtures.statusJson,
+      report: { ...fixtures.statusJson.report, state: { ...fixtures.statusJson.report.state, state: 'offline' } },
+    };
+    const bodies: unknown[] = [];
+    mockApi(
+      {
+        'GET /api/v1/status': () => offline,
+        'POST /api/v1/status/refresh': (req) => {
+          bodies.push(req.body);
+          return fixtures.statusJson;
+        },
+      },
+      { quiet: true },
+    );
+    const { user } = renderWithProviders(<LocationProbe />, { withShell: true, route: '/schnelldruck' });
+    await user.click(await screen.findByTestId('status-chip'));
+    const dialog = await findDialogByRole('dialog');
+    await user.click(within(dialog).getByRole('button', { name: 'Erneut verbinden', hidden: true }));
+    await waitFor(() => expect(bodies).toContainEqual({ reconnect: true }));
+  });
+
   it('Fehler beim Abfragen zeigt Meldung mit Hinweis', async () => {
     const { MockResponse } = await import('../../test/utils');
     mockApi(

@@ -96,7 +96,7 @@
       }
     },
     "bluetoothLabel": "Bluetooth-Verbindung",
-    "bluetoothHelp": "Verbindet sich der Drucker nicht von selbst: Bluetooth-Geräte in Windows öffnen, den P12 auswählen und „Verbinden“ klicken."
+    "bluetoothHelp": "Zum Koppeln oder Entfernen des Druckers in Windows. Verbunden wird der P12 automatisch, sobald Tapesmith ihn anspricht; sonst im Status-Dialog „Erneut verbinden“."
   },
   "tape": {
     "title": "Band und Rolle",

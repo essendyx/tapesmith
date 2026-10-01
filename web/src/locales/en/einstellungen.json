@@ -96,7 +96,7 @@
       }
     },
     "bluetoothLabel": "Bluetooth connection",
-    "bluetoothHelp": "If the printer does not connect by itself: open the Bluetooth devices in Windows, select the P12 and click Connect."
+    "bluetoothHelp": "To pair or remove the printer in Windows. The P12 connects automatically whenever Tapesmith talks to it; otherwise use Reconnect in the status dialog."
   },
   "tape": {
     "title": "Tape and roll",

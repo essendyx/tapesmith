@@ -22,7 +22,7 @@ TEXT_SUFFIXES = {
 }
 
 SKIP_DIRS = {".git", ".venv", "node_modules", "__pycache__", ".superpowers", "dist", "build",
-             ".pytest_cache", ".mypy_cache", ".ruff_cache"}
+             ".pytest_cache", ".mypy_cache", ".ruff_cache", ".claude"}
 
 # Drittanbieter-Dateien und gebaute Artefakte (Pfade relativ zum Repo, mit "/").
 EXEMPT_PREFIXES = (
