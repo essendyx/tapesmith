@@ -1,4 +1,4 @@
-/** Karte „Updates“: Version, Quelle, letzte Prüfung, verfügbares Update, Installieren, Rückstellung. */
+/** Karte „Updates“: Version, Quelle, letzte Prüfung, verfügbares Update, Versionsauswahl, Installieren, Rückstellung. */
 import { useEffect, useState, type ReactElement } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
@@ -30,8 +30,9 @@ import {
 import { useFormat } from '../../../i18n/format';
 import { useLayoutStyles } from '../../../theme/layout';
 import { FieldRow, FieldRows } from '../../../components/FieldRow';
+import { UpdateVersionPicker } from './UpdateVersionPicker';
 
-type Action = 'check' | 'install' | 'rollback';
+type Action = 'check' | 'install' | 'rollback' | 'pick';
 
 const useStyles = makeStyles({
   state: { display: 'flex', alignItems: 'center', columnGap: tokens.spacingHorizontalS },
@@ -143,6 +144,30 @@ export function UpdateCard(): JSX.Element {
     }
   };
 
+  /** Versionsauswahl: bestimmte Version, auch eine ältere (der Dienst sichert vorher). */
+  const onPick = async (version: string, downgrade: boolean) => {
+    const ok = await confirm({
+      title: downgrade ? t('confirm.downgradeTitle', { version }) : t('confirm.installTitle', { version }),
+      message: downgrade ? t('confirm.downgradeMessage') : t('confirm.installMessage'),
+      confirmText: downgrade ? t('confirm.downgradeConfirm') : t('confirm.installConfirm'),
+      cancelText: t('common:actions.cancel'),
+      danger: downgrade,
+    });
+    if (!ok) return;
+    setRunning('pick');
+    setActionError(null);
+    try {
+      await installUpdate(version, location.pathname + location.search, true);
+      setStart({ at: Date.now(), error: errorKey(query.data), sawOther: false });
+      notify({ intent: 'info', title: downgrade ? t('notify.downgradeStarted', { version }) : t('notify.installStarted') });
+      await refresh();
+    } catch (err) {
+      setActionError({ action: 'install', error: err });
+    } finally {
+      setRunning(null);
+    }
+  };
+
   const onRollback = async (previous: string) => {
     const ok = await confirm({
       title: t('confirm.rollbackTitle', { version: previous }),
@@ -235,6 +260,13 @@ export function UpdateCard(): JSX.Element {
             />
           ) : data.last_check && data.state !== 'failed' ? (
             <FieldRow label={t('available.none')} />
+          ) : null}
+          {data.installed ? (
+            <UpdateVersionPicker
+              disabled={running !== null || serverBusy}
+              busy={running === 'pick'}
+              onInstall={(version, downgrade) => void onPick(version, downgrade)}
+            />
           ) : null}
           {data.installed && data.can_rollback && data.previous ? (
             <FieldRow

@@ -125,3 +125,25 @@ def test_alter_token_eintrag_wird_ignoriert(app_home, tmp_path, monkeypatch, cap
     assert config_mod.load_config()["update"]["token_ref"] == "keyring:tapesmith/github"
     spawned, _root = _svc_factory(tmp_path, monkeypatch)
     assert cli.main(["update", "status"]) == 0
+
+
+def test_list_zeigt_versionen(app_home, tmp_path, monkeypatch, capsys):
+    _svc_factory(tmp_path, monkeypatch)
+    assert cli.main(["update", "list"]) == 0
+    lines = capsys.readouterr().out.splitlines()
+    assert lines[0].startswith("0.2.1") and "neu" in lines[0]
+    assert lines[1].startswith("0.1.0") and "aktuell installiert" in lines[1]
+    assert cli.main(["update", "list", "--json"]) == 0
+    data = json.loads(capsys.readouterr().out)
+    assert [v["version"] for v in data["versions"]] == ["0.2.1", "0.1.0"]
+
+
+def test_install_bestimmte_aeltere_version_mit_rueckfrage(app_home, tmp_path, monkeypatch, capsys):
+    spawned, root = _svc_factory(tmp_path, monkeypatch)
+    install_layout(root, versions=("0.0.9", "0.1.0"))
+    monkeypatch.setattr("sys.stdin", io.StringIO("n\n"))
+    assert cli.main(["update", "install", "0.0.9"]) == 1
+    assert "Zurück auf 0.0.9?" in capsys.readouterr().out and spawned == []
+    monkeypatch.setattr("tapesmith.update.service._default_backup", lambda cfg: tmp_path / "s.zip")
+    assert cli.main(["update", "install", "0.0.9", "--yes"]) == 0
+    assert spawned and spawned[0][spawned[0].index("--version") + 1] == "0.0.9"

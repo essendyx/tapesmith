@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
 import { UpdateCard } from './UpdateCard';
-import type { UpdateStatus } from '../../../api/update';
+import type { UpdateStatus, UpdateVersions } from '../../../api/update';
 import { findDialogByRole, mockApi, MockResponse, renderWithProviders, restoreAllMocks } from '../../../test/utils';
 import { expectNoA11yViolations } from '../../../test/a11y';
 
@@ -31,8 +31,20 @@ const AVAILABLE: UpdateStatus = {
   can_rollback: true,
 };
 
+const VERSIONS: UpdateVersions = {
+  current: '0.2.0',
+  installed: true,
+  channel: 'stable',
+  error: null,
+  versions: [
+    { version: '0.2.1', published: '2026-10-01T12:00:00Z', notes: 'Neue Vorlagen', prerelease: false, current: false, installed: false, failed: false, newer: true, in_source: true },
+    { version: '0.2.0', published: '2026-09-20T12:00:00Z', notes: '', prerelease: false, current: true, installed: true, failed: false, newer: false, in_source: true },
+    { version: '0.1.0', published: '2026-09-01T12:00:00Z', notes: 'Erste Version', prerelease: false, current: false, installed: true, failed: false, newer: false, in_source: true },
+  ],
+};
+
 function mockStatus(status: UpdateStatus, extra: Parameters<typeof mockApi>[0] = {}) {
-  return mockApi({ 'GET /api/v1/update/status': () => status, ...extra });
+  return mockApi({ 'GET /api/v1/update/status': () => status, 'GET /api/v1/update/versions': () => VERSIONS, ...extra });
 }
 
 afterEach(() => restoreAllMocks());
@@ -87,8 +99,71 @@ describe('UpdateCard', () => {
     await user.click(within(dialog).getByRole('button', { name: 'Installieren', hidden: true }));
     await waitFor(() => {
       const call = api.calls.find((c) => c.method === 'POST' && c.path === '/api/v1/update/install');
-      expect(call?.body).toEqual({ version: '0.2.1', reopen_route: '/einstellungen?abschnitt=updates' });
+      expect(call?.body).toEqual({ version: '0.2.1', reopen_route: '/einstellungen?abschnitt=updates', explicit: false });
     });
+  });
+
+  it('Versionsauswahl: neuere und ältere Versionen mit Markierung, Vorauswahl die neueste', async () => {
+    mockStatus(AVAILABLE);
+    const { user } = renderWithProviders(<UpdateCard />);
+    const dropdown = await screen.findByRole('combobox', { name: 'Bestimmte Version' });
+    await waitFor(() => expect(dropdown).toHaveTextContent('0.2.1'));
+    await user.click(dropdown);
+    const options = await screen.findAllByRole('option');
+    expect(options.map((o) => o.textContent)).toEqual([
+      expect.stringMatching(/^0\.2\.1 \(.*neu\)$/),
+      expect.stringMatching(/^0\.2\.0 \(.*aktuell installiert\)$/),
+      expect.stringMatching(/^0\.1\.0 \(.*lokal vorhanden\)$/),
+    ]);
+    expect(screen.getByRole('button', { name: 'Diese Version installieren' })).toBeEnabled();
+  });
+
+  it('Versionsauswahl: Zurück auf eine ältere Version warnt und sendet explicit', async () => {
+    const api = mockStatus(AVAILABLE, {
+      'POST /api/v1/update/install': () => new MockResponse(202, { started: true }),
+    });
+    const { user } = renderWithProviders(<UpdateCard />, { route: '/einstellungen?abschnitt=updates' });
+    const dropdown = await screen.findByRole('combobox', { name: 'Bestimmte Version' });
+    await waitFor(() => expect(dropdown).toHaveTextContent('0.2.1'));
+    await user.click(dropdown);
+    await user.click(await screen.findByRole('option', { name: /^0\.1\.0/ }));
+    expect(screen.getByText('Erste Version')).toBeInTheDocument();
+    expect(screen.getByText('Ältere Version: Vorher wird eine Sicherung angelegt.')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Zurück auf 0.1.0' }));
+    const dialog = await findDialogByRole('alertdialog');
+    expect(within(dialog).getByText('Zurück auf Version 0.1.0?')).toBeInTheDocument();
+    expect(within(dialog).getByText(/Vorher legt Tapesmith eine Sicherung/)).toBeInTheDocument();
+    expect(api.calls.some((c) => c.path === '/api/v1/update/install')).toBe(false);
+    await user.click(within(dialog).getByRole('button', { name: 'Sichern und zurückgehen', hidden: true }));
+    await waitFor(() => {
+      const call = api.calls.find((c) => c.method === 'POST' && c.path === '/api/v1/update/install');
+      expect(call?.body).toEqual({ version: '0.1.0', reopen_route: '/einstellungen?abschnitt=updates', explicit: true });
+    });
+  });
+
+  it('Versionsauswahl: aktive Version ist nicht installierbar', async () => {
+    mockStatus(AVAILABLE);
+    const { user } = renderWithProviders(<UpdateCard />);
+    const dropdown = await screen.findByRole('combobox', { name: 'Bestimmte Version' });
+    await waitFor(() => expect(dropdown).toHaveTextContent('0.2.1'));
+    await user.click(dropdown);
+    await user.click(await screen.findByRole('option', { name: /^0\.2\.0/ }));
+    expect(screen.getByRole('button', { name: 'Diese Version installieren' })).toBeDisabled();
+  });
+
+  it('Versionsauswahl: Vorabversionen nur auf Wunsch abgefragt', async () => {
+    const seen: (string | null)[] = [];
+    mockStatus(AVAILABLE, {
+      'GET /api/v1/update/versions': (req) => {
+        seen.push(req.query.get('prerelease'));
+        return VERSIONS;
+      },
+    });
+    const { user } = renderWithProviders(<UpdateCard />);
+    await screen.findByRole('combobox', { name: 'Bestimmte Version' });
+    expect(seen).toEqual([null]);
+    await user.click(screen.getByRole('switch', { name: 'Vorabversionen anzeigen' }));
+    await waitFor(() => expect(seen).toContain('true'));
   });
 
   it('nach dem Start der Installation fragt die Karte weiter nach und zeigt einen späteren Fehler', async () => {
@@ -222,11 +297,25 @@ describe('UpdateCard', () => {
     mockStatus(AVAILABLE);
     const { user, container } = renderWithProviders(<UpdateCard />);
     const install = await screen.findByRole('button', { name: 'Jetzt installieren' });
+    await waitFor(() => expect(screen.getByRole('combobox', { name: 'Bestimmte Version' })).toHaveTextContent('0.2.1'));
     // Tab-Reihenfolge im DOM (ohne die Hilfselemente von Tabster, die in jsdom den Fokus verlieren)
     const tabbable = Array.from(
       container.querySelectorAll<HTMLElement>('button, a[href], input, [tabindex]'),
-    ).filter((el) => !el.hasAttribute('data-tabster-dummy') && el.tabIndex >= 0 && !(el as HTMLButtonElement).disabled);
-    expect(tabbable.map((el) => el.textContent)).toEqual(['Jetzt prüfen', 'Jetzt installieren', 'Auf vorige Version zurück']);
+    ).filter(
+      (el) =>
+        !el.hasAttribute('data-tabster-dummy') &&
+        el.tabIndex >= 0 &&
+        !(el as HTMLButtonElement).disabled &&
+        getComputedStyle(el).display !== 'none',
+    );
+    expect(tabbable.map((el) => el.getAttribute('aria-label') ?? el.getAttribute('role') ?? el.textContent)).toEqual([
+      'Jetzt prüfen',
+      'Jetzt installieren',
+      'switch',
+      'combobox',
+      'Diese Version installieren',
+      'Auf vorige Version zurück',
+    ]);
     install.focus();
     expect(install).toHaveFocus();
     await user.keyboard('{Enter}');

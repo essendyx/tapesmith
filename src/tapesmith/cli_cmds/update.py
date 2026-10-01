@@ -34,7 +34,12 @@ def register(parser: argparse.ArgumentParser) -> None:
     st = sub.add_parser("status", help=_t("Update-Zustand anzeigen"))
     st.add_argument("--json", action="store_true", help=_t("als JSON ausgeben"))
     sub.add_parser("check", help=_t("jetzt nach Updates suchen"))
-    ins = sub.add_parser("install", help=_t("verfügbares Update installieren (App startet neu)"))
+    ls = sub.add_parser("list", help=_t("alle installierbaren Versionen anzeigen"))
+    ls.add_argument("--prerelease", action="store_true", help=_t("auch Vorabversionen"))
+    ls.add_argument("--json", action="store_true", help=_t("als JSON ausgeben"))
+    ins = sub.add_parser("install", help=_t("verfügbares Update bzw. eine bestimmte Version installieren (App startet neu)"))
+    ins.add_argument("version", nargs="?", default=None,
+                     help=_t("bestimmte Version, auch eine ältere (vorher wird gesichert)"))
     ins.add_argument("--yes", action="store_true", help=_t("ohne Rückfrage"))
     rb = sub.add_parser("rollback", help=_t("auf die vorige Version zurückstellen"))
     rb.add_argument("--yes", action="store_true", help=_t("ohne Rückfrage"))
@@ -92,6 +97,47 @@ def run(args: argparse.Namespace, ctx) -> int:
                     ctx.out(status.available["notes"])
             else:
                 ctx.out(_t("Kein Update verfügbar (aktuell {current})", current=status.current))
+            return EXIT_OK
+        if args.update_cmd == "list":
+            data = svc.versions(include_prerelease=args.prerelease, refresh=True)
+            if args.json:
+                ctx.out(json.dumps(data, ensure_ascii=False, indent=2))
+                return EXIT_OK
+            for entry in data["versions"]:
+                marks = []
+                if entry["current"]:
+                    marks.append(_t("aktuell installiert"))
+                elif entry["installed"]:
+                    marks.append(_t("lokal vorhanden"))
+                if entry["newer"]:
+                    marks.append(_t("neu"))
+                if entry["prerelease"]:
+                    marks.append(_t("Vorabversion"))
+                if entry["failed"]:
+                    marks.append(_t("gescheitert"))
+                date = (entry.get("published") or "")[:10]
+                ctx.out(f"{entry['version']:<12} {date:<10} {', '.join(marks)}".rstrip())
+            if data["error"]:
+                ctx.err(_t("Quelle nicht erreichbar: {message}", message=data["error"]["message"]))
+                return EXIT_UNREACHABLE
+            return EXIT_OK
+        if args.update_cmd == "install" and args.version:
+            if not svc.installed():
+                from tapesmith.update.service import NOT_INSTALLED_MESSAGE
+
+                raise UpdateError("update.not_installed", _t(NOT_INSTALLED_MESSAGE))
+            version = args.version
+            if svc.is_downgrade(version):
+                question = _t("Zurück auf {version}? Vorher wird eine Sicherung angelegt. Daten, die neuere Versionen geschrieben haben, versteht eine ältere eventuell nicht. Tapesmith startet dabei neu.", version=version)
+            else:
+                question = _t("Version {version} installieren? Tapesmith startet dabei neu.", version=version)
+            if not args.yes and not _confirm(ctx, question):
+                ctx.out(_t("Abgebrochen"))
+                return EXIT_ERROR
+            ctx.out(_t("Lade und prüfe {version} …", version=version))
+            svc.prepare(version, explicit=True)
+            svc.start_install(version, explicit=True)
+            ctx.out(_t("Umstellung auf {version} gestartet: Tapesmith beendet sich kurz und startet neu", version=version))
             return EXIT_OK
         if args.update_cmd == "install":
             if not svc.installed():

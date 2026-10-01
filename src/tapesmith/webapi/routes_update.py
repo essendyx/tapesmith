@@ -1,6 +1,6 @@
 """Update-Routen, nur Rolle `admin` bzw. Sitzung.
 
-`GET /update/status`, `POST /update/consent` (Antwort auf die einmalige Rückfrage nach der
+`GET /update/status`, `GET /update/versions` (Versionsauswahl), `POST /update/consent` (Antwort auf die einmalige Rückfrage nach der
 automatischen Prüfung, setzt `update.enabled` und `update.asked`), `POST /update/check`, `POST /update/install` (202, Bereitstellung und Start
 laufen im Hintergrund, Fortschritt über `status`), `POST /update/rollback` (202). Installation und
 Rückstellung verlangen „kein Auftrag aktiv, Warteschlange leer“ (sonst 409 `update.busy`), die
@@ -34,6 +34,8 @@ class InstallBody(BaseModel):
     model_config = ConfigDict(extra="ignore")
     version: StrictStr
     reopen_route: StrictStr | None = None
+    # Versionsauswahl: ausdrücklich gewählt, darf älter (mit Sicherung) oder Vorabversion sein
+    explicit: StrictBool = False
 
 
 class ConsentBody(BaseModel):
@@ -113,6 +115,12 @@ def update_check(ctx: ApiContext = Depends(get_ctx)):
         return _error(exc)
 
 
+@router.get("/update/versions")
+def update_versions(prerelease: bool = False, refresh: bool = False, ctx: ApiContext = Depends(get_ctx)):
+    """Versionsauswahl: alle installierbaren Versionen (Quelle und lokal), neueste zuerst."""
+    return update_service(ctx).versions(include_prerelease=prerelease, refresh=refresh)
+
+
 @router.post("/update/install", status_code=202)
 def update_install(body: InstallBody, ctx: ApiContext = Depends(get_ctx)):
     svc = update_service(ctx)
@@ -130,8 +138,8 @@ def update_install(body: InstallBody, ctx: ApiContext = Depends(get_ctx)):
 
     def work() -> None:
         try:
-            svc.prepare(body.version)
-            svc.start_install(body.version, reopen_route=safe_route(body.reopen_route))
+            svc.prepare(body.version, explicit=body.explicit)
+            svc.start_install(body.version, reopen_route=safe_route(body.reopen_route), explicit=body.explicit)
         except UpdateError as exc:
             log.warning("Update %s nicht gestartet: %s", body.version, exc)
         except Exception:  # noqa: BLE001

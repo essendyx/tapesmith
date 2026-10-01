@@ -39,7 +39,27 @@
     "installConfirm": "Installieren",
     "rollbackTitle": "Auf Version {{version}} zurückstellen?",
     "rollbackMessage": "Tapesmith startet kurz neu und öffnet sich danach mit der vorigen Version in einem neuen Browser-Tab.",
-    "rollbackConfirm": "Zurückstellen"
+    "rollbackConfirm": "Zurückstellen",
+    "downgradeTitle": "Zurück auf Version {{version}}?",
+    "downgradeMessage": "Vorher legt Tapesmith eine Sicherung deiner Daten an. Einstellungen und Daten, die eine neuere Version geschrieben hat, versteht eine ältere eventuell nicht vollständig. Automatisch geht Tapesmith nie auf eine ältere Version zurück. Tapesmith startet kurz neu und öffnet sich danach in einem neuen Browser-Tab.",
+    "downgradeConfirm": "Sichern und zurückgehen"
+  },
+  "versions": {
+    "label": "Bestimmte Version",
+    "help": "Alle veröffentlichten Versionen, neuere und ältere. Jede wird vor der Installation signiert geprüft.",
+    "prerelease": "Vorabversionen anzeigen",
+    "loading": "Versionen werden geladen …",
+    "empty": "Keine Versionen gefunden",
+    "install": "Diese Version installieren",
+    "downgrade": "Zurück auf {{version}}",
+    "markCurrent": "aktuell installiert",
+    "markLocal": "lokal vorhanden",
+    "markNew": "neu",
+    "markPrerelease": "Vorabversion",
+    "markFailed": "gescheitert",
+    "downgradeHint": "Ältere Version: Vorher wird eine Sicherung angelegt.",
+    "failedHint": "Diese Version ist hier schon einmal gescheitert und wird nicht erneut installiert.",
+    "sourceError": "Versionsliste der Quelle nicht abrufbar, nur lokal vorhandene Versionen"
   },
   "notInstalled": "Entwicklung oder nicht installiert: Updates nur in der installierten App. Installieren mit: py -m tapesmith install",
   "runningFromSource": "Läuft aus dem Quellordner: Diese Version aktualisiert sich nicht selbst. Für Updates die installierte Version starten (tools\\installed-start.cmd).",
@@ -50,7 +70,8 @@
   },
   "notify": {
     "installStarted": "Update wird installiert",
-    "rollbackStarted": "Rückstellung läuft"
+    "rollbackStarted": "Rückstellung läuft",
+    "downgradeStarted": "Sicherung angelegt, Umstellung auf {{version}} läuft"
   },
   "rollback": {
     "label": "Vorige Version {{version}}",

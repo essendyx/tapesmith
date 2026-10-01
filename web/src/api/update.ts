@@ -65,8 +65,46 @@ export function checkUpdate(): Promise<UpdateStatus> {
   return apiPost<UpdateStatus>('/api/v1/update/check');
 }
 
-export function installUpdate(version: string, reopenRoute: string | null): Promise<{ started: boolean }> {
-  return apiPost<{ started: boolean }>('/api/v1/update/install', { version, reopen_route: reopenRoute });
+export function installUpdate(
+  version: string,
+  reopenRoute: string | null,
+  explicit = false,
+): Promise<{ started: boolean }> {
+  return apiPost<{ started: boolean }>('/api/v1/update/install', { version, reopen_route: reopenRoute, explicit });
+}
+
+/** Ein Eintrag der Versionsauswahl (Quelle und lokal vorhandene Versionen). */
+export interface UpdateVersion {
+  version: string;
+  published: string | null;
+  notes: string;
+  prerelease: boolean;
+  current: boolean;
+  installed: boolean;
+  failed: boolean;
+  newer: boolean;
+  in_source: boolean;
+}
+
+export interface UpdateVersions {
+  versions: UpdateVersion[];
+  error: { code: string; message: string; hint?: string } | null;
+  current: string;
+  installed: boolean;
+  channel: 'stable' | 'beta';
+}
+
+export const UPDATE_VERSIONS_KEY = ['update', 'versions'] as const;
+
+/** Alle installierbaren Versionen, neueste zuerst; der Dienst speichert die Liste 10 Minuten zwischen. */
+export function useUpdateVersions(prerelease: boolean, enabled: boolean): UseQueryResult<UpdateVersions> {
+  return useQuery({
+    queryKey: [...UPDATE_VERSIONS_KEY, prerelease],
+    queryFn: ({ signal }) =>
+      apiGet<UpdateVersions>(`/api/v1/update/versions${prerelease ? '?prerelease=true' : ''}`, signal),
+    enabled: enabled && getToken() !== null,
+    staleTime: 60_000,
+  });
 }
 
 export function rollbackUpdate(reopenRoute: string | null = null): Promise<{ started: boolean }> {

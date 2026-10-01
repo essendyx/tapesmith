@@ -903,6 +903,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         server.start()
         assert server.ctx is not None
         server.ctx.accent_reader = lambda: "#0078d4"
+        # Karte „Updates“ wie in der installierten App, mit Versionsauswahl, ohne Netz
+        from tools.demo_services import DemoUpdateService
+
+        server.ctx.extras["update_service"] = DemoUpdateService()
         with sync_api.sync_playwright() as playwright_mod:
             issues = _capture(playwright_mod, plan, server.port, server.token, out_dir, info, home=home,
                               axe=not args.no_axe)

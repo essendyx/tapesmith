@@ -203,3 +203,40 @@ def test_schalter_in_den_einstellungen_beantwortet_die_rueckfrage(env):
     r = client.patch("/api/v1/settings", json={"changes": {"update.enabled": False}})
     assert r.status_code == 200, r.text
     assert config_mod.load_config()["update"] == {"enabled": False, "asked": True}
+
+
+def test_versionsliste_und_ausdrueckliches_zurueckgehen(env):
+    client, ctx, tmp = env
+    private, keys = make_test_key()
+    feed = tmp / "feed2"
+    publish_dir(feed / "0.1.5", "0.1.5", private)
+    publish_dir(feed, "0.3.0", private)
+    root = tmp / "root2"
+    install_layout(root, versions=("0.1.0", "0.2.0"))
+    spawned, backups = [], []
+    cfg = {"update": {"source": f"file:{feed}"}}
+    svc = UpdateService(lambda: cfg, keys_loader=lambda: keys, root=root, spawn=spawned.append, run=FakeVenvRun(),
+                        now=lambda: datetime(2026, 10, 2, 8, 0),
+                        executable=str(root / "versions" / "0.2.0" / "Scripts" / "pythonw.exe"),
+                        app_version=lambda: "0.2.0", backup=backups.append)
+    ctx.extras["update_service"] = svc
+    ctx.extras["update_runner"] = lambda fn: fn()
+    data = client.get("/api/v1/update/versions").json()
+    assert [v["version"] for v in data["versions"]] == ["0.3.0", "0.2.0", "0.1.5", "0.1.0"]
+    # ohne explicit kein Zurückgehen
+    assert client.post("/api/v1/update/install", json={"version": "0.1.5"}).status_code == 202
+    assert spawned == [] and client.get("/api/v1/update/status").json()["state"] == "failed"
+    r = client.post("/api/v1/update/install", json={"version": "0.1.5", "explicit": True})
+    assert r.status_code == 202
+    assert spawned and spawned[0][spawned[0].index("--version") + 1] == "0.1.5"
+    assert len(backups) == 1
+
+
+def test_versionsliste_rolle_drucken_403(tmp_path):
+    client, ctx = make_client(tmp_path, auth=None)
+    try:
+        secret = make_token(ctx, "drucken")
+        r = client.get("/api/v1/update/versions", headers={"Authorization": f"Bearer {secret}"})
+        assert r.status_code == 403
+    finally:
+        close_ctx(ctx)

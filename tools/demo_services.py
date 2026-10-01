@@ -240,3 +240,63 @@ def _filter_assets(params: dict[str, list[str]]) -> dict[str, Any]:
 def _filter_ka(params: dict[str, list[str]]) -> dict[str, Any]:
     status = (params.get("status") or [""])[0]
     return {**KLEINANZEIGEN, "items": [i for i in KLEINANZEIGEN["items"] if not status or i["status"] == status]}
+
+
+# ---------- Updates (Karte „Updates“ mit Versionsauswahl) ----------
+
+# (Version, Alter in Tagen, Notizen, Vorabversion): Datum relativ zum Aufnahmezeitpunkt
+DEMO_UPDATE_VERSIONS = (
+    ("0.5.0", 1, "Neue Vorlagen und schnellere Vorschau", False),
+    ("0.4.4", 8, "Vorlagen überarbeitet, Erneut verbinden", False),
+    ("0.4.3", 9, "Favicon, Hinweis für die Entwicklungsversion", False),
+    ("0.4.2", 10, "Tokens und Passwörter an einer Stelle", False),
+    ("0.4.1", 11, "Protokoll in der Weboberfläche", False),
+    ("0.4.0", 12, "Verteilung über PyPI", False),
+)
+
+
+def _days_ago(days: float) -> str:
+    from datetime import datetime, timedelta, timezone
+
+    return (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+class DemoUpdateService:
+    """Update-Dienst für die Screenshots: installierte App 0.4.4, eine neuere Version, ohne Netz.
+    Installieren startet nichts (die Aufnahmen klicken dort nicht)."""
+
+    current = "0.4.4"
+
+    def installed(self) -> bool:
+        return True
+
+    def status(self, service=None):
+        from tapesmith.update.state import UpdateStatus
+
+        from datetime import datetime, timedelta
+
+        newest = DEMO_UPDATE_VERSIONS[0]
+        checked = (datetime.now() - timedelta(minutes=20)).isoformat(timespec="seconds")
+        return UpdateStatus(installed=True, current=self.current, previous="0.4.3",
+                            root="C:\\Users\\Demo\\AppData\\Local\\Programs\\Tapesmith", enabled=True,
+                            source="github:essendyx/tapesmith", channel="stable", auto_install=False,
+                            last_check=checked,
+                            available={"version": newest[0], "notes": newest[2], "published": _days_ago(newest[1]),
+                                       "size": 0, "packages": 66},
+                            state="idle", can_rollback=True)
+
+    def check(self, service=None):
+        return self.status(service)
+
+    def versions(self, *, include_prerelease: bool = False, refresh: bool = False) -> dict:
+        from tapesmith.install.layout import parse_version
+
+        rows = []
+        for version, age, notes, prerelease in DEMO_UPDATE_VERSIONS:
+            if prerelease and not include_prerelease:
+                continue
+            rows.append({"version": version, "published": _days_ago(age), "notes": notes, "prerelease": prerelease,
+                         "current": version == self.current, "installed": version in (self.current, "0.4.3"),
+                         "failed": False, "newer": parse_version(version) > parse_version(self.current),
+                         "in_source": True})
+        return {"versions": rows, "error": None, "current": self.current, "installed": True, "channel": "stable"}

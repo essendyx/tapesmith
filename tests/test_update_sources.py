@@ -167,7 +167,7 @@ def test_github_stable_waehlt_hoechste_stabile_version():
     assert src.fetch_manifest() == (b"asset-301", b"asset-302")
     assert src.release_version == "0.2.1"
     first = mock.requests[0]
-    assert str(first.url) == "https://api.github.com/repos/your-org/tapesmith/releases?per_page=20"
+    assert str(first.url) == "https://api.github.com/repos/your-org/tapesmith/releases?per_page=100"
     assert first.headers["Accept"] == "application/vnd.github+json"
     assert first.headers["X-GitHub-Api-Version"] == "2022-11-28"
     assert "Authorization" not in first.headers

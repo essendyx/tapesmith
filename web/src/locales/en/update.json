@@ -39,7 +39,27 @@
     "installConfirm": "Install",
     "rollbackTitle": "Roll back to version {{version}}?",
     "rollbackMessage": "Tapesmith restarts briefly and then opens with the previous version in a new browser tab.",
-    "rollbackConfirm": "Roll back"
+    "rollbackConfirm": "Roll back",
+    "downgradeTitle": "Go back to version {{version}}?",
+    "downgradeMessage": "Tapesmith backs up your data first. Settings and data written by a newer version may not be fully understood by an older one. Tapesmith never goes back to an older version on its own. Tapesmith restarts briefly and then opens in a new browser tab.",
+    "downgradeConfirm": "Back up and go back"
+  },
+  "versions": {
+    "label": "Specific version",
+    "help": "All published versions, newer and older. Each one is signature checked before it is installed.",
+    "prerelease": "Show pre-releases",
+    "loading": "Loading versions…",
+    "empty": "No versions found",
+    "install": "Install this version",
+    "downgrade": "Go back to {{version}}",
+    "markCurrent": "currently installed",
+    "markLocal": "available locally",
+    "markNew": "new",
+    "markPrerelease": "pre-release",
+    "markFailed": "failed",
+    "downgradeHint": "Older version: a backup is made first.",
+    "failedHint": "This version already failed here and will not be installed again.",
+    "sourceError": "Could not load the version list from the source, showing local versions only"
   },
   "notInstalled": "Development build or not installed: updates are only available in the installed app. Install it with: py -m tapesmith install",
   "runningFromSource": "Running from the source folder: this copy does not update itself. Start the installed version for updates (tools\\installed-start.cmd).",
@@ -50,7 +70,8 @@
   },
   "notify": {
     "installStarted": "Installing the update",
-    "rollbackStarted": "Rolling back"
+    "rollbackStarted": "Rolling back",
+    "downgradeStarted": "Backup made, switching to {{version}}"
   },
   "rollback": {
     "label": "Previous version {{version}}",
