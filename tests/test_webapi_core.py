@@ -201,6 +201,17 @@ def test_static_dir_helper():
     assert webui.static_dir() == Path(webui.__file__).with_name("static")
 
 
+def test_gebaute_oberflaeche_hat_favicon():
+    """Favicon (SVG, ICO, Touch-Icon) liegt im Build und ist in index.html verlinkt."""
+    from tapesmith import webui
+
+    static = webui.static_dir()
+    for name in ("favicon.svg", "favicon.ico", "apple-touch-icon.png"):
+        assert (static / name).is_file(), name
+    index = (static / "index.html").read_text(encoding="utf-8")
+    assert 'href="/favicon.svg"' in index and 'href="/favicon.ico"' in index
+
+
 def test_validation_missing_field(api):
     client, _ = api
     r = client.post("/api/v1/print/cancel", json={})
