@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "garantie-qr",
+  "title": "Garantie mit QR",
   "description": "Garantie-Etikett mit QR auf das Paperless-Dokument (bzw. Kurz-Link): Gerät und Garantie bis. Das Ende kommt aus Paperless bzw. der Rückfall-Berechnung, nicht aus einer Vorlagen-Formel, damit Oberfläche und Etikett nie voneinander abweichen.",
   "category": "Büro",
   "tags": ["paperless", "garantie", "qr"],
@@ -20,7 +21,7 @@
   "sample": {"geraet": "Kaffeemaschine", "kaufdatum": "31.01.2026", "ende": "31.01.2028", "link": "HTTPS://L.EXAMPLE.COM/DOC-17"},
   "translations": {
     "en": {
-      "title": "warranty-qr",
+      "title": "Warranty with QR",
       "description": "Warranty label with a QR code to the Paperless document (or short link): device and warranty end. The end date comes from Paperless or the fallback calculation, not from a template formula, so the interface and the label never differ.",
       "category": "Office",
       "tags": ["paperless", "warranty", "qr"],

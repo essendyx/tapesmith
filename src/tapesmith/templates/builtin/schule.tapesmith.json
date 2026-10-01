@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "schule",
+  "title": "Schulsachen",
   "description": "Schulsachen-Etikett mit Symbol-Icon, Name und Klasse.",
   "category": "Haushalt",
   "tags": ["haushalt", "schule", "kind"],
@@ -21,7 +22,7 @@
   "sample": {"name": "Mia", "klasse": "3b", "symbol": "Stern"},
   "translations": {
     "en": {
-      "title": "school",
+      "title": "School supplies",
       "description": "School supplies label with a symbol icon, name and class.",
       "category": "Household",
       "tags": ["household", "school", "kids"],

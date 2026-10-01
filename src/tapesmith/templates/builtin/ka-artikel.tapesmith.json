@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "ka-artikel",
+  "title": "Kleinanzeigen-Artikel",
   "description": "Kleinanzeigen-Artikel mit QR auf die Anzeige bzw. einen Kurz-Link, ID fett und Titel.",
   "category": "Haushalt",
   "tags": ["kleinanzeigen"],
@@ -20,7 +21,7 @@
   "sample": {"id": "KA-017", "titel": "Monitorarm", "preis": "25 €", "link": "HTTPS://L.EXAMPLE.COM/KA-017"},
   "translations": {
     "en": {
-      "title": "classifieds-item",
+      "title": "Classifieds item",
       "description": "Classified ad item with a QR code to the listing or a short link, ID in bold and title.",
       "category": "Household",
       "tags": ["classifieds"],

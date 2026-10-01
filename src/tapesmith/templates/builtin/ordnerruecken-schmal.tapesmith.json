@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "ordnerruecken-schmal",
+  "title": "Ordnerrücken schmal",
   "description": "Ordnerrücken schmal (190 mm): Titel über Jahr, zentriert.",
   "category": "Büro",
   "tags": ["buero", "ordner", "archiv"],
@@ -13,7 +14,7 @@
   "sample": {"titel": "Rechnungen", "jahr": "2026"},
   "translations": {
     "en": {
-      "title": "binder-spine-narrow",
+      "title": "Binder spine narrow",
       "description": "Narrow binder spine (190 mm): title above year, centered.",
       "category": "Office",
       "tags": ["office", "binder", "archive"],

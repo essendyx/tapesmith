@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "netzteil",
+  "title": "Netzteil",
   "description": "Netzteil-Zuordnung: welches PSU hängt an welchem Ziel (z. B. USV-Port).",
   "category": "Homelab",
   "tags": ["homelab", "netzteil", "strom"],
@@ -17,7 +18,7 @@
   "sample": {"psu": "PSU1", "ziel": "USV Port 3"},
   "translations": {
     "en": {
-      "title": "psu",
+      "title": "Power supply",
       "description": "Power supply mapping: which PSU is connected to which target (e.g. UPS port).",
       "category": "Homelab",
       "tags": ["homelab", "power-supply", "power"],

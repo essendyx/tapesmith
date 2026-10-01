@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "absender",
+  "title": "Absender",
   "description": "Absenderetikett (3 Zeilen): Name, Straße, Ort. Bei drei vollen Zeilen ist die Schrift auf 12 mm knapp, daher kurz halten.",
   "category": "Büro",
   "tags": ["buero", "absender", "post"],
@@ -14,7 +15,7 @@
   "sample": {"name": "Max Mustermann", "strasse": "Musterstr. 1", "ort": "12345 Musterstadt"},
   "translations": {
     "en": {
-      "title": "return-address",
+      "title": "Return address",
       "description": "Return address label (3 lines): name, street, city. With three full lines the font is tight on 12 mm tape, so keep it short.",
       "category": "Office",
       "tags": ["office", "sender", "mail"],

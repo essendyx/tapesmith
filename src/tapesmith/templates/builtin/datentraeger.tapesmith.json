@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "datentraeger",
+  "title": "Datenträger",
   "description": "Datenträger: Host · Slot / SN (letzte 6 Stellen). SN oder /dev/disk/by-id-Name einfügen.",
   "category": "Datenträger",
   "tags": ["ssd", "hdd", "storage"],
@@ -13,7 +14,7 @@
   "sample": {"host": "pmx10", "slot": "SSD-1", "sn": "112233274913"},
   "translations": {
     "en": {
-      "title": "disk",
+      "title": "Disk",
       "description": "Disk: host · slot / SN (last 6 digits). Paste the SN or the /dev/disk/by-id name.",
       "category": "Disks",
       "tags": ["ssd", "hdd", "storage"],

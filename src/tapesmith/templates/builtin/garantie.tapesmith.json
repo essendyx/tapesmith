@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "garantie",
+  "title": "Garantie",
   "description": "Garantie-Etikett: Gerät und errechnetes Ende der Garantie aus Kaufdatum + Laufzeit.",
   "category": "Büro",
   "tags": ["buero", "garantie", "kauf"],
@@ -14,7 +15,7 @@
   "sample": {"geraet": "Kaffeemaschine", "kaufdatum": "31.01.2026", "dauer": "24"},
   "translations": {
     "en": {
-      "title": "warranty",
+      "title": "Warranty",
       "description": "Warranty label: device and calculated end of the warranty from purchase date + term.",
       "category": "Office",
       "tags": ["office", "warranty", "purchase"],

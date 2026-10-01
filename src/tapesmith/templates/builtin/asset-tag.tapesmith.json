@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "asset-tag",
+  "title": "Inventar-Etikett",
   "description": "Anlagen-Kennzeichnung mit QR (enthält die Asset-Nummer), Nummer fett und Bezeichnung. Für einen QR-Link die Vorlage asset-kurz nehmen.",
   "category": "Homelab",
   "tags": ["homelab", "asset", "qr"],
@@ -18,7 +19,7 @@
   "sample": {"nummer": "HL-0042", "bezeichnung": "Patchkabel Cat6 3m"},
   "translations": {
     "en": {
-      "title": "asset-tag",
+      "title": "Asset tag",
       "description": "Asset tag with QR code (contains the asset number), number in bold and description. For a QR link use the template asset-kurz.",
       "category": "Homelab",
       "tags": ["homelab", "asset", "qr"],

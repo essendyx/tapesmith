@@ -4,11 +4,14 @@
  * statt als blauer Hauptknopf. Jeder Eintrag ist ein Knopf mit `aria-current`, damit Tastatur und
  * Screenreader den gewählten Eintrag erkennen.
  */
+import { useId } from 'react';
 import { Button, makeStyles, mergeClasses, tokens } from '@fluentui/react-components';
 
 export interface NavListItem {
   key: string;
   label: string;
+  /** Optionale Zweitzeile (einzeilig gekürzt, voller Text als Tooltip und Beschreibung). */
+  description?: string;
 }
 
 const useStyles = makeStyles({
@@ -21,6 +24,18 @@ const useStyles = makeStyles({
     fontWeight: tokens.fontWeightRegular,
     position: 'relative',
     overflowWrap: 'anywhere',
+  },
+  /** Zweizeilige Einträge: Titel und gedämpfte Beschreibung untereinander. */
+  itemTwoLine: { paddingTop: tokens.spacingVerticalS, paddingBottom: tokens.spacingVerticalS, alignItems: 'flex-start' },
+  text: { display: 'flex', flexDirection: 'column', rowGap: '2px', minWidth: 0, width: '100%' },
+  description: {
+    color: tokens.colorNeutralForeground3,
+    fontSize: tokens.fontSizeBase200,
+    fontWeight: tokens.fontWeightRegular,
+    lineHeight: tokens.lineHeightBase200,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   selected: {
     backgroundColor: tokens.colorNeutralBackground1Selected,
@@ -47,20 +62,41 @@ export function NavList(props: {
   className?: string;
 }): JSX.Element {
   const styles = useStyles();
+  const idBase = useId();
   return (
     <div className={mergeClasses(styles.list, props.className)} role={props.label ? 'group' : undefined} aria-label={props.label}>
       {props.items.map((item) => {
         const active = item.key === props.selected;
         return (
-          <Button
-            key={item.key}
-            appearance="subtle"
-            className={mergeClasses(styles.item, active && styles.selected)}
-            aria-current={active ? 'true' : undefined}
-            onClick={() => props.onSelect(item.key)}
-          >
-            {item.label}
-          </Button>
+          item.description ? (
+            <Button
+              key={item.key}
+              appearance="subtle"
+              className={mergeClasses(styles.item, styles.itemTwoLine, active && styles.selected)}
+              aria-current={active ? 'true' : undefined}
+              aria-labelledby={`${idBase}-${item.key}-l`}
+              aria-describedby={`${idBase}-${item.key}-d`}
+              title={item.description}
+              onClick={() => props.onSelect(item.key)}
+            >
+              <span className={styles.text}>
+                <span id={`${idBase}-${item.key}-l`}>{item.label}</span>
+                <span id={`${idBase}-${item.key}-d`} className={styles.description}>
+                  {item.description}
+                </span>
+              </span>
+            </Button>
+          ) : (
+            <Button
+              key={item.key}
+              appearance="subtle"
+              className={mergeClasses(styles.item, active && styles.selected)}
+              aria-current={active ? 'true' : undefined}
+              onClick={() => props.onSelect(item.key)}
+            >
+              {item.label}
+            </Button>
+          )
         );
       })}
     </div>

@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "kabelwickel",
+  "title": "Kabelwickel",
   "description": "Kabelwickel: Kabel-ID mehrfach um das Kabel gewickelt (π·d + Überlappung).",
   "category": "Kabel",
   "tags": ["kabel", "wickel", "cat6"],
@@ -15,7 +16,7 @@
   "sample": {"kabel_id": "K-017"},
   "translations": {
     "en": {
-      "title": "cable-wrap",
+      "title": "Cable wrap",
       "description": "Cable wrap: cable ID repeated around the cable (π·d + overlap).",
       "category": "Cables",
       "tags": ["cable", "wrap", "cat6"],

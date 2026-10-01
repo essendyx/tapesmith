@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "aufbewahrungsbox",
+  "title": "Aufbewahrungsbox",
   "description": "Aufbewahrungsbox mit QR (Nummer + Ort), Nummer fett und Ort darunter.",
   "category": "Haushalt",
   "tags": ["haushalt", "box", "lager"],
@@ -19,7 +20,7 @@
   "sample": {"nummer": "BOX-07", "ort": "Keller Regal 2"},
   "translations": {
     "en": {
-      "title": "storage-box",
+      "title": "Storage box",
       "description": "Storage box with QR code (number + location), number in bold with the location below.",
       "category": "Household",
       "tags": ["household", "box", "storage"],

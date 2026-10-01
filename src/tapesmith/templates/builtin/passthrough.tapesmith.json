@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "passthrough",
+  "title": "USB-Passthrough",
   "description": "USB-Passthrough-Kennzeichnung: welche VM bekommt welches Gerät.",
   "category": "Homelab",
   "tags": ["homelab", "usb", "passthrough"],
@@ -17,7 +18,7 @@
   "sample": {"vm": "VM111", "geraet": "USB-Dongle"},
   "translations": {
     "en": {
-      "title": "passthrough",
+      "title": "USB passthrough",
       "description": "USB passthrough label: which VM gets which device.",
       "category": "Homelab",
       "tags": ["homelab", "usb", "passthrough"],

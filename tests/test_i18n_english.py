@@ -172,13 +172,13 @@ def test_vorlagen_api_englisch(api):
         leaks += [f"{name} {leak}" for leak in german_leaks(body)]
     assert leaks == []
     detail = client.get("/api/v1/templates/gefriergut", headers=EN).json()
-    assert detail["title"] == "freezer"
+    assert detail["title"] == "Freezer"
     assert detail["category"] == "Household"
     fields = {f["id"]: f for f in detail["fields"]}
     assert fields["kategorie"]["choices"][0] == "Meat"
     assert fields["inhalt"]["label"] == "Contents"
     de = client.get("/api/v1/templates/gefriergut").json()
-    assert de["title"] == "gefriergut" and de["category"] == "Haushalt"
+    assert de["title"] == "Gefriergut" and de["category"] == "Haushalt"
 
 
 # ---------- Vorlagen ----------
@@ -223,8 +223,8 @@ def test_vorlagen_ids_und_deutsch_unveraendert():
         en = {t.name: t for t in builtin_templates()}
     assert set(de) == set(en)
     assert de["gefriergut"].description.startswith("Gefriergut mit Haltbarkeit")
-    assert de["gefriergut"].title == "" and de["gefriergut"].display_title == "gefriergut"
-    assert en["gefriergut"].display_title == "freezer"
+    assert de["gefriergut"].title == "Gefriergut" and de["gefriergut"].name == "gefriergut"
+    assert en["gefriergut"].display_title == "Freezer"
 
 
 def test_englische_vorlage_rendert_englischen_text(tmp_path):

@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "asset-kurz",
+  "title": "Inventar mit Kurz-Link",
   "description": "Anlagen-Kennzeichnung mit QR auf den Kurz-Link des Asset-Registers, Nummer fett und Bezeichnung.",
   "category": "Homelab",
   "tags": ["homelab", "asset", "qr", "kurz-link"],
@@ -19,7 +20,7 @@
   "sample": {"nummer": "HL-0042", "bezeichnung": "Patchkabel Cat6 3m", "link": "HTTPS://L.EXAMPLE.COM/HL-0042"},
   "translations": {
     "en": {
-      "title": "asset-short-link",
+      "title": "Asset with short link",
       "description": "Asset tag with a QR code to the short link of the asset register, number in bold and description.",
       "category": "Homelab",
       "tags": ["homelab", "asset", "qr", "short-link"],

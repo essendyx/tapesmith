@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "ip-label",
+  "title": "IP-Adresse",
   "description": "Reines IP-Etikett in Monospace: IP-Adresse über Hostname, für Switch/Patchpanel.",
   "category": "Homelab",
   "tags": ["homelab", "ip", "switch"],
@@ -12,7 +13,7 @@
   "sample": {"ip": "192.0.2.60", "host": "pmx10"},
   "translations": {
     "en": {
-      "title": "ip-label",
+      "title": "IP address",
       "description": "Plain IP label in monospace: IP address above the host name, for switches and patch panels.",
       "category": "Homelab",
       "tags": ["homelab", "ip", "switch"],

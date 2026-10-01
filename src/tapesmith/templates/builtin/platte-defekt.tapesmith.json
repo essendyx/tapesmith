@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "platte-defekt",
+  "title": "Defekte Platte",
   "description": "Label für eine ausgebaute defekte Platte (Assistent Platte tauschen): Datum, Grund, Host/Slot und Seriennummer.",
   "category": "Datenträger",
   "tags": ["zfs", "defekt", "storage"],
@@ -15,7 +16,7 @@
   "sample": {"host": "pmx10", "slot": "SSD-1", "sn": "S5Y1NX0R123456", "datum": "28.09.2026", "grund": "faulted"},
   "translations": {
     "en": {
-      "title": "failed-disk",
+      "title": "Failed disk",
       "description": "Label for a removed failed disk (Replace disk assistant): date, reason, host/slot and serial number.",
       "category": "Disks",
       "tags": ["zfs", "failed", "storage"],

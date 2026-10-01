@@ -173,6 +173,8 @@ EXTRA_ROUTES: tuple[RouteSpec, ...] = (
     RouteSpec("vorlagen-raster",
              f"/vorlagen?vorlage=raster-patchpanel&werte={_q(json.dumps(DEMO_RASTER_VALUES))}",
              "Vorlagen: Raster-Patchpanel", sizes=("desktop",)),
+    # Leere Vorlage: Vorschau mit Beispielinhalt statt Fehlermeldung
+    RouteSpec("vorlagen-leer", "/vorlagen?vorlage=eigentum", "Vorlagen: leeres Formular", sizes=("desktop", "handy")),
     RouteSpec("serie-import", "/vorlagen?vorlage=datentraeger", "Serie/Import",
              sizes=("desktop",), interact="batch_dialog"),
     RouteSpec("ruecksprache-drucken", "/schnelldruck", "Rückfrage: Wirklich drucken?",

@@ -12,10 +12,12 @@
   },
   "sections": {
     "form": "Form",
-    "preview": "Preview"
+    "preview": "Preview",
+    "content": "Content",
+    "options": "Print options"
   },
   "noTemplateSelected": "No template selected.",
-  "fillSample": "Sample values",
+  "fillSample": "Fill with example",
   "tapeReasonSuffix": ". You will be asked to confirm when printing.",
   "shortened": "Shortened: {{label}}",
   "editInEditor": "Open in editor",
@@ -43,7 +45,9 @@
     "computedHint": "calculated",
     "secretShow": "Show",
     "secretHide": "Hide",
-    "defaultHint": "Default: {{value}}"
+    "defaultHint": "Default: {{value}}",
+    "required": "Please enter {{label}}",
+    "sampleHint": "e.g. {{value}}"
   },
   "batch": {
     "commandTitle": "Template: open series/import",
@@ -84,5 +88,26 @@
     "planLoading": "Calculating plan …",
     "summarySuffix": " ({{count}} labels)",
     "contactSheet": "Save contact sheet"
+  },
+  "fromFile": "Loaded from file",
+  "noFields": "This template has no fields to fill in.",
+  "missing": "Still to fill in: {{fields}}",
+  "missingAction": "Fill in now",
+  "ready": "Ready to print",
+  "printTooltip": "Print the label with the values entered",
+  "placeholder": {
+    "badge": "Example content",
+    "tooltip": "Empty required fields are filled with example values in the preview. Only what you enter gets printed."
+  },
+  "options": {
+    "show": "Show",
+    "hide": "Hide",
+    "copies_one": "{{count}} copy",
+    "copies_other": "{{count}} copies",
+    "chain": "as chain",
+    "cutPauseDefault": "default cut pause",
+    "cutPauseNone": "no cut pause",
+    "cutPauseManual": "cut pause until Continue",
+    "cutPauseSeconds": "cut pause {{seconds}} s"
   }
 }

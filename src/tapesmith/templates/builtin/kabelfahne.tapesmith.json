@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "kabelfahne",
+  "title": "Kabelfahne",
   "description": "Kabelfahne mit Wickelzone (π·d + Zugabe) und Knicklinien für Cat6/Cat6a/Kaltgeräte/DAC/LWL.",
   "category": "Kabel",
   "tags": ["kabel", "fahne", "patchkabel", "cat6"],
@@ -20,7 +21,7 @@
   "sample": {"kabel_id": "K-017", "quelle": "SW1/P12", "ziel": "pmx10/eno1"},
   "translations": {
     "en": {
-      "title": "cable-flag",
+      "title": "Cable flag",
       "description": "Cable flag with wrap zone (π·d + allowance) and fold lines for Cat6/Cat6a/power cords/DAC/fiber.",
       "category": "Cables",
       "tags": ["cable", "flag", "patch-cable", "cat6"],

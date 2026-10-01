@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "netzteil-zuordnung",
+  "title": "Netzteil-Zuordnung",
   "description": "Netzteil-Zuordnung fürs Büro: Kurz-ID und Gerät.",
   "category": "Büro",
   "tags": ["buero", "netzteil", "zuordnung"],
@@ -17,7 +18,7 @@
   "sample": {"kurz_id": "NT-07", "geraet": "Fritzbox"},
   "translations": {
     "en": {
-      "title": "psu-assignment",
+      "title": "Power supply assignment",
       "description": "Power supply mapping for the office: short ID and device.",
       "category": "Office",
       "tags": ["office", "power-supply", "mapping"],

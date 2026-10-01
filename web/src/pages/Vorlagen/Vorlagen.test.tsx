@@ -74,17 +74,75 @@ describe('Vorlagen', () => {
     });
   });
 
-  it('Pflichtfeld leer: Render liefert ok:false, Fehler sichtbar, Drucken deaktiviert', async () => {
-    mockApi({
+  it('Pflichtfeld leer: Vorschau mit Beispielwert, ruhiger Hinweis statt Fehler, Drucken gesperrt mit Grund', async () => {
+    const api = mockApi({
       'GET /api/v1/templates': () => ({ templates: [summary()] }),
       'GET /api/v1/templates/:name': () => detail({ input_fields: [field({ default: '' })] }),
       'POST /api/v1/homelab/plausi': () => ({ findings: [], worst: null }),
-      'POST /api/v1/labels/render': () => fixtures.renderJson({ ok: false, errors: ['Pflichtfeld sn fehlt'], preview: null }),
+      'POST /api/v1/labels/render': () => fixtures.renderJson(),
+    });
+    const { user } = renderWithProviders(<VorlagenPage />, { route: '/vorlagen?vorlage=datentraeger' });
+
+    // Die Vorschau wird mit dem Beispielwert gerendert, nicht mit dem leeren Feld.
+    await waitFor(() => {
+      const call = api.calls.find((c) => c.path === '/api/v1/labels/render');
+      expect((call?.body as { source: { values: Record<string, string> } } | undefined)?.source.values.sn).toBe('274913');
+    });
+    expect(await screen.findByText('Beispielinhalt')).toBeInTheDocument();
+    expect(screen.getAllByText('Noch auszufüllen: Seriennummer').length).toBeGreaterThan(0);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    const print = screen.getByRole('button', { name: 'Drucken' });
+    expect(print).toHaveAttribute('aria-disabled', 'true');
+
+    // Kein Hinweis am Feld, bevor es berührt wurde; „Jetzt ausfüllen“ zeigt ihn und springt hin.
+    const input = screen.getByLabelText(/Seriennummer/);
+    expect(screen.queryByText('Bitte Seriennummer eingeben')).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Jetzt ausfüllen' }));
+    expect(await screen.findByText('Bitte Seriennummer eingeben')).toBeInTheDocument();
+    expect(input).toHaveFocus();
+
+    // Ausfüllen gibt Drucken frei, Beispiel-Hinweis verschwindet.
+    await user.type(input, 'A1');
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Drucken' })).not.toHaveAttribute('aria-disabled', 'true'));
+    expect(screen.queryByText('Beispielinhalt')).not.toBeInTheDocument();
+    expect(screen.getByText('Bereit zum Drucken')).toBeInTheDocument();
+  });
+
+  it('Liste zeigt Titel und eine Zeile Beschreibung je Vorlage', async () => {
+    mockNarrowScreen(false);
+    mockApi({
+      'GET /api/v1/templates': () => ({
+        templates: [summary({ title: 'Datenträger', description: 'SSD- und HDD-Etiketten. Mit Seriennummer.' })],
+      }),
+      'GET /api/v1/templates/:name': () => detail({ title: 'Datenträger' }),
+      'POST /api/v1/homelab/plausi': () => ({ findings: [], worst: null }),
+      'POST /api/v1/labels/render': () => fixtures.renderJson(),
     });
     renderWithProviders(<VorlagenPage />, { route: '/vorlagen?vorlage=datentraeger' });
 
-    expect(await screen.findByText('Pflichtfeld sn fehlt')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Drucken' })).toBeDisabled();
+    const list = await screen.findByRole('group', { name: 'Vorlagen' });
+    const item = await within(list).findByRole('button', { name: 'Datenträger' });
+    expect(item).toHaveAccessibleDescription('SSD- und HDD-Etiketten');
+    expect(item).toHaveAttribute('aria-current', 'true');
+    expect(screen.getByRole('heading', { level: 1, name: 'Datenträger' })).toBeInTheDocument();
+  });
+
+  it('Druckoptionen sind eingeklappt, zeigen eine Zusammenfassung und klappen auf', async () => {
+    mockApi({
+      'GET /api/v1/templates': () => ({ templates: [summary()] }),
+      'GET /api/v1/templates/:name': () => detail(),
+      'POST /api/v1/homelab/plausi': () => ({ findings: [], worst: null }),
+      'POST /api/v1/labels/render': () => fixtures.renderJson(),
+    });
+    const { user } = renderWithProviders(<VorlagenPage />, { route: '/vorlagen?vorlage=datentraeger' });
+
+    const toggle = await screen.findByRole('button', { name: /Druckoptionen/ });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(toggle).toHaveTextContent('1 Kopie · Schneidpause Standard');
+    expect(screen.queryByRole('spinbutton')).not.toBeInTheDocument();
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(await screen.findByRole('spinbutton')).toBeInTheDocument();
   });
 
   it('tape_reason zeigt MessageBar; Drucken mit bestätigung_nötig zeigt Rückfrage', async () => {
@@ -148,7 +206,7 @@ describe('Vorlagen', () => {
       'POST /api/v1/homelab/plausi': () => ({ findings: [], worst: null }),
       'POST /api/v1/labels/render': () => fixtures.renderJson({ shortened: ['sn'] }),
     });
-    renderWithProviders(<VorlagenPage />, { route: '/vorlagen?vorlage=datentraeger' });
+    renderWithProviders(<VorlagenPage />, { route: '/vorlagen?vorlage=datentraeger&werte=%7B%22sn%22%3A%22274913%22%7D' });
 
     expect(await screen.findByText('Gekürzt: Seriennummer')).toBeInTheDocument();
   });
@@ -177,7 +235,7 @@ describe('Vorlagen', () => {
     renderWithProviders(<VorlagenPage />, { route: '/vorlagen?vorlage=datentraeger' });
 
     expect(await screen.findByLabelText('Vorlage wählen')).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'datentraeger' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Datentraeger' })).not.toBeInTheDocument();
     const listCol = screen.getByRole('group', { name: 'Vorlagen' });
     const layout = listCol.parentElement as HTMLElement;
     await waitFor(() => expect(getComputedStyle(layout).gridTemplateColumns).toBe('1fr'));
@@ -193,7 +251,7 @@ describe('Vorlagen', () => {
     });
     renderWithProviders(<VorlagenPage />, { route: '/vorlagen?vorlage=datentraeger' });
 
-    expect(await screen.findByRole('button', { name: 'datentraeger' })).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: 'Datentraeger' })).toBeInTheDocument();
     const listCol = screen.getByRole('group', { name: 'Vorlagen' });
     const layout = listCol.parentElement as HTMLElement;
     expect(getComputedStyle(layout).gridTemplateColumns).not.toBe('1fr');
@@ -209,7 +267,7 @@ describe('Vorlagen', () => {
     });
     const { user } = renderWithProviders(<VorlagenPage />, { route: '/vorlagen?vorlage=datentraeger' });
     await screen.findByRole('button', { name: /^Weitere Aktionen für / });
-    await chooseRowAction(user, 'datentraeger', 'Löschen');
+    await chooseRowAction(user, 'Datentraeger', 'Löschen');
     const dialog = await findDialogByRole('alertdialog');
     await user.click(within(dialog).getByRole('button', { name: 'Löschen', hidden: true }));
     await waitFor(() => expect(api.calls.some((c) => c.method === 'DELETE' && c.path === '/api/v1/templates/datentraeger')).toBe(true));
@@ -288,19 +346,19 @@ describe('Vorlagen', () => {
     const search = screen.getByRole('searchbox', { name: 'Vorlagen durchsuchen' });
 
     await user.type(search, 'LAN');
-    await waitFor(() => expect(within(list).queryByRole('button', { name: 'regal' })).not.toBeInTheDocument());
-    expect(within(list).getByRole('button', { name: 'kabel' })).toBeInTheDocument();
+    await waitFor(() => expect(within(list).queryByRole('button', { name: 'Regal' })).not.toBeInTheDocument());
+    expect(within(list).getByRole('button', { name: 'Kabel' })).toBeInTheDocument();
     expect(within(list).queryByRole('heading', { name: 'Lager' })).not.toBeInTheDocument();
 
     await user.clear(search);
     await user.type(search, 'fachbeschr');
-    await waitFor(() => expect(within(list).getByRole('button', { name: 'regal' })).toBeInTheDocument());
-    expect(within(list).queryByRole('button', { name: 'kabel' })).not.toBeInTheDocument();
+    await waitFor(() => expect(within(list).getByRole('button', { name: 'Regal' })).toBeInTheDocument());
+    expect(within(list).queryByRole('button', { name: 'Kabel' })).not.toBeInTheDocument();
 
     await user.clear(search);
     await user.type(search, 'datentr');
-    await waitFor(() => expect(within(list).getByRole('button', { name: 'datentraeger' })).toBeInTheDocument());
-    expect(within(list).queryByRole('button', { name: 'regal' })).not.toBeInTheDocument();
+    await waitFor(() => expect(within(list).getByRole('button', { name: 'Datentraeger' })).toBeInTheDocument());
+    expect(within(list).queryByRole('button', { name: 'Regal' })).not.toBeInTheDocument();
 
     await user.clear(search);
     await user.type(search, 'gibtesnicht');

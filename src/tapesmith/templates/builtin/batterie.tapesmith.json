@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "batterie",
+  "title": "Batteriewechsel",
   "description": "Batterie-Etikett für Home-Assistant-Geräte: Gerät, Raum, Typ und Wechseldatum.",
   "category": "Haushalt",
   "tags": ["batterie", "wartung"],
@@ -15,7 +16,7 @@
   "sample": {"geraet": "Fensterkontakt Bad", "raum": "Bad", "typ": "CR2032", "datum": "28.09.2026"},
   "translations": {
     "en": {
-      "title": "battery",
+      "title": "Battery change",
       "description": "Battery label for Home Assistant devices: device, room, type and replacement date.",
       "category": "Household",
       "tags": ["battery", "maintenance"],

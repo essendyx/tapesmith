@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "vm-lxc-qr",
+  "title": "VM/LXC mit QR",
   "description": "VM/LXC-Kennzeichnung mit QR auf den Kurz-Link bzw. die Proxmox-Oberfläche: Typ, ID und Name fett, darunter die Kurz-IP.",
   "category": "Homelab",
   "tags": ["homelab", "vm", "lxc", "proxmox", "qr"],
@@ -21,7 +22,7 @@
   "sample": {"typ": "VM", "vmid": "111", "name": "webapp1", "ip_kurz": ".39", "link": "HTTPS://L.EXAMPLE.COM/PMX10-111"},
   "translations": {
     "en": {
-      "title": "vm-lxc-qr",
+      "title": "VM/LXC with QR",
       "description": "VM/LXC label with a QR code to the short link or the Proxmox interface: type, ID and name in bold, short IP below.",
       "category": "Homelab",
       "tags": ["homelab", "vm", "lxc", "proxmox", "qr"],

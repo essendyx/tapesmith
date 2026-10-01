@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "reserviert",
+  "title": "Reserviert",
   "description": "„Reserviert für“-Etikett mit Namen und Datum/Frist als Freitext.",
   "category": "Haushalt",
   "tags": ["haushalt", "reserviert", "kleinanzeigen"],
@@ -12,7 +13,7 @@
   "sample": {"name": "Hubert", "bis": "30.09.2026"},
   "translations": {
     "en": {
-      "title": "reserved",
+      "title": "Reserved",
       "description": "“Reserved for” label with name and date or deadline as free text.",
       "category": "Household",
       "tags": ["household", "reserved", "classifieds"],

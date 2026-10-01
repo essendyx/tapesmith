@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "psu-paar",
+  "title": "Netzteilpaar",
   "description": "Redundantes Netzteilpaar: PSU1/PSU2-Ziele nebeneinander, senkrechte Trennlinie dazwischen.",
   "category": "Homelab",
   "tags": ["homelab", "netzteil", "redundanz"],
@@ -18,7 +19,7 @@
   "sample": {"psu1_ziel": "USV Port 3", "psu2_ziel": "USV Port 4"},
   "translations": {
     "en": {
-      "title": "psu-pair",
+      "title": "Power supply pair",
       "description": "Redundant power supply pair: PSU1/PSU2 targets side by side with a vertical divider.",
       "category": "Homelab",
       "tags": ["homelab", "power-supply", "redundancy"],

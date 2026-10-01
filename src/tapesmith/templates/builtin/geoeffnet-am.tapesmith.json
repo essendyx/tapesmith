@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "geoeffnet-am",
+  "title": "Geöffnet am",
   "description": "„Geöffnet am“-Etikett fürs Vorratsglas, feste Länge 25 mm.",
   "category": "Haushalt",
   "tags": ["haushalt", "vorrat", "glas"],
@@ -13,7 +14,7 @@
   "sample": {"inhalt": "Senfgurken"},
   "translations": {
     "en": {
-      "title": "opened-on",
+      "title": "Opened on",
       "description": "“Opened” label for pantry jars, fixed length 25 mm.",
       "category": "Household",
       "tags": ["household", "pantry", "jar"],

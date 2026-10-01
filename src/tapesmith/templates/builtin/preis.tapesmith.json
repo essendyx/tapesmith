@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "preis",
+  "title": "Preisschild",
   "description": "Preisschild für Flohmarkt/Kleinanzeigen: Preis groß, optional ein Zusatztext.",
   "category": "Haushalt",
   "tags": ["haushalt", "preis", "flohmarkt"],
@@ -12,7 +13,7 @@
   "sample": {"preis": "12,50 €"},
   "translations": {
     "en": {
-      "title": "price",
+      "title": "Price tag",
       "description": "Price tag for flea markets and classifieds: large price, optional extra text.",
       "category": "Household",
       "tags": ["household", "price", "flea-market"],

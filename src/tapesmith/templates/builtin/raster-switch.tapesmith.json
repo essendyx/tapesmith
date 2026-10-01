@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "raster-switch",
+  "title": "Switch-Ports",
   "description": "Switch-Streifen im Portraster. Portabstand im Feld „Portabstand (mm)“ anpassen, falls das Gerät abweicht.",
   "category": "Raster",
   "tags": ["raster", "switch"],
@@ -13,7 +14,7 @@
   "sample": {"belegung": "SW1\nSW2\nUplink\n\nAP-EG"},
   "translations": {
     "en": {
-      "title": "grid-switch",
+      "title": "Switch ports",
       "description": "Switch strip on the port grid. Adjust the port pitch in the field “Port pitch (mm)” if the device differs.",
       "category": "Grid",
       "tags": ["grid", "switch"],

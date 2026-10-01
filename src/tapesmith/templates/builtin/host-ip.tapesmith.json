@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "host-ip",
+  "title": "Server mit IP",
   "description": "Homelab-Host mit Rolle: Icon, Hostname fett, IP · Rolle darunter. Lange Hostnamen werden automatisch ohne Domain gekürzt.",
   "category": "Homelab",
   "tags": ["homelab", "host", "ip"],
@@ -20,7 +21,7 @@
   "sample": {"host": "pmx10", "ip": "192.0.2.60", "rolle": "Hauptserver"},
   "translations": {
     "en": {
-      "title": "host-ip",
+      "title": "Host with IP",
       "description": "Homelab host with role: icon, host name in bold, IP · role below. Long host names are shortened automatically without the domain.",
       "category": "Homelab",
       "tags": ["homelab", "host", "ip"],

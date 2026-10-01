@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "netzteil-warnung",
+  "title": "Netzteil mit Warnbalken",
   "description": "Netzteil-Zuordnung mit Warnbalken (Schraffur, invertierter Text): z. B. „NICHT ZIEHEN“.",
   "category": "Homelab",
   "tags": ["homelab", "netzteil", "warnung"],
@@ -21,7 +22,7 @@
   "sample": {"psu": "PSU1", "ziel": "USV Port 3", "warnung": "NICHT ZIEHEN"},
   "translations": {
     "en": {
-      "title": "psu-warning",
+      "title": "Power supply with warning bar",
       "description": "Power supply mapping with a warning bar (hatching, inverted text): e.g. “DO NOT UNPLUG”.",
       "category": "Homelab",
       "tags": ["homelab", "power-supply", "warning"],

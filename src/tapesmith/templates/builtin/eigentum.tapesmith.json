@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "eigentum",
+  "title": "Eigentum",
   "description": "Eigentumskennzeichnung für Werkzeug: Name, optional Telefonnummer.",
   "category": "Haushalt",
   "tags": ["haushalt", "eigentum", "werkzeug"],
@@ -17,7 +18,7 @@
   "sample": {"name": "Max Mustermann"},
   "translations": {
     "en": {
-      "title": "property",
+      "title": "Property",
       "description": "Property label for tools: name, optional phone number.",
       "category": "Household",
       "tags": ["household", "property", "tools"],

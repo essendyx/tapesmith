@@ -12,10 +12,12 @@
   },
   "sections": {
     "form": "Formular",
-    "preview": "Vorschau"
+    "preview": "Vorschau",
+    "content": "Inhalt",
+    "options": "Druckoptionen"
   },
   "noTemplateSelected": "Keine Vorlage gewählt.",
-  "fillSample": "Beispielwerte",
+  "fillSample": "Mit Beispiel füllen",
   "tapeReasonSuffix": ". Beim Drucken wird nachgefragt.",
   "shortened": "Gekürzt: {{label}}",
   "editInEditor": "Im Editor öffnen",
@@ -43,7 +45,9 @@
     "computedHint": "wird berechnet",
     "secretShow": "Anzeigen",
     "secretHide": "Verbergen",
-    "defaultHint": "Standard: {{value}}"
+    "defaultHint": "Standard: {{value}}",
+    "required": "Bitte {{label}} eingeben",
+    "sampleHint": "z. B. {{value}}"
   },
   "batch": {
     "commandTitle": "Vorlage: Serie/Import öffnen",
@@ -84,5 +88,26 @@
     "planLoading": "Plan wird berechnet …",
     "summarySuffix": " ({{count}} Etiketten)",
     "contactSheet": "Kontaktabzug speichern"
+  },
+  "fromFile": "Aus Datei geladen",
+  "noFields": "Diese Vorlage hat keine Felder zum Ausfüllen.",
+  "missing": "Noch auszufüllen: {{fields}}",
+  "missingAction": "Jetzt ausfüllen",
+  "ready": "Bereit zum Drucken",
+  "printTooltip": "Etikett mit den eingegebenen Werten drucken",
+  "placeholder": {
+    "badge": "Beispielinhalt",
+    "tooltip": "Leere Pflichtfelder sind in der Vorschau mit Beispielwerten gefüllt. Gedruckt wird nur, was du eingibst."
+  },
+  "options": {
+    "show": "Anzeigen",
+    "hide": "Ausblenden",
+    "copies_one": "{{count}} Kopie",
+    "copies_other": "{{count}} Kopien",
+    "chain": "als Kette",
+    "cutPauseDefault": "Schneidpause Standard",
+    "cutPauseNone": "ohne Schneidpause",
+    "cutPauseManual": "Schneidpause bis Weiter",
+    "cutPauseSeconds": "Schneidpause {{seconds}} s"
   }
 }

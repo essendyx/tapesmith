@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "vorratsdose",
+  "title": "Vorratsdose",
   "description": "Vorratsdose mit Symbol-Icon und großem Inhaltstext, einheitliches Set fürs Küchenregal.",
   "category": "Haushalt",
   "tags": ["haushalt", "vorrat", "kueche"],
@@ -22,7 +23,7 @@
   "sample": {"inhalt": "Mehl", "symbol": "Mehl"},
   "translations": {
     "en": {
-      "title": "pantry-jar",
+      "title": "Pantry jar",
       "description": "Pantry jar with a symbol icon and large contents text, a uniform set for the kitchen shelf.",
       "category": "Household",
       "tags": ["household", "pantry", "kitchen"],

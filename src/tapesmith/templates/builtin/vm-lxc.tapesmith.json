@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "vm-lxc",
+  "title": "VM/LXC",
   "description": "VM/LXC-Kennzeichnung fürs Rack: Typ, ID und Name, darunter die Kurz-IP.",
   "category": "Homelab",
   "tags": ["homelab", "vm", "lxc"],
@@ -14,7 +15,7 @@
   "sample": {"typ": "VM", "vmid": "111", "name": "webapp1", "ip_kurz": ".39"},
   "translations": {
     "en": {
-      "title": "vm-lxc",
+      "title": "VM/LXC",
       "description": "VM/LXC label for the rack: type, ID and name, short IP below.",
       "category": "Homelab",
       "tags": ["homelab", "vm", "lxc"],

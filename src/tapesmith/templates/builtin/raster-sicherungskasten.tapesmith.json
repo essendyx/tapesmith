@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "raster-sicherungskasten",
+  "title": "Sicherungskasten",
   "description": "Sicherungskasten-Streifen im TE-Raster (1 TE = 17,5 mm, 1 bis 4 TE je Sicherung: Name|TE je Zeile).",
   "category": "Raster",
   "tags": ["raster", "sicherungskasten", "te"],
@@ -12,7 +13,7 @@
   "sample": {"belegung": "FI|2\nKüche|1\nBad|1\nHerd|3"},
   "translations": {
     "en": {
-      "title": "grid-fuse-box",
+      "title": "Fuse box",
       "description": "Fuse box strip on the DIN module grid (1 module = 17.5 mm, 1 to 4 modules per breaker: Name|modules per line).",
       "category": "Grid",
       "tags": ["grid", "fuse-box", "din-rail"],

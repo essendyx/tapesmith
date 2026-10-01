@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "gefriergut",
+  "title": "Gefriergut",
   "description": "Gefriergut mit Haltbarkeit: Inhalt, Einfrierdatum und errechnetes Verbrauchsdatum je Kategorie.",
   "category": "Haushalt",
   "tags": ["haushalt", "gefriergut", "kueche"],
@@ -25,7 +26,7 @@
   "sample": {"inhalt": "Gulasch", "kategorie": "Fleisch"},
   "translations": {
     "en": {
-      "title": "freezer",
+      "title": "Freezer",
       "description": "Frozen food with shelf life: contents, freezing date and calculated use-by date per category.",
       "category": "Household",
       "tags": ["household", "freezer", "kitchen"],

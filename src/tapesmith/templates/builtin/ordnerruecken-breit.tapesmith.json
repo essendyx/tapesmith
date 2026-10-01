@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "name": "ordnerruecken-breit",
+  "title": "Ordnerrücken breit",
   "description": "Ordnerrücken breit (280 mm): Titel über Jahr, zentriert.",
   "category": "Büro",
   "tags": ["buero", "ordner", "archiv"],
@@ -13,7 +14,7 @@
   "sample": {"titel": "Rechnungen", "jahr": "2026"},
   "translations": {
     "en": {
-      "title": "binder-spine-wide",
+      "title": "Binder spine wide",
       "description": "Wide binder spine (280 mm): title above year, centered.",
       "category": "Office",
       "tags": ["office", "binder", "archive"],
