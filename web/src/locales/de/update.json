@@ -42,6 +42,7 @@
     "rollbackConfirm": "Zurückstellen"
   },
   "notInstalled": "Entwicklung oder nicht installiert: Updates nur in der installierten App. Installieren mit: py -m tapesmith install",
+  "runningFromSource": "Läuft aus dem Quellordner: Diese Version aktualisiert sich nicht selbst. Für Updates die installierte Version starten (tools\\installed-start.cmd).",
   "errors": {
     "check": "Prüfung fehlgeschlagen",
     "install": "Installation nicht gestartet",

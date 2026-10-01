@@ -190,7 +190,7 @@ export function UpdateCard(): JSX.Element {
       <>
         {data.installed ? null : (
           <MessageBar intent="info">
-            <MessageBarBody>{t('notInstalled')}</MessageBarBody>
+            <MessageBarBody>{t(data.installed_elsewhere ? 'runningFromSource' : 'notInstalled')}</MessageBarBody>
           </MessageBar>
         )}
         <FieldRows>

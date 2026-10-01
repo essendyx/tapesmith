@@ -149,7 +149,15 @@ class UpdateService:
             channel=str(setting(cfg, "update.channel")), auto_install=bool(setting(cfg, "update.auto_install")),
             last_check=saved.last_check, available=available, state=saved.state, error=saved.error,
             can_rollback=can_rollback, idle_ok=self.idle_ok(service) if service is not None else False,
-            consent_needed=bool(installed and not enabled and not setting(cfg, "update.asked")))
+            consent_needed=bool(installed and not enabled and not setting(cfg, "update.asked")),
+            installed_elsewhere=bool(not installed and self._install_present()))
+
+    def _install_present(self) -> bool:
+        root = self.root()
+        try:
+            return root is not None and layout.current_link(root).exists()
+        except OSError:
+            return False
 
     def _offerable(self, version: str, current: str, st: layout.InstallState | None) -> bool:
         try:

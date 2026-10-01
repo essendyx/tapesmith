@@ -68,6 +68,15 @@ def _service(tmp_path, *, installed=True, cfg=None, keys=None, run=None, clock=N
     return svc, private, feed, root, spawn
 
 
+def test_quellordner_bei_vorhandener_installation(tmp_path):
+    """Läuft nicht aus der Installation, aber eine installierte Version existiert: installed_elsewhere."""
+    svc, *_ = _service(tmp_path, installed=False)
+    assert svc.status().installed_elsewhere is False
+    install_layout(tmp_path / "root", versions=("0.1.0",))
+    st = svc.status()
+    assert st.installed is False and st.installed_elsewhere is True
+
+
 def test_nicht_installiert_status_und_install(tmp_path):
     svc, private, feed, _root, spawn = _service(tmp_path, installed=False)
     publish_dir(feed, "0.2.1", private)

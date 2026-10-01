@@ -42,6 +42,7 @@
     "rollbackConfirm": "Roll back"
   },
   "notInstalled": "Development build or not installed: updates are only available in the installed app. Install it with: py -m tapesmith install",
+  "runningFromSource": "Running from the source folder: this copy does not update itself. Start the installed version for updates (tools\\installed-start.cmd).",
   "errors": {
     "check": "Check failed",
     "install": "Installation not started",

@@ -38,6 +38,13 @@ function mockStatus(status: UpdateStatus, extra: Parameters<typeof mockApi>[0] =
 afterEach(() => restoreAllMocks());
 
 describe('UpdateCard', () => {
+  it('aus dem Quellordner bei vorhandener Installation: Hinweis auf die installierte Version', async () => {
+    mockStatus({ ...BASE, installed: false, installed_elsewhere: true, previous: null, root: null });
+    renderWithProviders(<UpdateCard />);
+    expect(await screen.findByText(/Läuft aus dem Quellordner/)).toBeInTheDocument();
+    expect(screen.queryByText(/Entwicklung oder nicht installiert/)).toBeNull();
+  });
+
   it('nicht installiert: Hinweis und Prüfen-Knopf, kein Installieren', async () => {
     mockStatus({ ...BASE, installed: false, previous: null, root: null });
     renderWithProviders(<UpdateCard />);

@@ -32,6 +32,8 @@ class UpdateStatus:
     idle_ok: bool = False
     # Die Oberfläche fragt einmal nach der automatischen Prüfung (installierte App, noch nie gefragt, aus).
     consent_needed: bool = False
+    # Läuft nicht aus der Installation (z. B. Quellordner), obwohl eine installierte Version existiert.
+    installed_elsewhere: bool = False
 
     def to_json(self) -> dict:
         return asdict(self)

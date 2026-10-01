@@ -13,6 +13,7 @@ export interface UpdateAvailable {
 
 export interface UpdateStatus {
   installed: boolean;
+  installed_elsewhere?: boolean;
   current: string;
   previous: string | null;
   root: string | null;

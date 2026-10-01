@@ -43,7 +43,7 @@ def test_status_ohne_installation(env):
     assert data["installed"] is False
     assert set(data) == {"installed", "current", "previous", "root", "enabled", "source", "channel",
                          "auto_install", "last_check", "available", "state", "error", "can_rollback", "idle_ok",
-                         "consent_needed"}
+                         "consent_needed", "installed_elsewhere"}
     assert data["enabled"] is False and data["consent_needed"] is False
     assert data["source"] == "github:essendyx/tapesmith"
 
